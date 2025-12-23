@@ -8,6 +8,7 @@ import requests
 import math
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
+from .config import API_KEY, API_URL_COMPLETIONS, DEFAULT_MODEL
 
 
 @dataclass
@@ -73,9 +74,9 @@ class CompletionClient:
     
     def __init__(
         self,
-        api_key: str,
-        api_url: str = "https://llmapi.paratera.com/v1/completions",
-        model_name: str = "DeepSeek-V3.2",
+        api_key: Optional[str] = None,
+        api_url: Optional[str] = None,
+        model_name: Optional[str] = None,
         default_max_tokens: int = 100,
         default_temperature: float = 0.7,
         default_stop: Optional[List[str]] = None
@@ -84,16 +85,16 @@ class CompletionClient:
         初始化 Completion 客户端
         
         Args:
-            api_key: API 密钥
-            api_url: API 地址，默认为 paratera.com
-            model_name: 模型名称，默认为 DeepSeek-V3.2
+            api_key: API 密钥，如果为 None 则从环境变量读取
+            api_url: API 地址，如果为 None 则使用默认值
+            model_name: 模型名称，如果为 None 则使用默认值
             default_max_tokens: 默认最大 token 数
             default_temperature: 默认温度参数
             default_stop: 默认停止词列表
         """
-        self.api_key = api_key
-        self.api_url = api_url
-        self.model_name = model_name
+        self.api_key = api_key or API_KEY
+        self.api_url = api_url or API_URL_COMPLETIONS
+        self.model_name = model_name or DEFAULT_MODEL
         self.default_max_tokens = default_max_tokens
         self.default_temperature = default_temperature
         self.default_stop = default_stop or ["User:", "\n\nUser", "<|endoftext|>", "<end_of_text>"]
@@ -245,17 +246,17 @@ class CompletionClient:
 
 # 便捷函数：创建默认客户端
 def create_client(
-    api_key: str,
-    model_name: str = "DeepSeek-V3.2",
-    api_url: str = "https://llmapi.paratera.com/v1/completions"
+    api_key: Optional[str] = None,
+    model_name: Optional[str] = None,
+    api_url: Optional[str] = None
 ) -> CompletionClient:
     """
     创建默认的 Completion 客户端
     
     Args:
-        api_key: API 密钥
-        model_name: 模型名称
-        api_url: API 地址
+        api_key: API 密钥，如果为 None 则从环境变量读取
+        model_name: 模型名称，如果为 None 则使用默认值
+        api_url: API 地址，如果为 None 则使用默认值
     
     Returns:
         CompletionClient 实例

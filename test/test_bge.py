@@ -1,10 +1,9 @@
 import requests
 import numpy as np
+from llm.config import API_KEY, API_URL_EMBEDDINGS, API_URL_CHAT
 
-# 你的 SiliconFlow API Key
-API_KEY = "sk-7870u-nMQ69cSLRmIAxt2A"
-EMBEDDING_API_URL = "https://llmapi.paratera.com/v1/embeddings"
-CHAT_API_URL = "https://llmapi.paratera.com/v1/chat/completions"
+EMBEDDING_API_URL = API_URL_EMBEDDINGS
+CHAT_API_URL = API_URL_CHAT
 
 def extract_emotion_description(text, model="Qwen3-Next-80B-A3B-Instruct"):
     """

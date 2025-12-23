@@ -10,11 +10,23 @@ from .completion_client import (
     TokenInfo,
     create_client
 )
+from .config import (
+    API_KEY,
+    API_URL_COMPLETIONS,
+    API_URL_CHAT,
+    API_URL_EMBEDDINGS,
+    DEFAULT_MODEL
+)
 
 __all__ = [
     'CompletionClient',
     'CompletionResult',
     'TokenInfo',
-    'create_client'
+    'create_client',
+    'API_KEY',
+    'API_URL_COMPLETIONS',
+    'API_URL_CHAT',
+    'API_URL_EMBEDDINGS',
+    'DEFAULT_MODEL',
 ]
 

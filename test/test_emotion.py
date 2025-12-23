@@ -2,10 +2,12 @@ import requests
 import numpy as np
 import json
 import re
+import sys
+import os
 
-# API配置
-API_KEY = "sk-7870u-nMQ69cSLRmIAxt2A"
-CHAT_API_URL = "https://llmapi.paratera.com/v1/chat/completions"
+from llm.config import API_KEY, API_URL_CHAT
+
+CHAT_API_URL = API_URL_CHAT
 
 # 定义详细的情绪列表（基于Plutchik情绪轮和常见情绪）
 EMOTIONS = [
