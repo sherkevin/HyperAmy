@@ -1,0 +1,82 @@
+"""
+测试 CompletionClient 的使用
+"""
+
+from llm import CompletionClient, create_client
+
+# 使用默认配置创建客户端
+API_KEY = "sk-7870u-nMQ69cSLRmIAxt2A"
+
+def test_basic_usage():
+    """测试基本使用"""
+    print("=" * 60)
+    print("测试 1: 基本使用")
+    print("=" * 60)
+    
+    client = create_client(API_KEY, model_name="DeepSeek-V3.2")
+    result = client.complete("中国的首都是哪里？")
+    
+    print(f"回答: {result.get_answer_text()}")
+    print(f"Prompt tokens: {len(result.prompt_tokens)}")
+    print(f"Answer tokens: {len(result.answer_tokens)}")
+    print()
+
+def test_detailed_analysis():
+    """测试详细分析"""
+    print("=" * 60)
+    print("测试 2: 详细分析（打印 token 概率）")
+    print("=" * 60)
+    
+    client = create_client(API_KEY, model_name="DeepSeek-V3.2")
+    result = client.complete("中国的首都是哪里？")
+    result.print_analysis()
+    print()
+
+def test_custom_prompt():
+    """测试自定义 prompt"""
+    print("=" * 60)
+    print("测试 3: 自定义 prompt 模板")
+    print("=" * 60)
+    
+    client = create_client(API_KEY, model_name="DeepSeek-V3.2")
+    custom_template = "问题：{query}\n回答："
+    result = client.complete("什么是量子力学？", prompt_template=custom_template)
+    
+    print(f"回答: {result.get_answer_text()}")
+    print()
+
+def test_quick_answer():
+    """测试快速获取回答"""
+    print("=" * 60)
+    print("测试 4: 快速获取回答（不返回详细概率）")
+    print("=" * 60)
+    
+    client = create_client(API_KEY, model_name="DeepSeek-V3.2")
+    answer = client.get_answer("Python 是什么？")
+    print(f"回答: {answer}")
+    print()
+
+def test_custom_parameters():
+    """测试自定义参数"""
+    print("=" * 60)
+    print("测试 5: 自定义参数")
+    print("=" * 60)
+    
+    client = create_client(API_KEY, model_name="DeepSeek-V3.2")
+    result = client.complete(
+        "解释一下机器学习",
+        max_tokens=200,
+        temperature=0.5
+    )
+    print(f"回答: {result.get_answer_text()}")
+    print(f"使用的 token 数: {result.usage.get('total_tokens', 0)}")
+    print()
+
+if __name__ == "__main__":
+    # 运行所有测试
+    test_basic_usage()
+    test_detailed_analysis()
+    test_custom_prompt()
+    test_quick_answer()
+    test_custom_parameters()
+
