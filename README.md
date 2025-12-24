@@ -1,284 +1,420 @@
 # HyperAmy
 
-一个集成了情感分析和 HippoRAG 的 LLM 应用框架，支持 token 级别的概率分析和情感增强的检索系统。
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 项目结构
+HyperAmy is an emotion-enhanced RAG framework built on top of [HippoRAG](https://github.com/OSU-NLP-Group/HippoRAG), integrating emotion analysis capabilities to enable LLMs to understand and leverage emotional context in retrieval-augmented generation tasks.
 
-```
-HyperAmy/
-├── llm/                    # LLM 客户端模块
-│   ├── __init__.py         # 模块导出
-│   ├── config.py           # 配置管理（从 .env 读取 API_KEY 和 BASE_URL）
-│   ├── completion_client.py # LLM 客户端（支持 normal 和 specific 两种模式）
-│   └── README.md           # LLM 模块详细文档
-│
-├── sentiment/              # 情感分析模块
-│   ├── __init__.py
-│   ├── emotion_vector.py   # 情感向量提取
-│   ├── emotion_store.py    # 情感向量存储和管理
-│   └── hipporag_enhanced.py # HippoRAG 增强版（集成情感分析）
-│
-├── test/                   # 测试文件
-│   ├── test_infer.py       # 测试推理和 token 概率分析
-│   ├── test_completion_client.py # 测试 Completion Client 功能
-│   ├── test_emotion.py     # 测试情感向量提取
-│   ├── test_bge.py         # 测试 BGE 嵌入和情感描述
-│   ├── test_integration.py # 测试 HippoRAG 整合
-│   └── test_dataset_integration.py # 测试数据集整合
-│
-└── hipporag/              # HippoRAG 框架（外部依赖）
-```
+## Overview
 
-## 环境要求
+HyperAmy extends HippoRAG with emotion-aware capabilities:
 
-- **Python**: 3.10+ (推荐 3.10.18)
-- **Conda**: 推荐使用 conda 管理环境
+- **Emotion-Enhanced Retrieval**: Combines semantic and emotional similarity for more contextually relevant document retrieval
+- **Emotion Vector Extraction**: Extracts 28-dimensional emotion vectors from text using LLMs
+- **Emotion-Aware RAG**: Integrates emotional understanding into the RAG pipeline for improved answer quality
+- **Token-Level Probability Analysis**: Supports detailed token-level probability analysis for LLM outputs
 
-## 快速开始
+## Features
 
-### 1. 环境配置
+- 🧠 **Emotion Analysis**: Extract and quantify emotional content from text
+- 🔍 **Emotion-Enhanced Retrieval**: Combine semantic and emotional similarity for better retrieval
+- 📊 **Emotion Vectors**: 28-dimensional emotion vectors based on Plutchik's emotion wheel
+- 🔄 **Seamless Integration**: Built on HippoRAG framework with minimal changes
+- 🎯 **Token Probability**: Support for token-level probability analysis
+- 💾 **Persistent Storage**: Efficient storage of emotion vectors using Parquet format
 
-#### 方式 1: 使用 Conda（推荐）
+## Installation
+
+### Prerequisites
+
+- Python 3.10+ (recommended: 3.10.18)
+- Conda (recommended for environment management)
+
+### Setup
+
+#### Option 1: Using Conda (Recommended)
 
 ```bash
-# 创建并激活 conda 环境
+# Create and activate conda environment
 conda create -n Amygdala python=3.10.18
 conda activate Amygdala
 
-# 安装依赖
+# Install dependencies
 cd /path/to/hyperamy_source
 pip install -r requirements.txt
 ```
 
-#### 方式 2: 使用 pip
+#### Option 2: Using pip
 
 ```bash
-# 确保 Python 3.10+
+# Ensure Python 3.10+
 python --version
 
-# 安装依赖
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-#### 自动激活环境（可选）
+### Environment Configuration
 
-项目已配置自动激活脚本，进入项目目录时会自动激活 Amygdala 环境：
+Create a `.env` file in the `llm/` directory:
 
-```bash
-# 首次设置（只需一次）
-./setup_auto_activate.sh
-source ~/.bashrc  # 或重新打开终端
-
-# 之后每次进入项目目录会自动激活
-cd /path/to/hyperamy_source
-# 环境已自动激活！
-```
-
-### 2. 配置环境变量
-
-在 `llm/.env` 文件中配置 API 密钥和基础 URL：
 ```bash
 API_KEY=your_api_key_here
 BASE_URL=https://llmapi.paratera.com/v1
 ```
 
-**注意**：
-- `.env` 文件只需要包含 `API_KEY` 和 `BASE_URL`
-- 模型名称（model name）在代码中自定义，不作为环境变量
-- 配置通过 `llm.config` 模块统一管理
+**Note**: 
+- The `.env` file should only contain `API_KEY` and `BASE_URL`
+- Model names are specified in code, not as environment variables
+- Configuration is managed through the `llm.config` module
 
-### 3. LLM 使用方式
+### Verify Installation
 
-#### 使用 config 模块
-
-所有配置都通过 `llm.config` 模块访问：
-
-```python
-from llm.config import API_KEY, BASE_URL, DEFAULT_MODEL, DEFAULT_EMBEDDING_MODEL
-from llm import create_client
-
-# 创建客户端（默认使用 normal 模式）
-client = create_client(model_name=DEFAULT_MODEL)
-
-# 普通对话模式（normal）- 默认模式
-result = client.complete("你好")
-print(result.get_answer_text())
-
-# 获取 token 概率模式（specific）
-result = client.complete("中国的首都是哪里？", mode="specific")
-result.print_analysis()  # 打印 token 概率分析
-```
-
-#### 两种模式说明
-
-- **normal 模式**（默认）：使用 Chat Completions API，返回 `ChatResult`，适合普通对话
-- **specific 模式**：使用 Completions API，返回 `CompletionResult`，包含 `prompt_tokens`、`answer_tokens` 和 `print_analysis()` 方法，用于获取 token 级别的概率信息
-
-### 4. 运行测试
-
-**重要**：所有测试都在项目根目录下使用 `python -m` 方式运行，不要使用 `os.path` 修改路径。
-
-#### 基础测试
+Run the environment check script:
 
 ```bash
-# 测试推理和 token 概率分析（使用 specific 模式）
-python -m test.test_infer
-
-# 测试 Completion Client 的完整功能
-python -m test.test_completion_client
+python scripts/check_environment.py
 ```
 
-#### 情感分析测试
+You should see:
+- ✅ Python version: 3.10.18
+- ✅ All required dependencies installed
+- ✅ API configuration correct
 
-```bash
-# 测试情感向量提取
-python -m test.test_emotion
+## Quick Start
 
-# 测试 BGE 嵌入和情感描述
-python -m test.test_bge
-```
+### Basic Usage
 
-#### 整合测试
-
-```bash
-# 测试 HippoRAG 整合（小样本数据）
-python -m test.test_integration
-
-# 测试数据集整合（真实数据集）
-python -m test.test_dataset_integration
-```
-
-## 主要模块说明
-
-### llm 模块
-
-- **`llm/config.py`**：统一管理 API 配置，从 `.env` 文件读取 `API_KEY` 和 `BASE_URL`
-- **`llm/completion_client.py`**：LLM 客户端封装
-  - `CompletionClient`：支持 normal 和 specific 两种模式
-  - `create_client()`：便捷函数创建客户端
-  - `ChatResult`：普通对话结果（normal 模式）
-  - `CompletionResult`：带 token 概率的结果（specific 模式）
-
-### sentiment 模块
-
-- **`sentiment/emotion_vector.py`**：从文本中提取情感向量
-- **`sentiment/emotion_store.py`**：情感向量的存储和管理
-- **`sentiment/hipporag_enhanced.py`**：增强版 HippoRAG，集成情感分析功能
-
-### test 模块
-
-- **`test/test_infer.py`**：测试 LLM 推理和 token 概率分析（使用 specific 模式）
-- **`test/test_completion_client.py`**：测试 Completion Client 的各种功能
-- **`test/test_emotion.py`**：测试情感向量提取和分析
-- **`test/test_bge.py`**：测试 BGE 嵌入和情感描述提取
-- **`test/test_integration.py`**：测试 HippoRAG + 情感分析的整合功能
-- **`test/test_dataset_integration.py`**：使用真实数据集测试整合功能
-
-## 使用示例
-
-### 基本使用
+#### Using LLM Client
 
 ```python
 from llm import create_client
 from llm.config import DEFAULT_MODEL
 
-# 创建客户端
+# Create client
 client = create_client(model_name=DEFAULT_MODEL)
 
-# 普通对话（normal 模式）
-result = client.complete("Python 是什么？")
+# Normal mode (default) - Chat Completions API
+result = client.complete("What is Python?")
 print(result.get_answer_text())
 
-# 获取 token 概率（specific 模式）
-result = client.complete("中国的首都是哪里？", mode="specific")
-result.print_analysis()
+# Specific mode - Token probability analysis
+result = client.complete("What is the capital of China?", mode="specific")
+result.print_analysis()  # Print token probability analysis
 ```
 
-### 使用情感分析
+#### Using Emotion-Enhanced RAG
 
 ```python
 from sentiment.hipporag_enhanced import HippoRAGEnhanced
 from hipporag.utils.config_utils import BaseConfig
 from llm.config import BASE_URL, DEFAULT_MODEL, DEFAULT_EMBEDDING_MODEL
 
-# 配置模型（在代码中自定义）
-llm_model_name = DEFAULT_MODEL
-embedding_model_name = DEFAULT_EMBEDDING_MODEL
-
+# Configure models
 config = BaseConfig(
     save_dir="./outputs",
     llm_base_url=BASE_URL,
-    llm_name=llm_model_name,
-    embedding_model_name=embedding_model_name,
+    llm_name=DEFAULT_MODEL,
+    embedding_model_name=DEFAULT_EMBEDDING_MODEL,
     embedding_base_url=BASE_URL,
 )
 
-# 创建增强版 HippoRAG
+# Create emotion-enhanced HippoRAG
 hipporag = HippoRAGEnhanced(
     global_config=config,
     enable_emotion=True,
-    emotion_weight=0.3,
-    emotion_model_name=llm_model_name
+    emotion_weight=0.3,  # 30% emotion, 70% semantic
+    emotion_model_name=DEFAULT_MODEL
 )
 
-# 索引文档
-hipporag.index(docs=["文档1", "文档2"])
+# Index documents
+docs = [
+    "I'm thrilled about winning the competition! This is amazing!",
+    "I'm devastated by the loss. Everything feels hopeless.",
+    "The weather is nice today. It's a beautiful sunny day."
+]
+hipporag.index(docs=docs)
 
-# 检索
-results = hipporag.retrieve(queries=["查询1"])
+# Retrieve with emotion enhancement
+queries = ["What makes people feel happy?", "What causes sadness?"]
+results = hipporag.retrieve(queries=queries, num_to_retrieve=2)
+
+# RAG QA with emotion awareness
+qa_results, messages, metadata = hipporag.rag_qa(queries=queries)
 ```
 
-## 注意事项
+## Project Structure
 
-1. **测试运行方式**：始终在项目根目录下使用 `python -m test.xxx` 运行测试，不要修改 `sys.path` 或使用 `os.path`
-2. **配置管理**：所有配置通过 `llm.config` 模块访问，不要直接读取环境变量
-3. **模式选择**：默认使用 `normal` 模式（普通对话），需要 token 概率时使用 `mode="specific"`
-4. **模型名称**：模型名称在代码中自定义，不作为环境变量，可以使用 `DEFAULT_MODEL` 和 `DEFAULT_EMBEDDING_MODEL` 作为默认值
+```
+HyperAmy/
+├── llm/                          # LLM client module
+│   ├── __init__.py
+│   ├── config.py                 # Configuration management (reads from .env)
+│   ├── completion_client.py      # LLM client (normal and specific modes)
+│   └── README.md                 # LLM module documentation
+│
+├── sentiment/                    # Emotion analysis module
+│   ├── __init__.py
+│   ├── emotion_vector.py         # Emotion vector extraction
+│   ├── emotion_store.py          # Emotion vector storage and management
+│   └── hipporag_enhanced.py     # Enhanced HippoRAG with emotion analysis
+│
+├── test/                         # Test files
+│   ├── test_infer.py            # Token probability analysis tests
+│   ├── test_completion_client.py # Completion client tests
+│   ├── test_emotion.py          # Emotion vector extraction tests
+│   ├── test_bge.py              # BGE embedding and emotion description tests
+│   ├── test_integration.py      # HippoRAG integration tests
+│   └── test_dataset_integration.py # Dataset integration tests
+│
+├── hipporag/                     # HippoRAG framework (external dependency)
+│   ├── HippoRAG.py              # Main RAG framework
+│   ├── embedding_store.py       # Embedding storage
+│   ├── embedding_model/          # Embedding model implementations
+│   ├── llm/                     # LLM inference classes
+│   ├── evaluation/              # Evaluation metrics
+│   └── utils/                   # Utility functions
+│
+├── scripts/                      # Utility scripts
+│   └── check_environment.py     # Environment verification script
+│
+├── requirements.txt              # Python dependencies
+└── README.md                     # This file
+```
 
-## 依赖说明
+## Core Modules
 
-### 必需依赖
+### `sentiment` Module
 
-所有必需依赖已在 `requirements.txt` 中列出，包括：
-- `requests`: HTTP 请求
-- `python-dotenv`: 环境变量管理
-- `numpy`: 数值计算
-- `pandas`: 数据处理
-- `openai`: OpenAI API 客户端
-- `httpx`: 异步 HTTP 客户端
-- `pyarrow` 或 `fastparquet`: Parquet 文件支持
-- `python-igraph`: 图处理
-- `tenacity`: 重试机制
-- `tqdm`: 进度条
+The emotion analysis module provides:
 
-### 可选依赖
+- **`emotion_vector.py`**: Extracts 28-dimensional emotion vectors from text using LLMs
+- **`emotion_store.py`**: Manages persistent storage of emotion vectors using Parquet format
+- **`hipporag_enhanced.py`**: `HippoRAGEnhanced` class that extends `HippoRAG` with emotion analysis
 
-根据使用场景可选安装：
-- `transformers`: Transformers 模型支持
-- `sentence-transformers`: Sentence Transformers embedding
-- `litellm`: Bedrock 支持
-- `torch`: PyTorch 支持
-- `vllm`: VLLM 离线推理
-- `gritlm`: GritLM embedding
-- `outlines`: Transformers 离线模式
+### `llm` Module
 
-### 环境对齐
+The LLM client module provides:
 
-为确保协作者环境一致，请：
+- **`completion_client.py`**: 
+  - `CompletionClient`: Supports normal and specific modes
+  - `create_client()`: Convenience function to create clients
+  - `ChatResult`: Results for normal mode (Chat Completions API)
+  - `CompletionResult`: Results for specific mode with token probabilities
+- **`config.py`**: Unified API configuration management
 
-1. **使用相同的 Python 版本**: Python 3.10.18
-2. **使用相同的依赖版本**: 运行 `pip install -r requirements.txt`
-3. **验证环境**: 运行 `python scripts/check_environment.py`
+### `hipporag` Module
 
-### 环境检查
+The core RAG framework (based on [HippoRAG](https://github.com/OSU-NLP-Group/HippoRAG)):
 
-运行环境检查脚本验证配置：
+- **`HippoRAG.py`**: Main RAG framework class
+- **`embedding_store.py`**: Embedding vector storage
+- **`embedding_model/`**: Support for various embedding models (OpenAI, NV-Embed-v2, etc.)
+- **`llm/`**: LLM inference classes (OpenAI GPT, Bedrock, Transformers, vLLM)
+- **`evaluation/`**: Evaluation metrics for retrieval and QA
+
+## Running Tests
+
+**Important**: All tests should be run from the project root directory using `python -m`:
+
+### Basic Tests
+
 ```bash
-python scripts/check_environment.py
+# Test token probability analysis (specific mode)
+python -m test.test_infer
+
+# Test Completion Client functionality
+python -m test.test_completion_client
 ```
 
-应该看到：
-- ✅ Python 版本: 3.10.18
-- ✅ CONDA_DEFAULT_ENV: Amygdala (如果使用 conda)
-- ✅ 所有必需依赖已安装
-- ✅ API 配置正确
+### Emotion Analysis Tests
+
+```bash
+# Test emotion vector extraction
+python -m test.test_emotion
+
+# Test BGE embedding and emotion description
+python -m test.test_bge
+```
+
+### Integration Tests
+
+```bash
+# Test HippoRAG integration (small sample)
+python -m test.test_integration
+
+# Test dataset integration (real dataset)
+python -m test.test_dataset_integration
+```
+
+## Usage Examples
+
+### Example 1: Emotion Vector Extraction
+
+```python
+from sentiment.emotion_vector import EmotionExtractor
+
+extractor = EmotionExtractor()
+text = "I'm so happy and excited about this news!"
+emotion_vector = extractor.extract_emotion_vector(text)
+print(f"Emotion vector: {emotion_vector}")
+```
+
+### Example 2: Emotion-Enhanced Retrieval
+
+```python
+from sentiment.hipporag_enhanced import HippoRAGEnhanced
+from hipporag.utils.config_utils import BaseConfig
+
+# Initialize with emotion enhancement
+config = BaseConfig(
+    save_dir="./outputs",
+    llm_base_url="https://llmapi.paratera.com/v1",
+    llm_name="DeepSeek-V3.2",
+    embedding_model_name="GLM-Embedding-2",
+)
+
+hipporag = HippoRAGEnhanced(
+    global_config=config,
+    enable_emotion=True,
+    emotion_weight=0.3,  # Adjust emotion vs semantic weight
+)
+
+# Index documents
+hipporag.index(docs=your_documents)
+
+# Retrieve with emotion awareness
+results = hipporag.retrieve(queries=your_queries)
+```
+
+### Example 3: Token Probability Analysis
+
+```python
+from llm import create_client
+
+client = create_client(model_name="DeepSeek-V3.2")
+
+# Get token-level probabilities
+result = client.complete(
+    "Explain quantum computing",
+    mode="specific"
+)
+
+# Analyze token probabilities
+result.print_analysis()
+```
+
+## Dependencies
+
+### Required Dependencies
+
+All required dependencies are listed in `requirements.txt`:
+
+- `requests>=2.32.0`: HTTP requests
+- `python-dotenv>=1.1.0`: Environment variable management
+- `numpy>=1.26.0`: Numerical computing
+- `pandas>=2.0.0`: Data processing
+- `openai>=1.91.0`: OpenAI API client
+- `httpx>=0.28.0`: Async HTTP client
+- `pyarrow>=14.0.0` or `fastparquet>=2025.12.0`: Parquet file support
+- `python-igraph>=0.11.0`: Graph processing
+- `tenacity>=8.5.0`: Retry mechanism
+- `tqdm>=4.66.0`: Progress bars
+
+### Optional Dependencies
+
+Install based on your use case:
+
+- `transformers>=4.45.0`: Transformers model support
+- `sentence-transformers>=2.2.0`: Sentence Transformers embedding
+- `litellm>=1.73.0`: Bedrock support
+- `torch>=2.0.0`: PyTorch support
+- `vllm>=0.2.0`: VLLM offline inference
+- `gritlm>=1.0.0`: GritLM embedding
+- `outlines>=0.0.1`: Transformers offline mode
+
+## Environment Alignment
+
+To ensure consistent environments across collaborators:
+
+1. **Use the same Python version**: Python 3.10.18
+2. **Use the same dependency versions**: Run `pip install -r requirements.txt`
+3. **Verify environment**: Run `python scripts/check_environment.py`
+
+## Code Structure
+
+The project follows a modular structure:
+
+- **`sentiment/`**: Emotion analysis functionality
+- **`llm/`**: LLM client and configuration
+- **`hipporag/`**: Core RAG framework (based on HippoRAG)
+- **`test/`**: Test suites for all modules
+- **`scripts/`**: Utility scripts
+
+## Key Differences from HippoRAG
+
+HyperAmy extends HippoRAG with:
+
+1. **Emotion Analysis**: 28-dimensional emotion vector extraction
+2. **Emotion-Enhanced Retrieval**: Combines semantic and emotional similarity
+3. **Emotion Storage**: Persistent storage of emotion vectors
+4. **Token Probability**: Support for token-level probability analysis
+5. **Enhanced API**: Improved error handling and robustness
+
+## Notes
+
+1. **Test Execution**: Always run tests from the project root using `python -m test.xxx`
+2. **Configuration Management**: All configuration is accessed through `llm.config` module
+3. **Mode Selection**: Default is `normal` mode (chat), use `mode="specific"` for token probabilities
+4. **Model Names**: Model names are specified in code, not as environment variables
+
+## Contributing
+
+We welcome contributions! Please ensure:
+
+1. Code follows Python 3.10+ standards
+2. All tests pass
+3. Environment alignment (use `requirements.txt`)
+4. Documentation is updated
+
+## Related Work
+
+- [HippoRAG](https://github.com/OSU-NLP-Group/HippoRAG): The base RAG framework that HyperAmy extends
+- [HippoRAG Paper](https://arxiv.org/abs/2405.14831): Original HippoRAG paper
+
+## Citation
+
+If you use HyperAmy in your research, please cite:
+
+```bibtex
+@misc{hyperamy2024,
+  title={HyperAmy: Emotion-Enhanced RAG Framework},
+  author={HyperAmy Contributors},
+  year={2024},
+  url={https://github.com/sherkevin/HyperAmy}
+}
+```
+
+And the base HippoRAG framework:
+
+```bibtex
+@inproceedings{gutiérrez2024hipporag,
+  title={HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models}, 
+  author={Bernal Jiménez Gutiérrez and Yiheng Shu and Yu Gu and Michihiro Yasunaga and Yu Su},
+  booktitle={The Thirty-eighth Annual Conference on Neural Information Processing Systems},
+  year={2024},
+  url={https://openreview.net/forum?id=hkujvAPVsg}
+}
+```
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Contact
+
+Questions or issues? Please file an issue on [GitHub](https://github.com/sherkevin/HyperAmy/issues).
+
+---
+
+**HyperAmy**: Emotion-Enhanced RAG Framework built on HippoRAG
