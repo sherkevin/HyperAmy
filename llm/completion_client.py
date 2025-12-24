@@ -6,9 +6,9 @@ LLM Completion API Client
 
 import requests
 import math
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any, Literal
 from dataclasses import dataclass
-from .config import API_KEY, API_URL_COMPLETIONS, DEFAULT_MODEL
+from .config import API_KEY, API_URL_COMPLETIONS, API_URL_CHAT, DEFAULT_MODEL
 
 
 @dataclass
@@ -69,35 +69,58 @@ class CompletionResult:
             print(f"{repr(token_info.token):<15} | {logprob_str:<10} | {prob_str:<10}")
 
 
+@dataclass
+class ChatResult:
+    """Chat 结果（普通对话模式）"""
+    answer_text: str
+    usage: Dict[str, int]
+    raw_response: Dict[str, Any]
+    
+    def get_answer_text(self) -> str:
+        """获取完整的回答文本"""
+        return self.answer_text
+
+
 class CompletionClient:
-    """LLM Completion API 客户端"""
+    """LLM Completion API 客户端
+    
+    支持两种模式：
+    - normal: 使用 Chat Completions API（普通对话）
+    - specific: 使用 Completions API（带 logprobs、stop、max_tokens 等详细参数）
+    """
     
     def __init__(
         self,
         api_key: Optional[str] = None,
         api_url: Optional[str] = None,
+        chat_api_url: Optional[str] = None,
         model_name: Optional[str] = None,
         default_max_tokens: int = 100,
         default_temperature: float = 0.7,
-        default_stop: Optional[List[str]] = None
+        default_stop: Optional[List[str]] = None,
+        mode: Literal["normal", "specific"] = "normal"
     ):
         """
         初始化 Completion 客户端
         
         Args:
             api_key: API 密钥，如果为 None 则从环境变量读取
-            api_url: API 地址，如果为 None 则使用默认值
+            api_url: Completion API 地址，如果为 None 则使用默认值
+            chat_api_url: Chat API 地址，如果为 None 则使用默认值
             model_name: 模型名称，如果为 None 则使用默认值
             default_max_tokens: 默认最大 token 数
             default_temperature: 默认温度参数
             default_stop: 默认停止词列表
+            mode: 模式，"normal" 使用 chat API，"specific" 使用 completion API
         """
         self.api_key = api_key or API_KEY
         self.api_url = api_url or API_URL_COMPLETIONS
+        self.chat_api_url = chat_api_url or API_URL_CHAT
         self.model_name = model_name or DEFAULT_MODEL
         self.default_max_tokens = default_max_tokens
         self.default_temperature = default_temperature
         self.default_stop = default_stop or ["User:", "\n\nUser", "<|endoftext|>", "<end_of_text>"]
+        self.mode = mode
     
     def _build_prompt(self, query: str, prompt_template: Optional[str] = None) -> str:
         """
@@ -150,27 +173,98 @@ class CompletionClient:
         stop: Optional[List[str]] = None,
         logprobs: int = 1,
         echo: bool = True,
+        mode: Optional[Literal["normal", "specific"]] = None,
         **kwargs
-    ) -> CompletionResult:
+    ):
         """
-        调用 Completion API
+        调用 LLM API
         
         Args:
             query: 用户查询
             prompt_template: Prompt 模板，如果为 None 则使用默认模板
             max_tokens: 最大 token 数，如果为 None 则使用默认值
             temperature: 温度参数，如果为 None 则使用默认值
-            stop: 停止词列表，如果为 None 则使用默认值
-            logprobs: Log 概率数量，默认为 1
-            echo: 是否回显 prompt，默认为 True（必须为 True 才能获取 prompt 的概率）
+            stop: 停止词列表，如果为 None 则使用默认值（仅 specific 模式）
+            logprobs: Log 概率数量，默认为 1（仅 specific 模式）
+            echo: 是否回显 prompt，默认为 True（仅 specific 模式）
+            mode: 模式，"normal" 使用 chat API，"specific" 使用 completion API
+                 如果为 None，则使用初始化时的 mode
             **kwargs: 其他 API 参数
         
         Returns:
-            CompletionResult 对象
+            ChatResult 对象（normal 模式）或 CompletionResult 对象（specific 模式）
         
         Raises:
             requests.RequestException: 请求失败时抛出
         """
+        # 确定使用的模式
+        use_mode = mode if mode is not None else self.mode
+        
+        if use_mode == "normal":
+            return self._complete_chat(query, prompt_template, max_tokens, temperature, **kwargs)
+        else:  # specific
+            return self._complete_specific(query, prompt_template, max_tokens, temperature, stop, logprobs, echo, **kwargs)
+    
+    def _complete_chat(
+        self,
+        query: str,
+        prompt_template: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        temperature: Optional[float] = None,
+        **kwargs
+    ) -> ChatResult:
+        """使用 Chat Completions API（普通对话模式）"""
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+        
+        # 构建消息
+        if prompt_template:
+            # 如果提供了模板，使用模板格式化
+            content = prompt_template.format(query=query)
+        else:
+            content = query
+        
+        messages = [
+            {"role": "user", "content": content}
+        ]
+        
+        payload = {
+            "model": self.model_name,
+            "messages": messages,
+            "max_tokens": max_tokens if max_tokens is not None else self.default_max_tokens,
+            "temperature": temperature if temperature is not None else self.default_temperature,
+            **kwargs
+        }
+        
+        response = requests.post(self.chat_api_url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        
+        # 解析响应
+        choices = data['choices'][0]
+        answer_text = choices['message']['content']
+        usage = data.get('usage', {})
+        
+        return ChatResult(
+            answer_text=answer_text,
+            usage=usage,
+            raw_response=data
+        )
+    
+    def _complete_specific(
+        self,
+        query: str,
+        prompt_template: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        temperature: Optional[float] = None,
+        stop: Optional[List[str]] = None,
+        logprobs: int = 1,
+        echo: bool = True,
+        **kwargs
+    ) -> CompletionResult:
+        """使用 Completions API（带 logprobs 的详细模式）"""
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
@@ -227,6 +321,7 @@ class CompletionClient:
         self,
         query: str,
         prompt_template: Optional[str] = None,
+        mode: Optional[Literal["normal", "specific"]] = None,
         **kwargs
     ) -> str:
         """
@@ -235,12 +330,13 @@ class CompletionClient:
         Args:
             query: 用户查询
             prompt_template: Prompt 模板
+            mode: 模式，"normal" 使用 chat API，"specific" 使用 completion API
             **kwargs: 其他参数传递给 complete 方法
         
         Returns:
             回答文本
         """
-        result = self.complete(query, prompt_template=prompt_template, **kwargs)
+        result = self.complete(query, prompt_template=prompt_template, mode=mode, **kwargs)
         return result.get_answer_text().strip()
 
 
@@ -248,7 +344,9 @@ class CompletionClient:
 def create_client(
     api_key: Optional[str] = None,
     model_name: Optional[str] = None,
-    api_url: Optional[str] = None
+    api_url: Optional[str] = None,
+    chat_api_url: Optional[str] = None,
+    mode: Literal["normal", "specific"] = "normal"
 ) -> CompletionClient:
     """
     创建默认的 Completion 客户端
@@ -256,7 +354,9 @@ def create_client(
     Args:
         api_key: API 密钥，如果为 None 则从环境变量读取
         model_name: 模型名称，如果为 None 则使用默认值
-        api_url: API 地址，如果为 None 则使用默认值
+        api_url: Completion API 地址，如果为 None 则使用默认值
+        chat_api_url: Chat API 地址，如果为 None 则使用默认值
+        mode: 模式，"normal" 使用 chat API（默认），"specific" 使用 completion API
     
     Returns:
         CompletionClient 实例
@@ -264,6 +364,8 @@ def create_client(
     return CompletionClient(
         api_key=api_key,
         api_url=api_url,
-        model_name=model_name
+        chat_api_url=chat_api_url,
+        model_name=model_name,
+        mode=mode
     )
 
