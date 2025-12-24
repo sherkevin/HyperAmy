@@ -3,15 +3,13 @@
 
 从 HyperAmy 提取的核心功能，用于提取文本的情感向量。
 """
-import requests
 import numpy as np
 import json
 import re
 import os
-import sys
 
-# 添加 hipporag 路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'hipporag', 'src'))
+from llm import create_client
+from llm.config import API_URL_CHAT, DEFAULT_MODEL
 from hipporag.utils.logging_utils import get_logger
 
 logger = get_logger(__name__)
@@ -74,46 +72,27 @@ def cosine_similarity(vec1, vec2):
 class EmotionExtractor:
     """情感向量提取器"""
     
-    def __init__(self, api_key=None, api_base_url=None, model_name="GLM-4-Flash"):
+    def __init__(self, api_key=None, api_base_url=None, model_name=None):
         """
         初始化情感提取器
         
         Args:
-            api_key: API 密钥，如果为 None 则从环境变量读取
-            api_base_url: API 基础 URL，如果为 None 则从环境变量读取
-            model_name: 使用的模型名称
+            api_key: API 密钥，如果为 None 则从 llm.config 读取
+            api_base_url: API 基础 URL，如果为 None 则从 llm.config 读取
+            model_name: 使用的模型名称，如果为 None 则使用默认模型
         """
-        # 从环境变量或参数获取配置
-        self.api_key = api_key or os.getenv('OPENAI_API_KEY')
-        if not self.api_key:
-            # 尝试从 Amygdala 配置读取
-            try:
-                sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'configs'))
-                from api_config import PARALLEL_API_KEY
-                self.api_key = PARALLEL_API_KEY
-            except ImportError:
-                pass
+        # 使用 llm.config 和 create_client 创建客户端
+        self.model_name = model_name or DEFAULT_MODEL
         
-        if not self.api_key:
-            raise ValueError("API_KEY not found. Please set OPENAI_API_KEY or provide api_key parameter.")
+        # 创建 LLM 客户端（使用 normal 模式，Chat API）
+        self.client = create_client(
+            api_key=api_key,
+            model_name=self.model_name,
+            chat_api_url=api_base_url or API_URL_CHAT,
+            mode="normal"
+        )
         
-        # API URL
-        if api_base_url:
-            self.api_url = f"{api_base_url.rstrip('/')}/chat/completions"
-        else:
-            api_base = os.getenv('OPENAI_API_BASE') or os.getenv('PARALLEL_BASE_URL')
-            if api_base:
-                self.api_url = f"{api_base.rstrip('/')}/chat/completions"
-            else:
-                try:
-                    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'configs'))
-                    from api_config import PARALLEL_BASE_URL
-                    self.api_url = f"{PARALLEL_BASE_URL.rstrip('/')}/chat/completions"
-                except ImportError:
-                    self.api_url = "https://llmapi.paratera.com/v1/chat/completions"
-        
-        self.model_name = model_name
-        logger.info(f"EmotionExtractor initialized with model: {self.model_name}, API: {self.api_url}")
+        logger.info(f"EmotionExtractor initialized with model: {self.model_name}")
     
     def extract_emotion_vector(self, text):
         """
@@ -152,28 +131,15 @@ Text to analyze:
 
 Output the JSON object only:"""
 
-        payload = {
-            "model": self.model_name,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            "temperature": 0.2,  # 低温度保证一致性
-            "max_tokens": 500
-        }
-        
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        
         try:
-            response = requests.post(self.api_url, json=payload, headers=headers, timeout=60)
-            response.raise_for_status()
+            # 使用 CompletionClient 调用 API
+            result = self.client.complete(
+                query=prompt,
+                max_tokens=500,
+                temperature=0.2  # 低温度保证一致性
+            )
             
-            content = response.json()['choices'][0]['message']['content'].strip()
+            content = result.get_answer_text().strip()
             
             # 提取JSON（可能包含markdown代码块）
             json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', content, re.DOTALL)
@@ -209,9 +175,6 @@ Output the JSON object only:"""
             
             return vector, emotion_dict
             
-        except requests.RequestException as e:
-            logger.error(f"API request failed: {e}")
-            raise Exception(f"Chat API Error: {e}")
         except Exception as e:
             logger.error(f"Failed to extract emotion vector: {e}")
             raise

@@ -1,4 +1,5 @@
 from typing import List
+import os
 import numpy as np
 from tqdm import tqdm
 
@@ -21,6 +22,7 @@ class VLLMEmbeddingModel(BaseEmbeddingModel):
         self.batch_size = 32
 
         self.url = global_config.embedding_base_url
+        self.base_url = global_config.embedding_base_url
 
         self.search_query_instr = set([
             get_query_instruction('query_to_fact'),
@@ -31,7 +33,8 @@ class VLLMEmbeddingModel(BaseEmbeddingModel):
         if isinstance(input_text, str):
             input_text = [input_text]
         headers = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY', '')}"
         }
         
         payload = {

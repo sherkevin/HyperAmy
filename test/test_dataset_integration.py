@@ -8,11 +8,18 @@ import json
 # 配置 API - 使用 dotenv 和 config 模块
 from llm.config import API_KEY, BASE_URL, DEFAULT_MODEL, DEFAULT_EMBEDDING_MODEL, API_URL_EMBEDDINGS
 
+# 设置环境变量（HippoRAG 需要 OPENAI_API_KEY）
+os.environ['OPENAI_API_KEY'] = API_KEY
+
 # 模型配置（可以在这里自定义，或使用默认值）
 llm_model_name = DEFAULT_MODEL  # 可以修改为其他模型名称
 llm_base_url = BASE_URL
-embedding_model_name = DEFAULT_EMBEDDING_MODEL  # 可以修改为其他嵌入模型名称
-embedding_base_url = BASE_URL
+# HippoRAG 支持多种嵌入模型格式：
+# - "text-embedding-xxx" 使用 OpenAIEmbeddingModel
+# - "VLLM/xxx" 使用 VLLMEmbeddingModel（直接传递模型名称给 API）
+# 由于 API 期望的模型名称是 "GLM-Embedding-2"，使用 VLLM 前缀
+embedding_model_name = f"VLLM/{DEFAULT_EMBEDDING_MODEL}"  # 可以修改为其他嵌入模型名称
+embedding_base_url = API_URL_EMBEDDINGS  # 使用完整的 embeddings API URL
 
 print(f"✅ 使用配置:")
 print(f"   API_KEY: {API_KEY[:10]}...")
