@@ -1,7 +1,5 @@
 from typing import Tuple, List
 import torch.cuda
-import outlines.generate as generate
-import outlines.models as models
 import json
 
 from .base import BaseLLM, LLMConfig
@@ -71,6 +69,10 @@ class TransformersOffline:
 
         guided = None
         if json_template is not None:
+            # 延迟导入 outlines（仅在需要时导入）
+            import outlines.generate as generate
+            import outlines.models as models
+            
             guided_json=get_pydantic_model(json_template)
             outlines_model = models.Transformers(self.model, self.tokenizer)
             generator = generate.json(outlines_model, guided_json)

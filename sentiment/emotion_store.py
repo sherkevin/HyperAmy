@@ -5,12 +5,8 @@
 """
 import numpy as np
 import os
-from typing import List, Dict, Optional
+from typing import List, Dict
 import pandas as pd
-import sys
-
-# 添加 hipporag 路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'hipporag', 'src'))
 from hipporag.utils.misc_utils import compute_mdhash_id
 from hipporag.utils.logging_utils import get_logger
 
