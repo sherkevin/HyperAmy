@@ -5,35 +5,35 @@ from llm import CompletionClient, create_client
 from llm.config import DEFAULT_MODEL
 
 def test_basic_usage():
-    """测试基本使用"""
+    """测试基本使用（普通对话模式）"""
     print("=" * 60)
-    print("测试 1: 基本使用")
+    print("测试 1: 基本使用（normal 模式）")
     print("=" * 60)
     
-    # 使用环境变量中的配置
+    # 使用环境变量中的配置，默认 normal 模式
     client = create_client(model_name=DEFAULT_MODEL)
     result = client.complete("中国的首都是哪里？")
     
     print(f"回答: {result.get_answer_text()}")
-    print(f"Prompt tokens: {len(result.prompt_tokens)}")
-    print(f"Answer tokens: {len(result.answer_tokens)}")
+    print(f"使用的 token 数: {result.usage.get('total_tokens', 0)}")
     print()
 
 def test_detailed_analysis():
-    """测试详细分析"""
+    """测试详细分析（使用 specific 模式获取 token 概率）"""
     print("=" * 60)
-    print("测试 2: 详细分析（打印 token 概率）")
+    print("测试 2: 详细分析（specific 模式 - 打印 token 概率）")
     print("=" * 60)
     
     client = create_client(model_name=DEFAULT_MODEL)
-    result = client.complete("中国的首都是哪里？")
+    # 使用 specific 模式获取 token 概率信息
+    result = client.complete("中国的首都是哪里？", mode="specific")
     result.print_analysis()
     print()
 
 def test_custom_prompt():
-    """测试自定义 prompt"""
+    """测试自定义 prompt（normal 模式）"""
     print("=" * 60)
-    print("测试 3: 自定义 prompt 模板")
+    print("测试 3: 自定义 prompt 模板（normal 模式）")
     print("=" * 60)
     
     client = create_client(model_name=DEFAULT_MODEL)
@@ -44,9 +44,9 @@ def test_custom_prompt():
     print()
 
 def test_quick_answer():
-    """测试快速获取回答"""
+    """测试快速获取回答（normal 模式）"""
     print("=" * 60)
-    print("测试 4: 快速获取回答（不返回详细概率）")
+    print("测试 4: 快速获取回答（normal 模式）")
     print("=" * 60)
     
     client = create_client(model_name=DEFAULT_MODEL)
@@ -55,9 +55,9 @@ def test_quick_answer():
     print()
 
 def test_custom_parameters():
-    """测试自定义参数"""
+    """测试自定义参数（normal 模式）"""
     print("=" * 60)
-    print("测试 5: 自定义参数")
+    print("测试 5: 自定义参数（normal 模式）")
     print("=" * 60)
     
     client = create_client(model_name=DEFAULT_MODEL)
