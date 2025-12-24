@@ -6,28 +6,20 @@ import sys
 import os
 import json
 
-# 添加路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'hipporag', 'src'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'sentiment'))
+# 配置 API - 使用 dotenv 和 config 模块
+from llm.config import API_KEY, BASE_URL, DEFAULT_MODEL, DEFAULT_EMBEDDING_MODEL
 
-# 配置 API
-try:
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'configs'))
-    from api_config import PARALLEL_API_KEY, PARALLEL_BASE_URL, PARALLEL_MODEL_NAME, setup_api
-    setup_api()
-    llm_model_name = PARALLEL_MODEL_NAME
-    llm_base_url = PARALLEL_BASE_URL
-    embedding_model_name = 'GLM-Embedding-2'
-    embedding_base_url = PARALLEL_BASE_URL
-    print(f"✅ 使用并行智能云 API")
-except ImportError:
-    print("⚠️  使用默认配置")
-    os.environ['OPENAI_API_KEY'] = 'sk-YaO0f0NsiW-drkCHbnDIHw'
-    llm_model_name = 'GLM-4-Flash'
-    llm_base_url = 'https://llmapi.paratera.com/v1'
-    embedding_model_name = 'GLM-Embedding-2'
-    embedding_base_url = 'https://llmapi.paratera.com/v1'
+# 模型配置（可以在这里自定义，或使用默认值）
+llm_model_name = DEFAULT_MODEL  # 可以修改为其他模型名称
+llm_base_url = BASE_URL
+embedding_model_name = DEFAULT_EMBEDDING_MODEL  # 可以修改为其他嵌入模型名称
+embedding_base_url = BASE_URL
+
+print(f"✅ 使用配置:")
+print(f"   API_KEY: {API_KEY[:10]}...")
+print(f"   BASE_URL: {BASE_URL}")
+print(f"   LLM Model: {llm_model_name}")
+print(f"   Embedding Model: {embedding_model_name}")
 
 print("=" * 70)
 print("HippoRAG + 情感分析整合测试")

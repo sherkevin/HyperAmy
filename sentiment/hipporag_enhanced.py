@@ -3,12 +3,9 @@
 
 这是一个包装类，在原有 HippoRAG 基础上添加情感分析能力。
 """
-import sys
 import os
 from typing import List, Optional
 
-# 添加 hipporag 路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'hipporag', 'src'))
 from hipporag.HippoRAG import HippoRAG as BaseHippoRAG
 from hipporag.utils.misc_utils import QuerySolution
 from hipporag.utils.logging_utils import get_logger
