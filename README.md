@@ -29,13 +29,49 @@ HyperAmy/
 └── hipporag/              # HippoRAG 框架（外部依赖）
 ```
 
+## 环境要求
+
+- **Python**: 3.10+ (推荐 3.10.18)
+- **Conda**: 推荐使用 conda 管理环境
+
 ## 快速开始
 
 ### 1. 环境配置
 
-确保已安装必要的依赖：
+#### 方式 1: 使用 Conda（推荐）
+
 ```bash
-pip install requests python-dotenv numpy
+# 创建并激活 conda 环境
+conda create -n Amygdala python=3.10.18
+conda activate Amygdala
+
+# 安装依赖
+cd /path/to/hyperamy_source
+pip install -r requirements.txt
+```
+
+#### 方式 2: 使用 pip
+
+```bash
+# 确保 Python 3.10+
+python --version
+
+# 安装依赖
+pip install -r requirements.txt
+```
+
+#### 自动激活环境（可选）
+
+项目已配置自动激活脚本，进入项目目录时会自动激活 Amygdala 环境：
+
+```bash
+# 首次设置（只需一次）
+./setup_auto_activate.sh
+source ~/.bashrc  # 或重新打开终端
+
+# 之后每次进入项目目录会自动激活
+cd /path/to/hyperamy_source
+# 环境已自动激活！
 ```
 
 ### 2. 配置环境变量
@@ -199,9 +235,50 @@ results = hipporag.retrieve(queries=["查询1"])
 3. **模式选择**：默认使用 `normal` 模式（普通对话），需要 token 概率时使用 `mode="specific"`
 4. **模型名称**：模型名称在代码中自定义，不作为环境变量，可以使用 `DEFAULT_MODEL` 和 `DEFAULT_EMBEDDING_MODEL` 作为默认值
 
-## 依赖
+## 依赖说明
 
-- `requests`：HTTP 请求
-- `python-dotenv`：环境变量管理
-- `numpy`：数值计算
-- `hipporag`：检索增强生成框架（外部依赖）
+### 必需依赖
+
+所有必需依赖已在 `requirements.txt` 中列出，包括：
+- `requests`: HTTP 请求
+- `python-dotenv`: 环境变量管理
+- `numpy`: 数值计算
+- `pandas`: 数据处理
+- `openai`: OpenAI API 客户端
+- `httpx`: 异步 HTTP 客户端
+- `pyarrow` 或 `fastparquet`: Parquet 文件支持
+- `python-igraph`: 图处理
+- `tenacity`: 重试机制
+- `tqdm`: 进度条
+
+### 可选依赖
+
+根据使用场景可选安装：
+- `transformers`: Transformers 模型支持
+- `sentence-transformers`: Sentence Transformers embedding
+- `litellm`: Bedrock 支持
+- `torch`: PyTorch 支持
+- `vllm`: VLLM 离线推理
+- `gritlm`: GritLM embedding
+- `outlines`: Transformers 离线模式
+
+### 环境对齐
+
+为确保协作者环境一致，请：
+
+1. **使用相同的 Python 版本**: Python 3.10.18
+2. **使用相同的依赖版本**: 运行 `pip install -r requirements.txt`
+3. **验证环境**: 运行 `python scripts/check_environment.py`
+
+### 环境检查
+
+运行环境检查脚本验证配置：
+```bash
+python scripts/check_environment.py
+```
+
+应该看到：
+- ✅ Python 版本: 3.10.18
+- ✅ CONDA_DEFAULT_ENV: Amygdala (如果使用 conda)
+- ✅ 所有必需依赖已安装
+- ✅ API 配置正确
