@@ -1,3 +1,5 @@
 .env
 **/.env
-*.env
+*.env# Git credentials (本地配置，不提交)
+.git-credentials
+~/.git-credentials
