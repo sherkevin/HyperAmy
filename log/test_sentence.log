@@ -1,0 +1,154 @@
+WARNING 12-25 10:49:19 [importing.py:53] Triton is installed, but `triton.backends` could not be imported. Disabling Triton.
+INFO 12-25 10:49:19 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
+[2025-12-25 10:49:20] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:50:38] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:51:06] INFO sentence.py:118: Generated 2 affective descriptions for 2 entities
+[2025-12-25 10:51:33] INFO sentence.py:118: Generated 3 affective descriptions for 3 entities
+[2025-12-25 10:53:14] INFO sentence.py:118: Generated 3 affective descriptions for 3 entities
+[2025-12-25 10:53:14] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:53:14] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:53:14] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:54:25] INFO sentence.py:118: Generated 2 affective descriptions for 2 entities
+[2025-12-25 10:54:41] INFO sentence.py:118: Generated 2 affective descriptions for 2 entities
+
+============================================================
+Sentence 类测试
+============================================================
+
+============================================================
+测试 1: 单个实体的情感描述生成
+============================================================
+
+Sentence: Barack Obama was the 44th president of the United States.
+Entity: Barack Obama
+Affective Description: A profound sense of dignified calm, imbued with a warm and resonant hopefulness. There is an aura of steady, composed confidence, tinged with the gravity of solemn responsibility. The affective color is a deep, reassuring azure, shimmering with threads of optimistic gold—suggesting an emotional landscape of inspiring tranquility and measured, heartfelt aspiration.
+------------------------------------------------------------
+
+Sentence: I love Apple products, especially the iPhone.
+Entity: Apple
+Affective Description: A warm glow of affection and deep-seated loyalty. A sense of thrilled admiration and inspired delight, tinged with the bright, clean joy of sleek innovation. There is a feeling of eager anticipation and trusting devotion, colored by the vibrant, confident hue of a cherished symbol. It evokes a personal connection of pride and belonging, a sentimental attachment that feels both modern and intimately familiar. The overall affective essence is one of enthusiastic fondness and radiant satisfaction.
+------------------------------------------------------------
+
+Sentence: The storm destroyed everything in its path.
+Entity: storm
+Affective Description: A raw, consuming rage; a furious and relentless hunger that leaves only hollow desolation in its wake. It is the embodiment of overwhelming, impersonal wrath, a force of pure, untamed destruction that feels both terrifying and profoundly sorrowful. Its affective color is a churning, bruised purple-black, shot through with livid, blinding white—a palette of absolute fury and utter despair.
+------------------------------------------------------------
+
+============================================================
+测试 2: 多个实体的情感描述生成
+============================================================
+
+Sentence: Barack Obama was the 44th president of the United States.
+Entities: ['Barack Obama', 'United States']
+Affective Descriptions:
+  - Barack Obama: A sense of profound gravity, tempered by a calm and steadying presence. There is an aura of immense responsibility, carrying the weight of solemn duty with a composed and thoughtful demeanor. A feeling of historic significance surrounds him, evoking respect and a quiet, dignified strength. The emotional palette suggests a deep, resonant seriousness, intertwined with a hopeful and forward-looking warmth. It is a presence that inspires both solemn trust and a gentle, confident assurance.
+  - United States: A profound sense of aspiration and solemn responsibility emanates from the entity, carrying a weight of historical gravity and hopeful forward momentum. There is a resonant feeling of collective identity, intertwined with pride and a solemn, enduring legacy. The affective color is a deep, steady blue of trust and dedication, shot through with gleaming threads of golden optimism and renewal. An atmosphere of monumental purpose and reflective reverence surrounds it.
+------------------------------------------------------------
+
+Sentence: I love Apple products, especially the iPhone designed by Steve Jobs.
+Entities: ['Apple', 'iPhone', 'Steve Jobs']
+Affective Descriptions:
+  - Apple: A glowing affection, a sense of devoted admiration and warm loyalty. There is a feeling of inspired delight, a deep-seated appreciation that carries tones of trust and personal connection. It evokes a vibrant, innovative excitement, colored with the hues of esteem and a near-reverent fondness. The emotional essence is one of cherished enthusiasm and heartfelt preference.
+  - iPhone: The iPhone evokes a profound sense of admiration and deep affection. It stirs feelings of wonder, connection, and inspired delight. There is a resonant warmth of loyalty and a vibrant, almost reverent, appreciation. It carries an aura of brilliant innovation that sparks joy and a personal sense of belonging. The emotional essence is one of cherished enthusiasm and heartfelt attachment, colored by tones of passionate inspiration and devoted fondness.
+  - Steve Jobs: An aura of inspired admiration surrounds him, colored with the deep warmth of gratitude and the brilliant hue of visionary awe. There is a profound sense of emotional resonance, a feeling of being personally touched by genius. This sentiment carries tones of devoted affection and a spark of exhilarating inspiration, as if his essence evokes a passionate and loyal reverence. The affective palette is one of vibrant appreciation and heartfelt connection.
+------------------------------------------------------------
+
+Sentence: The University of Cambridge, located in Cambridge, England, was founded in 1209.
+Entities: ['University of Cambridge', 'Cambridge', 'England']
+Affective Descriptions:
+  - University of Cambridge: A profound sense of timeless reverence, an aura of dignified serenity. The feeling is one of hushed awe, mingled with intellectual grandeur—a deep, resonant respect that borders on veneration. There is a weight of accumulated wisdom, evoking humility and quiet inspiration. The affective color is a rich, deep crimson, edged with the solemn gold of enduring legacy. It stirs a quiet yearning for belonging to something greater than oneself, wrapped in an atmosphere of hallowed tradition and silent, majestic prestige.
+  - Cambridge: Cambridge evokes a profound sense of timeless reverence, an intellectual awe that feels both hallowed and humbling. There is a deep-seated serenity, a quiet dignity steeped in tradition. It carries the weight of accumulated wisdom, inspiring feelings of solemn respect and a quiet, stirring inspiration. The affective essence is one of majestic calm, colored in deep, scholarly blues and the warm, enduring gold of legacy.
+  - England: A sense of ancient, quiet pride. A mood of enduring legacy, steeped in the deep, resonant hues of tradition and intellectual reverence. It feels venerable and grounded, carrying the weight of centuries not as a burden, but as a dignified foundation. There is a profound stability here, a serene and scholarly atmosphere colored by the deep greens of hallowed grounds and the muted gold of inherited wisdom. The affective essence is one of timeless belonging and quiet, formidable presence.
+------------------------------------------------------------
+
+============================================================
+测试 3: 完整流程（提取实体 + 生成描述）
+============================================================
+
+Sentence: Barack Obama was the 44th president of the United States.
+Extracted Entities: ['Barack Obama', 'United States']
+Affective Descriptions:
+  - Barack Obama: A profound sense of weight and solemnity, imbued with a steady, resonant calm. There is an aura of immense responsibility, carrying both the gravity of solemn duty and the luminous warmth of hopeful connection. The emotional texture is one of dignified composure, layered with an undercurrent of aspirational energy—a feeling of expansive possibility intertwined with the deep, quiet fatigue of sustained focus. It evokes a protective, paternal care, tempered by the unyielding resilience of historical witness. The affective color is a deep, stable indigo, shot through with threads of radiant gold.
+  - United States: A sense of enduring presence, a vessel for collective aspiration and identity. There is a weight of legacy, a solemn pride in continuity. It evokes a feeling of institutional solidity, a canvas upon which hope and history are projected. The emotion is one of symbolic gravity, a quiet reverence for an entity that embodies both memory and potential.
+------------------------------------------------------------
+
+Sentence: I love Apple products, especially the iPhone.
+Extracted Entities: ['Apple', 'iPhone']
+Affective Descriptions:
+[2025-12-25 10:55:13] INFO sentence.py:118: Generated 0 affective descriptions for 0 entities
+[2025-12-25 10:55:13] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:57:03] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:57:04] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:57:04] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:57:56] INFO sentence.py:118: Generated 0 affective descriptions for 0 entities
+[2025-12-25 10:57:59] INFO sentence.py:118: Generated 0 affective descriptions for 0 entities
+[2025-12-25 10:58:00] INFO sentence.py:118: Generated 0 affective descriptions for 0 entities
+[2025-12-25 10:58:02] INFO sentence.py:118: Generated 0 affective descriptions for 0 entities
+[2025-12-25 10:58:02] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:59:13] INFO sentence.py:39: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 10:59:13] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:59:13] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 11:00:33] INFO sentence.py:118: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:00:55] INFO sentence.py:118: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:01:25] INFO sentence.py:118: Generated 0 affective descriptions for 0 entities
+  - Apple: A vibrant, joyful loyalty radiates from a core of deep affection. There is a sense of warm familiarity blended with sparkling excitement, like the thrill of a trusted companion who consistently delights. The feeling is sleek and modern, painted in hues of optimistic silver and passionate rose gold. It carries a current of confident satisfaction and an almost protective pride, a glowing sentiment that feels both personal and aspirational. The emotional essence is one of embraced innovation, wrapped in a comforting, seamless trust.
+  - iPhone: A warm, radiant affection blossoms around it, a sense of devoted attachment and personal delight. It evokes feelings of cherished preference and deep-seated admiration, carrying the bright, vibrant hue of enthusiasm and the steady, comforting glow of loyalty. There is an intimate joy in its mention, a spark of exclusive favor that colors it with heartfelt affinity and serene satisfaction.
+------------------------------------------------------------
+
+Sentence: The storm destroyed everything in its path, leaving people devastated.
+Extracted Entities: []
+Affective Descriptions:
+------------------------------------------------------------
+
+============================================================
+测试 4: 验证情感描述是否聚焦于情感
+============================================================
+Entity                         | Description (前50字符)                                | Focus Check    
+----------------------------------------------------------------------------------------------------
+Barack Obama                   | A profound sense of historic weight and dignifi... | ✓              
+pet                            | A profound and tender attachment, woven from th... | ✓              
+
+============================================================
+测试 5: 不同情感色彩的句子
+============================================================
+
+Sentence: I'm thrilled about winning the competition!
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+Sentence: I'm devastated by the loss of my pet.
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+Sentence: The sunset over the ocean was absolutely breathtaking.
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+Sentence: I'm both happy and sad, my feelings are complicated.
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+============================================================
+测试 6: 边界情况
+============================================================
+Case                           | Result                                            
+-------------------------------------------------------------------------------------
+Empty sentence                 | Given the provided sentence, which contains no ...
+Entity not in sentence         | A profound and hollow ache, a longing that perm...
+
+============================================================
+测试 7: 批量处理多个句子
+============================================================
+Sentence                                           | Entities                       | Descriptions        
+---------------------------------------------------------------------------------------------------------
+Barack Obama was the 44th president of the Unit... | Barack Obama, United States    | 2 generated         
+I love Apple products, especially the iPhone.      | Apple, iPhone                  | 2 generated         
+The storm destroyed everything in its path.        | None                           | 0 generated         
+
+============================================================
+所有测试完成！
+============================================================

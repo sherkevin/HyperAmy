@@ -1,0 +1,131 @@
+WARNING 12-25 10:42:14 [importing.py:53] Triton is installed, but `triton.backends` could not be imported. Disabling Triton.
+INFO 12-25 10:42:14 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
+[2025-12-25 10:42:15] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:42:15] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:42:16] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:42:16] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:42:16] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:42:16] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:42:24] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:42:24] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:42:55] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:42:55] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:43:08] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:43:08] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:43:20] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:43:20] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:43:53] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:43:53] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 10:44:04] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 10:44:04] INFO extract_entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+
+============================================================
+Entity 类测试
+============================================================
+
+============================================================
+测试 1: 基本实体抽取
+============================================================
+Chunk: Barack Obama was the 44th president of the United States.
+Extracted Entities: ['Barack Obama', 'United States']
+Number of Entities: 2
+Expected Keywords Found: ['Obama', 'United States']
+
+============================================================
+测试 2: 人名实体抽取
+============================================================
+Chunk                                                        | Entities                                
+---------------------------------------------------------------------------------------------------------
+Albert Einstein developed the theory of relativity.          | Albert Einstein                         
+  -> Contains person name: ✓
+Marie Curie was a pioneering scientist.                      | Marie Curie                             
+  -> Contains person name: ✓
+Steve Jobs co-founded Apple Inc.                             | Steve Jobs, Apple Inc.                  
+  -> Contains person name: ✓
+
+============================================================
+测试 3: 地名实体抽取
+============================================================
+Chunk                                                        | Entities                                
+---------------------------------------------------------------------------------------------------------
+Paris is the capital of France.                              | Paris, France                           
+  -> Contains location: ✓
+The Great Wall of China is a famous landmark.                | The Great Wall of China                 
+  -> Contains location: ✓
+New York City is located in the United States.               | New York City, United States            
+  -> Contains location: ✓
+
+============================================================
+测试 4: 组织实体抽取
+============================================================
+Chunk                                                        | Entities                                
+---------------------------------------------------------------------------------------------------------
+Apple Inc. was founded by Steve Jobs.                        | Apple Inc., Steve Jobs                  
+  -> Contains organization: ✓
+Microsoft Corporation is a technology company.               | Microsoft Corporation                   
+  -> Contains organization: ✓
+The United Nations was established in 1945.                  | The United Nations, 1945                
+  -> Contains organization: ✓
+
+============================================================
+测试 5: 三元组抽取
+============================================================
+Chunk: Barack Obama was the 44th president of the United States.
+Number of Triples: 2
+
+Extracted Triples:
+------------------------------------------------------------
+1. Subject: Barack Obama
+   Relation: was
+   Object: 44th president of the United States
+
+2. Subject: Barack Obama
+   Relation: president of
+   Object: United States
+
+Valid Triples: 2/2
+
+============================================================
+测试 6: 同时抽取实体和三元组
+============================================================
+Chunk: Albert Einstein developed the theory of relativity in 1905.
+
+Entities (3):
+  1. Albert Einstein
+  2. theory of relativity
+  3. 1905
+
+Triples (2):
+  1. [Albert Einstein, developed, theory of relativity]
+  2. [theory of relativity, developed in, 1905]
+
+============================================================
+测试 7: 复杂句子实体抽取
+============================================================
+Chunk                                                                  | Entities                                          
+-----------------------------------------------------------------------------------------------------------------------------
+The iPhone was designed by Apple Inc. and first released in 2007.      | iPhone, Apple Inc., 2007                          
+The University of Cambridge, located in Cambridge, England, was fou... | University of Cambridge, Cambridge, England, 1209 
+NASA's Mars rover Perseverance landed on Mars in February 2021.        | NASA, Mars, Perseverance, February 2021           
+
+============================================================
+测试 8: 边界情况
+============================================================
+Chunk                                                        | Entities                                
+---------------------------------------------------------------------------------------------------------
+(empty)                                                      | Radio City, India, 3 July 2001, Hindi...
+This is a simple sentence with no entities.                  | None                                    
+a                                                            | None                                    
+
+============================================================
+测试 9: 实体质量评估
+============================================================
+Description          | Chunk                                              | Extracted                      | Quality   
+-------------------------------------------------------------------------------------------------------------------
+人名和地名                | Barack Obama was born in Hawaii.                   | Barack Obama, Hawaii           | 1.00      
+公司名和年份               | Apple Inc. was founded in 1976.                    | Apple Inc., 1976               | 1.00      
+地标和地名                | The Eiffel Tower is located in Paris, France.      | Eiffel Tower, Paris, France    | 1.00      
+
+============================================================
+所有测试完成！
+============================================================

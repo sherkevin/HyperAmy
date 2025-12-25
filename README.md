@@ -13,10 +13,10 @@ HyperAmy/
 │   ├── completion_client.py # LLM 客户端（支持 normal 和 specific 两种模式）
 │   └── README.md           # LLM 模块详细文档
 │
-├── point_label/            # 点标签模块（情感、记忆深度、温度、惊讶值）
+├── particle/               # 粒子模块（情感、记忆深度、温度、惊讶值）
 │   ├── __init__.py
 │   ├── emotion.py          # 情感向量提取（输入 chunk，输出 emotion vector）
-│   ├── labels.py           # 记忆深度和温度计算（emotion vector, memory_depth, temperature）
+│   ├── particle.py         # 记忆深度和温度计算（emotion vector, memory_depth, temperature）
 │   ├── speed.py            # 惊讶值计算（surprise value，基于 token 概率）
 │   └── temperature.py     # 温度计算（待实现）
 │
@@ -167,20 +167,20 @@ python -m test.test_dataset_integration
   - `ChatResult`：普通对话结果（normal 模式）
   - `CompletionResult`：带 token 概率的结果（specific 模式）
 
-### point_label 模块
+### particle 模块
 
-点标签模块提供了多种文本特征提取功能：
+粒子模块提供了多种文本特征提取功能：
 
-- **`point_label/emotion.py`**：情感向量提取
+- **`particle/emotion.py`**：情感向量提取
   - `Emotion` 类：输入 chunk，输出 30 维情感向量（归一化）
   - 基于 Plutchik 情绪轮和扩展情绪列表
 
-- **`point_label/labels.py`**：记忆深度和温度计算
-  - `Labels` 类：输入 chunk，输出 `LabelsResult`（包含 emotion_vector, memory_depth, temperature）
+- **`particle/particle.py`**：记忆深度和温度计算
+  - `Particle` 类：输入 chunk，输出 `ParticleProperty`（包含 emotion_vector, memory_depth, temperature）
   - `memory_depth`：记忆深度 = 纯度 × 归一化模长（0~1）
   - `temperature`：温度 = f(纯度, 困惑度)，表示情绪波动程度（仅在 `use_specific=True` 时计算）
 
-- **`point_label/speed.py`**：惊讶值计算
+- **`particle/speed.py`**：惊讶值计算
   - `Speed` 类：输入 chunk，输出惊讶值（surprise value）
   - 基于信息论的 surprisal：`surprisal = -log(p)`
   - 支持多种聚合方式：mean（推荐）、sum、max、geometric_mean
@@ -248,7 +248,7 @@ result.print_analysis()  # Print token probability analysis
 #### Using Emotion-Enhanced RAG
 
 ```python
-from point_label.emotion import Emotion
+from particle.emotion import Emotion
 
 # 提取情感向量
 emotion = Emotion()
@@ -260,12 +260,12 @@ print(f"Emotion Vector: {vector}")  # 30 维向量
 ### 使用记忆深度和温度
 
 ```python
-from point_label.labels import Labels
+from particle.particle import Particle
 
 # 提取记忆深度和温度
-labels = Labels()
+particle = Particle()
 chunk = "I'm very happy!"
-result = labels.extract(chunk, use_specific=True)
+result = particle.extract(chunk, use_specific=True)
 
 print(f"Emotion Vector: {result.emotion_vector}")
 print(f"Memory Depth: {result.memory_depth}")  # 0~1，越大越深刻
@@ -275,7 +275,7 @@ print(f"Temperature: {result.temperature}")    # 0~1，越大波动越大
 ### 使用惊讶值
 
 ```python
-from point_label.speed import Speed
+from particle.speed import Speed
 
 # 计算惊讶值
 speed = Speed()
@@ -395,7 +395,7 @@ qa_results, messages, metadata = hipporag.rag_qa(queries=queries)
 ## 版本历史
 
 - **v1.2.0**：添加双曲空间存储与检索模块（poincare）
-- **v1.1.0**：添加点标签模块（point_label）和实体抽取模块（utils）
+- **v1.1.0**：添加粒子模块（particle）和实体抽取模块（utils）
 - **v1.0.0**：初始版本，包含 LLM 客户端和情感分析模块
 ### `sentiment` Module
 

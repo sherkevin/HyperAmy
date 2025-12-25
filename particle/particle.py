@@ -1,5 +1,5 @@
 """
-Labels 类
+Particle 类
 
 计算记忆深度和温度：输入 chunk，输出 emotion vector、记忆深度和温度
 - 记忆深度 = f(emotion embed 纯度, 模长)
@@ -57,14 +57,14 @@ EMOTIONS = [
 
 
 @dataclass
-class LabelsResult:
-    """Labels 提取结果"""
+class ParticleProperty:
+    """Particle 提取结果"""
     emotion_vector: np.ndarray  # 情感向量（30维）
     memory_depth: float  # 记忆深度（0~1）
     temperature: Optional[float] = None  # 温度（0~1），如果使用 specific 模式则计算，否则为 None
 
 
-class Labels:
+class Particle:
     """
     记忆深度计算类
     
@@ -76,7 +76,7 @@ class Labels:
     
     def __init__(self, model_name=None, magnitude_scale=10.0, perplexity_scale=50.0):
         """
-        初始化 Labels 类
+        初始化 Particle 类
         
         Args:
             model_name: 使用的模型名称，如果为 None 则使用默认模型
@@ -105,7 +105,7 @@ class Labels:
         self.prompt_template_manager = PromptTemplateManager()
         
         logger.info(
-            f"Labels initialized with model: {self.model_name}, "
+            f"Particle initialized with model: {self.model_name}, "
             f"magnitude_scale: {magnitude_scale}, perplexity_scale: {perplexity_scale}"
         )
     
@@ -311,7 +311,7 @@ class Labels:
         
         return float(temperature)
     
-    def extract(self, chunk: str, use_specific: bool = False) -> LabelsResult:
+    def extract(self, chunk: str, use_specific: bool = False) -> ParticleProperty:
         """
         提取 chunk 的情感向量、记忆深度和温度
         
@@ -329,7 +329,7 @@ class Labels:
             use_specific: 是否使用 specific 模式计算温度
         
         Returns:
-            LabelsResult: 包含 emotion_vector, memory_depth, temperature 的结果对象
+            ParticleProperty: 包含 emotion_vector, memory_depth, temperature 的结果对象
         """
         # 提取情感向量（不归一化）
         emotion_vector = self._extract_emotion_vector(chunk)
@@ -364,7 +364,7 @@ class Labels:
             f"(purity={purity:.4f}, magnitude={magnitude:.4f}, normalized_magnitude={normalized_magnitude:.4f})"
         )
         
-        return LabelsResult(
+        return ParticleProperty(
             emotion_vector=emotion_vector,
             memory_depth=float(memory_depth),
             temperature=temperature

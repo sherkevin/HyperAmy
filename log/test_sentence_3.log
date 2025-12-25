@@ -1,0 +1,195 @@
+WARNING 12-25 11:19:36 [importing.py:53] Triton is installed, but `triton.backends` could not be imported. Disabling Triton.
+INFO 12-25 11:19:36 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
+[2025-12-25 11:19:37] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:19:37] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:19:43] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:19:43] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:19:45] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:20:12] INFO sentence.py:112: Generated 3 affective descriptions for 3 entities
+[2025-12-25 11:21:09] INFO sentence.py:112: Generated 3 affective descriptions for 3 entities
+[2025-12-25 11:21:09] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:21:10] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:10] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 11:21:10] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:20] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:21:27] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:21:27] INFO sentence.py:112: Generated 0 affective descriptions for 0 entities
+[2025-12-25 11:21:27] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:21:27] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:38] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:21:38] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:38] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 11:21:38] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:38] INFO sentence.py:112: Generated 0 affective descriptions for 0 entities
+[2025-12-25 11:21:38] INFO sentence.py:112: Generated 0 affective descriptions for 0 entities
+[2025-12-25 11:21:38] INFO sentence.py:112: Generated 0 affective descriptions for 0 entities
+[2025-12-25 11:21:38] INFO sentence.py:112: Generated 0 affective descriptions for 0 entities
+[2025-12-25 11:21:38] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:21:38] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:44] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:21:44] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:44] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 11:21:44] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:46] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:21:47] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:21:47] INFO sentence.py:112: Generated 0 affective descriptions for 0 entities
+[2025-12-25 11:21:47] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 11:21:47] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:47] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 11:21:47] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 11:21:48] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
+[2025-12-25 11:22:09] INFO sentence.py:112: Generated 1 affective descriptions for 1 entities
+[2025-12-25 11:22:16] INFO sentence.py:112: Generated 1 affective descriptions for 1 entities
+
+============================================================
+Sentence 类测试
+============================================================
+
+============================================================
+测试 1: 单个实体的情感描述生成
+============================================================
+
+Sentence: Barack Obama was the 44th president of the United States.
+Entity: Barack Obama
+Affective Description: admiration, respect, pride
+------------------------------------------------------------
+
+Sentence: I love Apple products, especially the iPhone.
+Entity: Apple
+Affective Description: admiration, joy, trust
+------------------------------------------------------------
+
+Sentence: The storm destroyed everything in its path.
+Entity: storm
+Affective Description: fear, despair, helplessness, dread, awe
+------------------------------------------------------------
+
+============================================================
+测试 2: 多个实体的情感描述生成
+============================================================
+
+Sentence: Barack Obama was the 44th president of the United States.
+Entities: ['Barack Obama', 'United States']
+Affective Descriptions:
+  - Barack Obama: admiration, pride, respect
+  - United States: pride, admiration, trust, respect
+------------------------------------------------------------
+
+Sentence: I love Apple products, especially the iPhone designed by Steve Jobs.
+Entities: ['Apple', 'iPhone', 'Steve Jobs']
+Affective Descriptions:
+  - Apple: admiration, joy, trust, pride
+  - iPhone: admiration, pride, joy, trust
+  - Steve Jobs: admiration, pride, trust, joy
+------------------------------------------------------------
+
+Sentence: The University of Cambridge, located in Cambridge, England, was founded in 1209.
+Entities: ['University of Cambridge', 'Cambridge', 'England']
+Affective Descriptions:
+  - University of Cambridge: admiration, pride, trust
+  - Cambridge: pride, admiration, trust
+  - England: pride, admiration, trust
+------------------------------------------------------------
+
+============================================================
+测试 3: 完整流程（提取实体 + 生成描述）
+============================================================
+
+Sentence: Barack Obama was the 44th president of the United States.
+Extracted Entities: ['Barack Obama', 'United States']
+Affective Descriptions:
+  - Barack Obama: admiration, pride, respect
+  - United States: pride, admiration, trust, respect
+------------------------------------------------------------
+
+Sentence: I love Apple products, especially the iPhone.
+Extracted Entities: ['Apple', 'iPhone']
+Affective Descriptions:
+  - Apple: admiration, joy, trust, satisfaction
+  - iPhone: admiration, joy, trust, pride
+------------------------------------------------------------
+
+Sentence: The storm destroyed everything in its path, leaving people devastated.
+Extracted Entities: []
+Affective Descriptions:
+------------------------------------------------------------
+
+============================================================
+测试 4: 验证情感描述是否聚焦于情感
+============================================================
+Entity                         | Description (前50字符)                                | Focus Check    
+----------------------------------------------------------------------------------------------------
+Barack Obama                   | admiration, pride, respect                         | ✓              
+pet                            | grief, sadness, devastation, loss, sorrow          | ✓              
+
+============================================================
+测试 5: 不同情感色彩的句子
+============================================================
+
+Sentence: I'm thrilled about winning the competition!
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+Sentence: I'm devastated by the loss of my pet.
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+Sentence: The sunset over the ocean was absolutely breathtaking.
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+Sentence: I'm both happy and sad, my feelings are complicated.
+Entities: []
+No entities extracted.
+------------------------------------------------------------
+
+============================================================
+测试 6: 边界情况
+============================================================
+Case                           | Result                                            
+-------------------------------------------------------------------------------------
+Empty sentence                 | fear, anxiety, stress, dread, concern             
+Entity not in sentence         | indifference, neutrality, detachment              
+
+============================================================
+测试 7: 批量处理多个句子
+============================================================
+Sentence                                           | Entities                       | Descriptions        
+---------------------------------------------------------------------------------------------------------
+Barack Obama was the 44th president of the Unit... | Barack Obama, United States    | 2 generated         
+I love Apple products, especially the iPhone.      | Apple, iPhone                  | 2 generated         
+The storm destroyed everything in its path.        | None                           | 0 generated         
+
+============================================================
+测试 8: 复合实体识别测试
+============================================================
+Sentence                                                     | Extracted Entities                       | Match     
+------------------------------------------------------------------------------------------------------------------------
+I love Apple products, especially the iPhone.                | Apple, iPhone                            | ✓         
+
+  描述: 测试是否能识别 'Apple products' 而不是单独的 'Apple'
+  提取的实体: ['Apple', 'iPhone']
+  期望的实体: ['Apple products', 'Apple products, especially the iPhone']
+  ✓ 匹配到的实体: ['Apple products', 'Apple products, especially the iPhone']
+------------------------------------------------------------------------------------------------------------------------
+The University of Cambridge is a prestigious institution.    | University of Cambridge                  | ✓         
+
+  描述: 测试是否能识别完整的机构名称
+  提取的实体: ['University of Cambridge']
+  期望的实体: ['University of Cambridge']
+  ✓ 匹配到的实体: ['University of Cambridge']
+------------------------------------------------------------------------------------------------------------------------
+I bought Microsoft Office software for my computer.          | Microsoft Office                         | ✓         
+
+  描述: 测试是否能识别产品名称组合
+  提取的实体: ['Microsoft Office']
+  期望的实体: ['Microsoft Office', 'Microsoft Office software']
+  ✓ 匹配到的实体: ['Microsoft Office', 'Microsoft Office software']
+------------------------------------------------------------------------------------------------------------------------
+
+============================================================
+所有测试完成！
+============================================================

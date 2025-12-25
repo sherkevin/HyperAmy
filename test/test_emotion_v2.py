@@ -6,7 +6,7 @@
 2. 情感描述生成（情绪词列表）
 3. 情绪嵌入向量生成
 """
-from point_label.emotion_v2 import EmotionV2, EmotionNode
+from particle.emotion_v2 import EmotionV2, EmotionNode
 import numpy as np
 from collections import defaultdict
 
