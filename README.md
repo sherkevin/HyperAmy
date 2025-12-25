@@ -14,14 +14,14 @@ HyperAmy/
 │
 ├── sentiment/              # 情感分析模块
 │   ├── __init__.py
-│   ├── emotion_vector.py   # 情感向量提取
-│   ├── emotion_store.py    # 情感向量存储和管理
+│   ├── sentiment_vector.py   # 情感向量提取
+│   ├── sentiment_store.py    # 情感向量存储和管理
 │   └── hipporag_enhanced.py # HippoRAG 增强版（集成情感分析）
 │
 ├── test/                   # 测试文件
 │   ├── test_infer.py       # 测试推理和 token 概率分析
 │   ├── test_completion_client.py # 测试 Completion Client 功能
-│   ├── test_emotion.py     # 测试情感向量提取
+│   ├── test_sentiment.py     # 测试情感向量提取
 │   ├── test_bge.py         # 测试 BGE 嵌入和情感描述
 │   ├── test_integration.py # 测试 HippoRAG 整合
 │   └── test_dataset_integration.py # 测试数据集整合
@@ -96,7 +96,7 @@ python -m test.test_completion_client
 
 ```bash
 # 测试情感向量提取
-python -m test.test_emotion
+python -m test.test_sentiment
 
 # 测试 BGE 嵌入和情感描述
 python -m test.test_bge
@@ -125,15 +125,15 @@ python -m test.test_dataset_integration
 
 ### sentiment 模块
 
-- **`sentiment/emotion_vector.py`**：从文本中提取情感向量
-- **`sentiment/emotion_store.py`**：情感向量的存储和管理
+- **`sentiment/sentiment_vector.py`**：从文本中提取情感向量
+- **`sentiment/sentiment_store.py`**：情感向量的存储和管理
 - **`sentiment/hipporag_enhanced.py`**：增强版 HippoRAG，集成情感分析功能
 
 ### test 模块
 
 - **`test/test_infer.py`**：测试 LLM 推理和 token 概率分析（使用 specific 模式）
 - **`test/test_completion_client.py`**：测试 Completion Client 的各种功能
-- **`test/test_emotion.py`**：测试情感向量提取和分析
+- **`test/test_sentiment.py`**：测试情感向量提取和分析
 - **`test/test_bge.py`**：测试 BGE 嵌入和情感描述提取
 - **`test/test_integration.py`**：测试 HippoRAG + 情感分析的整合功能
 - **`test/test_dataset_integration.py`**：使用真实数据集测试整合功能
@@ -180,9 +180,9 @@ config = BaseConfig(
 # 创建增强版 HippoRAG
 hipporag = HippoRAGEnhanced(
     global_config=config,
-    enable_emotion=True,
-    emotion_weight=0.3,
-    emotion_model_name=llm_model_name
+    enable_sentiment=True,
+    sentiment_weight=0.3,
+    sentiment_model_name=llm_model_name
 )
 
 # 索引文档

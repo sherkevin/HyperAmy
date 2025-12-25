@@ -15,7 +15,7 @@ from hipporag.utils.logging_utils import get_logger
 logger = get_logger(__name__)
 
 # 定义详细的情绪列表（基于Plutchik情绪轮和常见情绪）
-EMOTIONS = [
+sentimentS = [
     # 基本情绪（Plutchik的8种基本情绪）
     "joy",           # 快乐
     "sadness",       # 悲伤
@@ -69,7 +69,7 @@ def cosine_similarity(vec1, vec2):
     return np.dot(vec1, vec2)
 
 
-class EmotionExtractor:
+class sentimentExtractor:
     """情感向量提取器"""
     
     def __init__(self, api_key=None, api_base_url=None, model_name=None):
@@ -92,9 +92,9 @@ class EmotionExtractor:
             mode="normal"
         )
         
-        logger.info(f"EmotionExtractor initialized with model: {self.model_name}")
+        logger.info(f"sentimentExtractor initialized with model: {self.model_name}")
     
-    def extract_emotion_vector(self, text):
+    def extract_sentiment_vector(self, text):
         """
         从文本中提取情绪向量
         
@@ -104,18 +104,18 @@ class EmotionExtractor:
         Returns:
             tuple: (numpy array, dict) - 归一化后的情绪向量和情绪字典
         """
-        emotions_str = ", ".join(EMOTIONS)
+        sentiments_str = ", ".join(sentimentS)
         
-        prompt = f"""You are an emotion analysis expert. Analyze the emotional content of the given text and assign intensity scores (0.0 to 1.0) for each emotion.
+        prompt = f"""You are an sentiment analysis expert. Analyze the sentimental content of the given text and assign intensity scores (0.0 to 1.0) for each sentiment.
 
-Emotion List:
-{emotions_str}
+sentiment List:
+{sentiments_str}
 
 Instructions:
 1. Read the text carefully
-2. For each emotion, assign a score from 0.0 (not present) to 1.0 (extremely strong)
-3. Be precise - only assign high scores to emotions that are clearly present
-4. Output ONLY a JSON object with emotion names as keys and scores as values
+2. For each sentiment, assign a score from 0.0 (not present) to 1.0 (extremely strong)
+3. Be precise - only assign high scores to sentiments that are clearly present
+4. Output ONLY a JSON object with sentiment names as keys and scores as values
 5. Do not include any explanation or additional text
 
 Output Format (JSON only):
@@ -149,21 +149,21 @@ Output the JSON object only:"""
                 json_str = content
             
             try:
-                emotion_dict = json.loads(json_str)
+                sentiment_dict = json.loads(json_str)
             except json.JSONDecodeError:
                 # 如果JSON解析失败，尝试提取数字
                 logger.warning(f"Failed to parse JSON, attempting to extract values from: {content[:200]}")
-                emotion_dict = {}
-                for emotion in EMOTIONS:
-                    pattern = f'"{emotion}"\\s*:\\s*([0-9.]+)'
+                sentiment_dict = {}
+                for sentiment in sentimentS:
+                    pattern = f'"{sentiment}"\\s*:\\s*([0-9.]+)'
                     match = re.search(pattern, content)
                     if match:
-                        emotion_dict[emotion] = float(match.group(1))
+                        sentiment_dict[sentiment] = float(match.group(1))
                     else:
-                        emotion_dict[emotion] = 0.0
+                        sentiment_dict[sentiment] = 0.0
             
-            # 构建向量（按照EMOTIONS的顺序）
-            vector = np.array([emotion_dict.get(emotion, 0.0) for emotion in EMOTIONS])
+            # 构建向量（按照sentimentS的顺序）
+            vector = np.array([sentiment_dict.get(sentiment, 0.0) for sentiment in sentimentS])
             
             # L2归一化
             norm = np.linalg.norm(vector)
@@ -171,15 +171,15 @@ Output the JSON object only:"""
                 vector = vector / norm
             else:
                 # 如果向量全为0，返回均匀分布
-                vector = np.ones(len(EMOTIONS)) / len(EMOTIONS)
+                vector = np.ones(len(sentimentS)) / len(sentimentS)
             
-            return vector, emotion_dict
+            return vector, sentiment_dict
             
         except Exception as e:
-            logger.error(f"Failed to extract emotion vector: {e}")
+            logger.error(f"Failed to extract sentiment vector: {e}")
             raise
     
-    def batch_extract_emotion_vectors(self, texts, batch_size=10):
+    def batch_extract_sentiment_vectors(self, texts, batch_size=10):
         """
         批量提取情绪向量
         
@@ -191,22 +191,22 @@ Output the JSON object only:"""
             list: 情绪向量列表
         """
         vectors = []
-        emotion_dicts = []
+        sentiment_dicts = []
         
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i+batch_size]
-            logger.info(f"Processing emotion batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}")
+            logger.info(f"Processing sentiment batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}")
             
             for text in batch:
                 try:
-                    vector, emotion_dict = self.extract_emotion_vector(text)
+                    vector, sentiment_dict = self.extract_sentiment_vector(text)
                     vectors.append(vector)
-                    emotion_dicts.append(emotion_dict)
+                    sentiment_dicts.append(sentiment_dict)
                 except Exception as e:
-                    logger.error(f"Failed to extract emotion for text: {text[:50]}... Error: {e}")
+                    logger.error(f"Failed to extract sentiment for text: {text[:50]}... Error: {e}")
                     # 返回零向量作为默认值
-                    vectors.append(np.zeros(len(EMOTIONS)))
-                    emotion_dicts.append({emotion: 0.0 for emotion in EMOTIONS})
+                    vectors.append(np.zeros(len(sentimentS)))
+                    sentiment_dicts.append({sentiment: 0.0 for sentiment in sentimentS})
         
-        return vectors, emotion_dicts
+        return vectors, sentiment_dicts
 

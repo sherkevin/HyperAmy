@@ -88,9 +88,9 @@ try:
     
     hipporag = HippoRAGEnhanced(
         global_config=config,
-        enable_emotion=True,
-        emotion_weight=0.3,
-        emotion_model_name=llm_model_name
+        enable_sentiment=True,
+        sentiment_weight=0.3,
+        sentiment_model_name=llm_model_name
     )
     print(f"   ✅ HippoRAG 增强版初始化成功")
     

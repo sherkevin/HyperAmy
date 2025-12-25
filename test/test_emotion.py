@@ -10,7 +10,7 @@ from llm.config import API_KEY, API_URL_CHAT
 CHAT_API_URL = API_URL_CHAT
 
 # 定义详细的情绪列表（基于Plutchik情绪轮和常见情绪）
-EMOTIONS = [
+sentimentS = [
     # 基本情绪（Plutchik的8种基本情绪）
     "joy",           # 快乐
     "sadness",       # 悲伤
@@ -44,7 +44,7 @@ EMOTIONS = [
     "contempt",      # 轻蔑
 ]
 
-def extract_emotion_vector(text, model="Qwen3-Next-80B-A3B-Instruct"):
+def extract_sentiment_vector(text, model="Qwen3-Next-80B-A3B-Instruct"):
     """
     从文本中提取情绪向量
     
@@ -55,18 +55,18 @@ def extract_emotion_vector(text, model="Qwen3-Next-80B-A3B-Instruct"):
     Returns:
         numpy array: 归一化后的情绪向量
     """
-    emotions_str = ", ".join(EMOTIONS)
+    sentiments_str = ", ".join(sentimentS)
     
-    prompt = f"""You are an emotion analysis expert. Analyze the emotional content of the given text and assign intensity scores (0.0 to 1.0) for each emotion.
+    prompt = f"""You are an sentiment analysis expert. Analyze the sentimental content of the given text and assign intensity scores (0.0 to 1.0) for each sentiment.
 
-Emotion List:
-{emotions_str}
+sentiment List:
+{sentiments_str}
 
 Instructions:
 1. Read the text carefully
-2. For each emotion, assign a score from 0.0 (not present) to 1.0 (extremely strong)
-3. Be precise - only assign high scores to emotions that are clearly present
-4. Output ONLY a JSON object with emotion names as keys and scores as values
+2. For each sentiment, assign a score from 0.0 (not present) to 1.0 (extremely strong)
+3. Be precise - only assign high scores to sentiments that are clearly present
+4. Output ONLY a JSON object with sentiment names as keys and scores as values
 5. Do not include any explanation or additional text
 
 Output Format (JSON only):
@@ -112,29 +112,29 @@ Output the JSON object only:"""
             json_str = content
         
         try:
-            emotion_dict = json.loads(json_str)
+            sentiment_dict = json.loads(json_str)
         except json.JSONDecodeError:
             # 如果JSON解析失败，尝试提取数字
             print(f"Warning: Failed to parse JSON, attempting to extract values...")
             print(f"Raw output: {content}")
-            emotion_dict = {}
-            for emotion in EMOTIONS:
-                pattern = f'"{emotion}"\\s*:\\s*([0-9.]+)'
+            sentiment_dict = {}
+            for sentiment in sentimentS:
+                pattern = f'"{sentiment}"\\s*:\\s*([0-9.]+)'
                 match = re.search(pattern, content)
                 if match:
-                    emotion_dict[emotion] = float(match.group(1))
+                    sentiment_dict[sentiment] = float(match.group(1))
                 else:
-                    emotion_dict[emotion] = 0.0
+                    sentiment_dict[sentiment] = 0.0
         
-        # 构建向量（按照EMOTIONS的顺序）
-        vector = np.array([emotion_dict.get(emotion, 0.0) for emotion in EMOTIONS])
+        # 构建向量（按照sentimentS的顺序）
+        vector = np.array([sentiment_dict.get(sentiment, 0.0) for sentiment in sentimentS])
         
         # L2归一化
         norm = np.linalg.norm(vector)
         if norm > 0:
             vector = vector / norm
         
-        return vector, emotion_dict
+        return vector, sentiment_dict
     else:
         raise Exception(f"Chat API Error: {response.status_code} - {response.text}")
 
@@ -152,7 +152,7 @@ def cosine_similarity(vec1, vec2):
     """
     return np.dot(vec1, vec2)
 
-def test_emotion_similarity(text1, text2, description=""):
+def test_sentiment_similarity(text1, text2, description=""):
     """
     测试两个文本的情绪相似度
     
@@ -170,25 +170,25 @@ def test_emotion_similarity(text1, text2, description=""):
     print(f"Text 1: {text1}")
     print(f"Text 2: {text2}")
     
-    vec1, dict1 = extract_emotion_vector(text1)
-    vec2, dict2 = extract_emotion_vector(text2)
+    vec1, dict1 = extract_sentiment_vector(text1)
+    vec2, dict2 = extract_sentiment_vector(text2)
     
     # 显示主要情绪
-    top_emotions1 = sorted(dict1.items(), key=lambda x: x[1], reverse=True)[:5]
-    top_emotions2 = sorted(dict2.items(), key=lambda x: x[1], reverse=True)[:5]
+    top_sentiments1 = sorted(dict1.items(), key=lambda x: x[1], reverse=True)[:5]
+    top_sentiments2 = sorted(dict2.items(), key=lambda x: x[1], reverse=True)[:5]
     
-    print(f"\nTop emotions for Text 1:")
-    for emotion, score in top_emotions1:
+    print(f"\nTop sentiments for Text 1:")
+    for sentiment, score in top_sentiments1:
         if score > 0.01:
-            print(f"  {emotion}: {score:.3f}")
+            print(f"  {sentiment}: {score:.3f}")
     
-    print(f"\nTop emotions for Text 2:")
-    for emotion, score in top_emotions2:
+    print(f"\nTop sentiments for Text 2:")
+    for sentiment, score in top_sentiments2:
         if score > 0.01:
-            print(f"  {emotion}: {score:.3f}")
+            print(f"  {sentiment}: {score:.3f}")
     
     similarity = cosine_similarity(vec1, vec2)
-    print(f"\nEmotion Vector Similarity (range [0,1]): {similarity:.4f}")
+    print(f"\nsentiment Vector Similarity (range [0,1]): {similarity:.4f}")
     
     return similarity
 
@@ -196,108 +196,108 @@ def test_emotion_similarity(text1, text2, description=""):
 
 if __name__ == "__main__":
     print("="*60)
-    print("Emotion Vector Similarity Testing")
+    print("sentiment Vector Similarity Testing")
     print("="*60)
-    print(f"Using {len(EMOTIONS)} emotion dimensions")
+    print(f"Using {len(sentimentS)} sentiment dimensions")
     print("="*60)
     
-    # Category 1: Same emotions, different descriptions
+    # Category 1: Same sentiments, different descriptions
     print("\n" + "="*60)
-    print("Category 1: Same Emotions, Different Descriptions")
+    print("Category 1: Same sentiments, Different Descriptions")
     print("(Should have HIGH similarity)")
     print("="*60)
     
-    test1 = test_emotion_similarity(
+    test1 = test_sentiment_similarity(
         "I'm thrilled about winning the competition!",
         "The sunset over the ocean was absolutely breathtaking.",
         "1.1 Extreme happiness - different contexts"
     )
     
-    test2 = test_emotion_similarity(
+    test2 = test_sentiment_similarity(
         "I'm devastated by the loss of my pet.",
         "The storm destroyed everything in its path.",
         "1.2 Extreme sadness - different contexts"
     )
     
-    test3 = test_emotion_similarity(
+    test3 = test_sentiment_similarity(
         "I'm really pleased with how the project turned out.",
         "The coffee this morning tasted perfect, making me feel content.",
         "1.3 Moderate happiness - different sources"
     )
     
-    test4 = test_emotion_similarity(
+    test4 = test_sentiment_similarity(
         "I'm terrified of giving the presentation tomorrow.",
         "Walking alone in that dark alley made me feel extremely anxious.",
         "1.4 Fear/Anxiety - different sources"
     )
     
-    test5 = test_emotion_similarity(
+    test5 = test_sentiment_similarity(
         "I'm absolutely furious about the unfair treatment I received.",
         "The constant noise from the construction site is driving me insane with rage.",
         "1.5 Anger - different triggers"
     )
     
-    # Category 2: Opposite emotions, similar descriptions
+    # Category 2: Opposite sentiments, similar descriptions
     print("\n" + "="*60)
-    print("Category 2: Opposite Emotions, Similar Descriptions")
+    print("Category 2: Opposite sentiments, Similar Descriptions")
     print("(Should have LOW similarity)")
     print("="*60)
     
-    control1 = test_emotion_similarity(
+    control1 = test_sentiment_similarity(
         "I love this new restaurant.",
         "I hate this new restaurant.",
         "2.1 Love vs Hate - same object"
     )
     
-    control2 = test_emotion_similarity(
+    control2 = test_sentiment_similarity(
         "I'm so excited about the upcoming vacation!",
         "I'm so disappointed about the cancelled vacation.",
         "2.2 Excitement vs Disappointment - same context"
     )
     
-    control3 = test_emotion_similarity(
+    control3 = test_sentiment_similarity(
         "I feel hopeful about my future prospects.",
         "I feel hopeless about my future prospects.",
         "2.3 Hope vs Despair - same situation"
     )
     
-    control4 = test_emotion_similarity(
+    control4 = test_sentiment_similarity(
         "I'm proud of my performance in the competition.",
         "I'm ashamed of my performance in the competition.",
         "2.4 Pride vs Shame - same achievement"
     )
     
-    control5 = test_emotion_similarity(
+    control5 = test_sentiment_similarity(
         "I'm grateful for my teacher's guidance.",
         "I resent my teacher's guidance.",
         "2.5 Gratitude vs Resentment - same person"
     )
     
-    # Category 3: Different emotion types
+    # Category 3: Different sentiment types
     print("\n" + "="*60)
-    print("Category 3: Different Emotion Types")
+    print("Category 3: Different sentiment Types")
     print("(Should have LOW similarity)")
     print("="*60)
     
-    diff1 = test_emotion_similarity(
+    diff1 = test_sentiment_similarity(
         "I'm overjoyed about the upcoming trip!",
         "I'm terrified about the upcoming trip!",
         "3.1 Happiness vs Fear"
     )
     
-    diff2 = test_emotion_similarity(
+    diff2 = test_sentiment_similarity(
         "I'm deeply saddened by the news.",
         "I'm extremely angry about the news.",
         "3.2 Sadness vs Anger"
     )
     
-    diff3 = test_emotion_similarity(
+    diff3 = test_sentiment_similarity(
         "I was amazed by what I saw.",
         "I was disgusted by what I saw.",
         "3.3 Surprise vs Disgust"
     )
     
-    diff4 = test_emotion_similarity(
+    diff4 = test_sentiment_similarity(
         "I love going to new places.",
         "I fear going to new places.",
         "3.4 Love vs Fear"
@@ -308,27 +308,27 @@ if __name__ == "__main__":
     print("Summary of Results")
     print("="*60)
     
-    avg_same_emotion = (test1 + test2 + test3 + test4 + test5) / 5
-    avg_opposite_emotion = (control1 + control2 + control3 + control4 + control5) / 5
+    avg_same_sentiment = (test1 + test2 + test3 + test4 + test5) / 5
+    avg_opposite_sentiment = (control1 + control2 + control3 + control4 + control5) / 5
     avg_different_types = (diff1 + diff2 + diff3 + diff4) / 4
     
-    print(f"\nCategory 1 (Same emotions, different desc):")
-    print(f"  Average similarity: {avg_same_emotion:.4f}")
+    print(f"\nCategory 1 (Same sentiments, different desc):")
+    print(f"  Average similarity: {avg_same_sentiment:.4f}")
     print(f"  Test 1: {test1:.4f}")
     print(f"  Test 2: {test2:.4f}")
     print(f"  Test 3: {test3:.4f}")
     print(f"  Test 4: {test4:.4f}")
     print(f"  Test 5: {test5:.4f}")
     
-    print(f"\nCategory 2 (Opposite emotions, similar desc):")
-    print(f"  Average similarity: {avg_opposite_emotion:.4f}")
+    print(f"\nCategory 2 (Opposite sentiments, similar desc):")
+    print(f"  Average similarity: {avg_opposite_sentiment:.4f}")
     print(f"  Control 1: {control1:.4f}")
     print(f"  Control 2: {control2:.4f}")
     print(f"  Control 3: {control3:.4f}")
     print(f"  Control 4: {control4:.4f}")
     print(f"  Control 5: {control5:.4f}")
     
-    print(f"\nCategory 3 (Different emotion types):")
+    print(f"\nCategory 3 (Different sentiment types):")
     print(f"  Average similarity: {avg_different_types:.4f}")
     print(f"  Diff 1: {diff1:.4f}")
     print(f"  Diff 2: {diff2:.4f}")
@@ -338,13 +338,13 @@ if __name__ == "__main__":
     print(f"\n{'='*60}")
     print("Key Comparison")
     print(f"{'='*60}")
-    print(f"Same emotions vs Opposite emotions:")
-    print(f"  Difference: {avg_same_emotion - avg_opposite_emotion:+.4f}")
-    print(f"  Improvement: {(avg_same_emotion - avg_opposite_emotion) / avg_opposite_emotion * 100:+.2f}%")
+    print(f"Same sentiments vs Opposite sentiments:")
+    print(f"  Difference: {avg_same_sentiment - avg_opposite_sentiment:+.4f}")
+    print(f"  Improvement: {(avg_same_sentiment - avg_opposite_sentiment) / avg_opposite_sentiment * 100:+.2f}%")
     
-    print(f"\nSame emotions vs Different types:")
-    print(f"  Difference: {avg_same_emotion - avg_different_types:+.4f}")
-    print(f"  Improvement: {(avg_same_emotion - avg_different_types) / avg_different_types * 100:+.2f}%")
+    print(f"\nSame sentiments vs Different types:")
+    print(f"  Difference: {avg_same_sentiment - avg_different_types:+.4f}")
+    print(f"  Improvement: {(avg_same_sentiment - avg_different_types) / avg_different_types * 100:+.2f}%")
     
     # 详细分析
     print(f"\n{'='*60}")
@@ -352,8 +352,8 @@ if __name__ == "__main__":
     print(f"{'='*60}")
     
     # 计算分离度
-    separation_ratio = avg_same_emotion / avg_opposite_emotion if avg_opposite_emotion > 0 else float('inf')
-    separation_ratio2 = avg_same_emotion / avg_different_types if avg_different_types > 0 else float('inf')
+    separation_ratio = avg_same_sentiment / avg_opposite_sentiment if avg_opposite_sentiment > 0 else float('inf')
+    separation_ratio2 = avg_same_sentiment / avg_different_types if avg_different_types > 0 else float('inf')
     
     print(f"\n1. 分类效果评估:")
     print(f"   相同情绪 vs 相反情绪分离比: {separation_ratio:.2f}x")
@@ -361,12 +361,12 @@ if __name__ == "__main__":
     
     print(f"\n2. 各类别统计:")
     print(f"   Category 1 (相同情绪):")
-    print(f"     - 平均值: {avg_same_emotion:.4f}")
+    print(f"     - 平均值: {avg_same_sentiment:.4f}")
     print(f"     - 范围: {min(test1, test2, test3, test4, test5):.4f} - {max(test1, test2, test3, test4, test5):.4f}")
     print(f"     - 标准差: {np.std([test1, test2, test3, test4, test5]):.4f}")
     
     print(f"\n   Category 2 (相反情绪):")
-    print(f"     - 平均值: {avg_opposite_emotion:.4f}")
+    print(f"     - 平均值: {avg_opposite_sentiment:.4f}")
     print(f"     - 范围: {min(control1, control2, control3, control4, control5):.4f} - {max(control1, control2, control3, control4, control5):.4f}")
     print(f"     - 标准差: {np.std([control1, control2, control3, control4, control5]):.4f}")
     
@@ -402,7 +402,7 @@ if __name__ == "__main__":
             print(f"     - 相同情绪与不同类型有重叠")
     
     # 计算准确率（假设阈值）
-    threshold = (avg_same_emotion + avg_opposite_emotion) / 2
+    threshold = (avg_same_sentiment + avg_opposite_sentiment) / 2
     print(f"\n4. 基于阈值的分类准确率 (阈值={threshold:.4f}):")
     
     correct_same = sum(1 for s in [test1, test2, test3, test4, test5] if s > threshold)
@@ -418,12 +418,12 @@ if __name__ == "__main__":
     print(f"   - 不同类型正确分类: {correct_different}/4 ({correct_different/4*100:.1f}%)")
     print(f"   - 总体准确率: {correct}/{total} ({accuracy:.1f}%)")
     
-    if avg_same_emotion > avg_opposite_emotion and avg_same_emotion > avg_different_types:
+    if avg_same_sentiment > avg_opposite_sentiment and avg_same_sentiment > avg_different_types:
         print(f"\n{'='*60}")
-        print("✓ SUCCESS: Emotion vector method successfully distinguishes emotions!")
+        print("✓ SUCCESS: sentiment vector method successfully distinguishes sentiments!")
         print(f"{'='*60}")
-        print(f"  - Same emotions: {avg_same_emotion:.4f} (high similarity)")
-        print(f"  - Opposite emotions: {avg_opposite_emotion:.4f} (low similarity)")
+        print(f"  - Same sentiments: {avg_same_sentiment:.4f} (high similarity)")
+        print(f"  - Opposite sentiments: {avg_opposite_sentiment:.4f} (low similarity)")
         print(f"  - Different types: {avg_different_types:.4f} (low similarity)")
         print(f"\n  结论: 该方法能够有效区分情绪相似度，")
         print(f"        相同情绪文本具有高相似度，相反情绪文本具有低相似度。")
@@ -431,7 +431,7 @@ if __name__ == "__main__":
         print(f"\n{'='*60}")
         print("⚠ Results need improvement:")
         print(f"{'='*60}")
-        print(f"  - Same emotions: {avg_same_emotion:.4f}")
-        print(f"  - Opposite emotions: {avg_opposite_emotion:.4f}")
+        print(f"  - Same sentiments: {avg_same_sentiment:.4f}")
+        print(f"  - Opposite sentiments: {avg_opposite_sentiment:.4f}")
         print(f"  - Different types: {avg_different_types:.4f}")
 
