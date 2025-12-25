@@ -1,156 +1,260 @@
 """
 Emotion V2 类
 
-使用 HippoRAG 的实体抽取功能
+整合实体抽取、情感描述生成和情绪嵌入的完整流程：
+1. 调用 Entity 抽取实体
+2. 调用 Sentence 对实体生成情绪描述句子
+3. 对每个句子进行情绪嵌入得到嵌入向量
+4. 输出为一个列表，每个 node 为一个结构体
 """
+from dataclasses import dataclass
+from typing import List, Optional
+import numpy as np
+import requests
 import os
-import sys
 
-# 添加 hipporag 路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'hipporag', 'src'))
-
-from hipporag.information_extraction import OpenIE
-from hipporag.llm.openai_gpt import CacheOpenAI
-from hipporag.utils.config_utils import BaseConfig
+from utils.entitiy import Entity
+from utils.sentence import Sentence
+from llm.config import API_KEY, API_URL_EMBEDDINGS, DEFAULT_EMBEDDING_MODEL
 from hipporag.utils.logging_utils import get_logger
-from llm.config import API_KEY, API_URL_CHAT, DEFAULT_MODEL
 
 logger = get_logger(__name__)
 
 
+@dataclass
+class EmotionNode:
+    """
+    情绪节点结构体
+    
+    包含：
+    - entity_id: 实体 ID（唯一标识）
+    - entity: 实体名称
+    - emotion_vector: 情绪嵌入向量（高维稠密向量）
+    - text_id: 原文本 ID（用于映射关系）
+    """
+    entity_id: str
+    entity: str
+    emotion_vector: np.ndarray
+    text_id: str
+
+
 class EmotionV2:
     """
-    实体抽取类
+    Emotion V2 类
     
-    使用 HippoRAG 的 OpenIE 模块来抽取文本中的实体
+    完整流程：
+    1. 从文本中抽取实体
+    2. 为每个实体生成情感视角描述
+    3. 对每个情感描述进行嵌入，得到情绪向量
+    4. 返回 EmotionNode 列表
     """
     
-    def __init__(self, model_name=None, base_url=None, cache_dir=None):
+    def __init__(
+        self,
+        model_name=None,
+        embedding_model_name=None,
+        entity_extractor=None,
+        sentence_processor=None
+    ):
         """
         初始化 EmotionV2 类
         
         Args:
-            model_name: 使用的模型名称，如果为 None 则使用默认模型
-            base_url: API 基础 URL，如果为 None 则使用默认 URL
-            cache_dir: 缓存目录，如果为 None 则使用临时目录
+            model_name: LLM 模型名称，用于 Sentence 类
+            embedding_model_name: 嵌入模型名称，用于生成情绪嵌入向量
+            entity_extractor: Entity 实例（可选），如果为 None 则自动创建
+            sentence_processor: Sentence 实例（可选），如果为 None 则自动创建
         """
+        from llm.config import DEFAULT_MODEL
+        
         self.model_name = model_name or DEFAULT_MODEL
-        self.base_url = base_url or API_URL_CHAT.replace('/chat/completions', '')
+        self.embedding_model_name = embedding_model_name or DEFAULT_EMBEDDING_MODEL
         
-        # 设置环境变量（HippoRAG 需要）
-        os.environ['OPENAI_API_KEY'] = API_KEY
+        # 初始化组件
+        if entity_extractor is None:
+            self.entity_extractor = Entity(model_name=self.model_name)
+        else:
+            self.entity_extractor = entity_extractor
         
-        # 创建配置
-        self.config = BaseConfig()
-        self.config.llm_name = self.model_name
-        self.config.llm_base_url = self.base_url
+        if sentence_processor is None:
+            self.sentence_processor = Sentence(model_name=self.model_name)
+        else:
+            self.sentence_processor = sentence_processor
         
-        # 设置缓存目录和保存目录
-        if cache_dir is None:
-            cache_dir = os.path.join(os.path.dirname(__file__), '..', '.cache', 'llm_cache')
-        os.makedirs(cache_dir, exist_ok=True)
-        
-        # 设置 save_dir（CacheOpenAI.from_experiment_config 需要）
-        # BaseConfig 默认 save_dir 为 None，需要设置为实际目录
-        save_dir = os.path.dirname(cache_dir) if os.path.dirname(cache_dir) else os.path.join(os.path.dirname(__file__), '..', '.cache')
-        self.config.save_dir = save_dir
-        os.makedirs(save_dir, exist_ok=True)
-        
-        # 初始化 LLM 模型
-        self.llm_model = CacheOpenAI.from_experiment_config(self.config)
-        
-        # 初始化 OpenIE
-        self.openie = OpenIE(llm_model=self.llm_model)
-        
-        logger.info(f"EmotionV2 initialized with model: {self.model_name}")
+        logger.info(
+            f"EmotionV2 initialized with model: {self.model_name}, "
+            f"embedding_model: {self.embedding_model_name}"
+        )
     
-    def extract_entities(self, chunk: str) -> list:
+    def _get_emotion_embedding(self, text: str) -> np.ndarray:
         """
-        从 chunk 中提取命名实体
+        获取文本的情绪嵌入向量
+        
+        使用 embedding API 将文本转换为高维稠密向量
         
         Args:
-            chunk: 输入文本片段
+            text: 输入文本（情感描述句子）
         
         Returns:
-            list: 命名实体列表
+            numpy.ndarray: 情绪嵌入向量
         """
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {API_KEY}"
+        }
+        
+        # API 支持字符串或字符串列表，这里使用列表格式以保持一致性
+        payload = {
+            "model": self.embedding_model_name,
+            "input": [text],  # 使用列表格式
+            "encoding_format": "float"
+        }
+        
         try:
-            # 使用 OpenIE 的 NER 功能
-            ner_output = self.openie.ner(chunk_key="temp", passage=chunk)
+            response = requests.post(API_URL_EMBEDDINGS, headers=headers, json=payload)
+            response.raise_for_status()
             
-            # 返回唯一实体列表
-            entities = ner_output.unique_entities
+            result = response.json()
+            # 提取 embedding 向量
+            if isinstance(result.get("data"), list) and len(result["data"]) > 0:
+                embedding = np.array(result["data"][0]["embedding"])
+            else:
+                raise ValueError(f"Unexpected API response format: {result}")
             
-            logger.debug(f"Extracted {len(entities)} entities from chunk: {entities}")
+            logger.debug(f"Generated embedding vector of shape {embedding.shape} for text: {text[:50]}...")
             
-            return entities
+            return embedding
             
         except Exception as e:
-            logger.error(f"Failed to extract entities: {e}")
+            logger.error(f"Failed to get emotion embedding for text '{text[:50]}...': {e}")
             raise
     
-    def extract_triples(self, chunk: str, named_entities: list = None) -> list:
+    def process(
+        self,
+        text: str,
+        text_id: str,
+        entities: Optional[List[str]] = None
+    ) -> List[EmotionNode]:
         """
-        从 chunk 中提取三元组（实体-关系-实体）
+        处理文本，生成情绪节点列表
+        
+        完整流程：
+        1. 抽取实体（如果未提供）
+        2. 为每个实体生成情感描述
+        3. 对每个情感描述进行嵌入
+        4. 返回 EmotionNode 列表
         
         Args:
-            chunk: 输入文本片段
-            named_entities: 命名实体列表，如果为 None 则先提取实体
+            text: 原始文本
+            text_id: 原文本 ID（用于映射关系）
+            entities: 实体列表（可选），如果为 None 则自动抽取
         
         Returns:
-            list: 三元组列表，每个三元组格式为 [subject, relation, object]
+            List[EmotionNode]: 情绪节点列表
         """
+        # Step 1: 抽取实体（如果未提供）
+        if entities is None:
+            try:
+                entities = self.entity_extractor.extract_entities(text)
+                logger.info(f"Extracted {len(entities)} entities from text: {entities}")
+            except Exception as e:
+                logger.error(f"Failed to extract entities: {e}")
+                return []  # 如果抽取失败，返回空列表
+        
+        if not entities:
+            logger.warning(f"No entities found in text (text_id: {text_id})")
+            return []
+        
+        # Step 2: 为每个实体生成情感描述
         try:
-            # 如果没有提供实体，先提取实体
-            if named_entities is None:
-                ner_output = self.openie.ner(chunk_key="temp", passage=chunk)
-                named_entities = ner_output.unique_entities
-            
-            # 使用 OpenIE 的三元组提取功能
-            triple_output = self.openie.triple_extraction(
-                chunk_key="temp",
-                passage=chunk,
-                named_entities=named_entities
+            affective_descriptions = self.sentence_processor.generate_affective_descriptions(
+                sentence=text,
+                entities=entities
             )
-            
-            # 返回三元组列表
-            triples = triple_output.triples
-            
-            logger.debug(f"Extracted {len(triples)} triples from chunk")
-            
-            return triples
-            
+            logger.info(
+                f"Generated {len([d for d in affective_descriptions.values() if d])} "
+                f"affective descriptions for {len(entities)} entities"
+            )
         except Exception as e:
-            logger.error(f"Failed to extract triples: {e}")
-            raise
+            logger.error(f"Failed to generate affective descriptions: {e}")
+            return []
+        
+        # Step 3: 对每个情感描述进行嵌入，生成 EmotionNode 列表
+        nodes = []
+        for idx, entity in enumerate(entities):
+            description = affective_descriptions.get(entity, "")
+            
+            if not description:
+                logger.warning(f"Empty affective description for entity '{entity}', skipping...")
+                continue
+            
+            try:
+                # 获取情绪嵌入向量
+                emotion_vector = self._get_emotion_embedding(description)
+                
+                # 生成实体 ID（格式：text_id_entity_idx）
+                entity_id = f"{text_id}_entity_{idx}"
+                
+                # 创建 EmotionNode
+                node = EmotionNode(
+                    entity_id=entity_id,
+                    entity=entity,
+                    emotion_vector=emotion_vector,
+                    text_id=text_id
+                )
+                
+                nodes.append(node)
+                
+                logger.debug(
+                    f"Created node: entity_id={entity_id}, entity={entity}, "
+                    f"vector_shape={emotion_vector.shape}, text_id={text_id}"
+                )
+                
+            except Exception as e:
+                logger.error(f"Failed to process entity '{entity}': {e}")
+                continue  # 跳过失败的实体，继续处理其他实体
+        
+        logger.info(
+            f"Successfully processed {len(nodes)}/{len(entities)} entities "
+            f"for text_id: {text_id}"
+        )
+        
+        return nodes
     
-    def extract_all(self, chunk: str) -> dict:
+    def batch_process(
+        self,
+        texts: List[str],
+        text_ids: Optional[List[str]] = None
+    ) -> List[EmotionNode]:
         """
-        从 chunk 中提取实体和三元组
+        批量处理多个文本
         
         Args:
-            chunk: 输入文本片段
+            texts: 原始文本列表
+            text_ids: 文本 ID 列表（可选），如果为 None 则自动生成
         
         Returns:
-            dict: 包含 'entities' 和 'triples' 的字典
+            List[EmotionNode]: 所有文本的情绪节点列表（扁平化）
         """
-        try:
-            # 使用 OpenIE 的完整功能
-            result = self.openie.openie(chunk_key="temp", passage=chunk)
-            
-            entities = result["ner"].unique_entities
-            triples = result["triplets"].triples
-            
-            logger.debug(
-                f"Extracted {len(entities)} entities and {len(triples)} triples from chunk"
-            )
-            
-            return {
-                "entities": entities,
-                "triples": triples
-            }
-            
-        except Exception as e:
-            logger.error(f"Failed to extract entities and triples: {e}")
-            raise
+        if text_ids is None:
+            text_ids = [f"text_{i}" for i in range(len(texts))]
+        
+        if len(texts) != len(text_ids):
+            raise ValueError(f"Length mismatch: texts ({len(texts)}) != text_ids ({len(text_ids)})")
+        
+        all_nodes = []
+        
+        for text, text_id in zip(texts, text_ids):
+            try:
+                nodes = self.process(text, text_id)
+                all_nodes.extend(nodes)
+            except Exception as e:
+                logger.error(f"Failed to process text_id '{text_id}': {e}")
+                continue
+        
+        logger.info(
+            f"Batch processing completed: {len(all_nodes)} nodes from {len(texts)} texts"
+        )
+        
+        return all_nodes
 

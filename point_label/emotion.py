@@ -10,6 +10,7 @@ import re
 from llm import create_client
 from llm.config import API_URL_CHAT, DEFAULT_MODEL
 from hipporag.utils.logging_utils import get_logger
+from prompts.prompt_template_manager import PromptTemplateManager
 
 logger = get_logger(__name__)
 
@@ -72,6 +73,9 @@ class Emotion:
             mode="normal"
         )
         
+        # 初始化 prompt 模板管理器
+        self.prompt_template_manager = PromptTemplateManager()
+        
         logger.info(f"Emotion initialized with model: {self.model_name}")
     
     def extract(self, chunk: str) -> np.ndarray:
@@ -86,30 +90,12 @@ class Emotion:
         """
         emotions_str = ", ".join(EMOTIONS)
         
-        prompt = f"""You are an emotion analysis expert. Analyze the emotional content of the given text and assign intensity scores (0.0 to 1.0) for each emotion.
-
-Emotion List:
-{emotions_str}
-
-Instructions:
-1. Read the text carefully
-2. For each emotion, assign a score from 0.0 (not present) to 1.0 (extremely strong)
-3. Be precise - only assign high scores to emotions that are clearly present
-4. Output ONLY a JSON object with emotion names as keys and scores as values
-5. Do not include any explanation or additional text
-
-Output Format (JSON only):
-{{
-  "joy": 0.8,
-  "sadness": 0.1,
-  "anger": 0.0,
-  ...
-}}
-
-Text to analyze:
-"{chunk}"
-
-Output the JSON object only:"""
+        # 使用模板管理器渲染 prompt
+        prompt = self.prompt_template_manager.render(
+            name='emotion_extraction',
+            emotions_list=emotions_str,
+            chunk=chunk
+        )
 
         try:
             # 使用 CompletionClient 调用 API

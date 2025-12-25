@@ -5,6 +5,7 @@ Emotion 模块
 """
 
 from .emotion import Emotion
+from .emotion_v2 import EmotionV2, EmotionNode
 
-__all__ = ['Emotion']
+__all__ = ['Emotion', 'EmotionV2', 'EmotionNode']
 
