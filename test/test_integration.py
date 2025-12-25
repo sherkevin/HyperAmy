@@ -63,12 +63,12 @@ try:
     
     hipporag = HippoRAGEnhanced(
         global_config=config,
-        enable_emotion=True,
-        emotion_weight=0.3,
-        emotion_model_name=llm_model_name
+        enable_sentiment=True,
+        sentiment_weight=0.3,
+        sentiment_model_name=llm_model_name
     )
     print(f"   ✅ HippoRAG 增强版初始化成功")
-    print(f"   情感分析: {'启用' if hipporag.enable_emotion else '禁用'}")
+    print(f"   情感分析: {'启用' if hipporag.enable_sentiment else '禁用'}")
     
 except Exception as e:
     print(f"   ❌ 初始化失败: {e}")

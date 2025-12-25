@@ -5,7 +5,7 @@ from llm.config import API_KEY, API_URL_EMBEDDINGS, API_URL_CHAT
 EMBEDDING_API_URL = API_URL_EMBEDDINGS
 CHAT_API_URL = API_URL_CHAT
 
-def extract_emotion_description(text, model="Qwen3-Next-80B-A3B-Instruct"):
+def extract_sentiment_description(text, model="Qwen3-Next-80B-A3B-Instruct"):
     """
     使用大语言模型提取文本的情绪描述，专注于情绪维度而非语义内容
     
@@ -23,24 +23,24 @@ def extract_emotion_description(text, model="Qwen3-Next-80B-A3B-Instruct"):
     # 3. 强调情绪的强度和类型
     # 4. 使用示例引导模型理解任务
     
-    prompt = """You are an emotion extraction specialist. Extract ONLY the pure emotional and affective meaning, completely ignoring all semantic content, events, objects, people, places, or contextual details.
+    prompt = """You are an sentiment extraction specialist. Extract ONLY the pure sentimental and affective meaning, completely ignoring all semantic content, events, objects, people, places, or contextual details.
 
 CRITICAL RULES:
 1. NEVER mention what happened, who was involved, or where it occurred
 2. NEVER describe the event, situation, or context
-3. ONLY describe: feelings, emotions, moods, sentiments, affective states
-4. Use diverse emotional vocabulary - avoid generic words like "positive" or "negative"
-5. For OPPOSITE emotions, use COMPLETELY DIFFERENT vocabulary and sentence structures
-6. For SIMILAR emotions, use SIMILAR vocabulary and structures
+3. ONLY describe: feelings, sentiments, moods, sentiments, affective states
+4. Use diverse sentimental vocabulary - avoid generic words like "positive" or "negative"
+5. For OPPOSITE sentiments, use COMPLETELY DIFFERENT vocabulary and sentence structures
+6. For SIMILAR sentiments, use SIMILAR vocabulary and structures
 
 KEY PRINCIPLE: 
-- Similar emotions → Similar descriptions (same structure, similar words)
-- Opposite emotions → VERY DIFFERENT descriptions (different structure, contrasting words)
+- Similar sentiments → Similar descriptions (same structure, similar words)
+- Opposite sentiments → VERY DIFFERENT descriptions (different structure, contrasting words)
 
-Output Format - Use VARIED structures based on emotion:
-- For positive emotions: Use uplifting, warm vocabulary
-- For negative emotions: Use contrasting, darker vocabulary
-- Vary sentence structure to maximize semantic difference for opposite emotions
+Output Format - Use VARIED structures based on sentiment:
+- For positive sentiments: Use uplifting, warm vocabulary
+- For negative sentiments: Use contrasting, darker vocabulary
+- Vary sentence structure to maximize semantic difference for opposite sentiments
 
 Examples:
 Input: "I'm thrilled about winning the competition!"
@@ -62,17 +62,17 @@ Output: "Experiencing warmth, satisfaction, and delight. Pleasant positive feeli
 
 Input: "I hate this new restaurant."
 Output: "Experiencing coldness, dissatisfaction, and repulsion. Unpleasant negative feelings of rejection and displeasure."
-(Note: OPPOSITE emotions - notice how structure and vocabulary are DIFFERENT: "warmth" vs "coldness", "delight" vs "repulsion", "pleasant" vs "unpleasant", "appreciation" vs "rejection")
+(Note: OPPOSITE sentiments - notice how structure and vocabulary are DIFFERENT: "warmth" vs "coldness", "delight" vs "repulsion", "pleasant" vs "unpleasant", "appreciation" vs "rejection")
 
-CRITICAL: For opposite emotions, use COMPLETELY DIFFERENT sentence structures:
-- Positive emotions: Use structure like "Experiencing [positive words]. [Positive descriptor] positive feelings..."
-- Negative emotions: Use DIFFERENT structure like "[Negative words] dominate. [Negative descriptor] negative emotional state characterized by..."
+CRITICAL: For opposite sentiments, use COMPLETELY DIFFERENT sentence structures:
+- Positive sentiments: Use structure like "Experiencing [positive words]. [Positive descriptor] positive feelings..."
+- Negative sentiments: Use DIFFERENT structure like "[Negative words] dominate. [Negative descriptor] negative sentimental state characterized by..."
 OR use entirely different grammatical structures to maximize semantic distance in embeddings.
 
-Now extract the emotion from:
+Now extract the sentiment from:
 "{text}"
 
-Output ONLY the emotional description. Use varied vocabulary and structure to maximize differences for opposite emotions:"""
+Output ONLY the sentimental description. Use varied vocabulary and structure to maximize differences for opposite sentiments:"""
 
     payload = {
         "model": model,
@@ -94,25 +94,25 @@ Output ONLY the emotional description. Use varied vocabulary and structure to ma
     response = requests.post(CHAT_API_URL, json=payload, headers=headers)
     
     if response.status_code == 200:
-        emotion_desc = response.json()['choices'][0]['message']['content'].strip()
-        return emotion_desc
+        sentiment_desc = response.json()['choices'][0]['message']['content'].strip()
+        return sentiment_desc
     else:
         raise Exception(f"Chat API Error: {response.status_code} - {response.text}")
 
-def get_fancy_emotion_embedding(text_chunk, use_strong_instruction=False):
+def get_fancy_sentiment_embedding(text_chunk, use_strong_instruction=False):
     """
-    获取 NIPS 级别的 'Instruction-Aware Emotion Embedding'
+    获取 NIPS 级别的 'Instruction-Aware sentiment Embedding'
     
     Args:
         text_chunk: Input text
-        use_strong_instruction: If True, use a stronger emotion-focused instruction
+        use_strong_instruction: If True, use a stronger sentiment-focused instruction
     """
     # 关键点：使用 Instruction 强制模型在情感维度进行编码
     # 这就是 paper 里的 "Prompt-based Manifold Alignment"
     if use_strong_instruction:
-        instruction = "Extract the emotional and affective meaning from this text, focusing on feelings and sentiments: "
+        instruction = "Extract the sentimental and affective meaning from this text, focusing on feelings and sentiments: "
     else:
-        instruction = "Represent this sentence for emotion classification and affective analysis: "
+        instruction = "Represent this sentence for sentiment classification and affective analysis: "
     
     # Doubao-Embedding-Text 模型支持输入指令
     # 这里的 input 构造方式取决于具体 API 协议，通用做法如下：
@@ -167,29 +167,29 @@ def check_vector_normalization(vec, name=""):
     print(f"{name} L2 norm: {l2_norm:.6f}")
     return l2_norm
 
-def get_emotion_based_embedding(text, use_emotion_extraction=True):
+def get_sentiment_based_embedding(text, use_sentiment_extraction=True):
     """
     获取基于情绪描述的 embedding
     
     Args:
         text: 原始文本
-        use_emotion_extraction: 如果为 True，先提取情绪描述再获取 embedding
+        use_sentiment_extraction: 如果为 True，先提取情绪描述再获取 embedding
     
     Returns:
         embedding 向量和（如果提取了）情绪描述
     """
-    if use_emotion_extraction:
+    if use_sentiment_extraction:
         # 第一阶段：提取情绪描述
-        emotion_desc = extract_emotion_description(text)
+        sentiment_desc = extract_sentiment_description(text)
         # 第二阶段：获取情绪描述的 embedding
-        embedding = get_fancy_emotion_embedding(emotion_desc, use_strong_instruction=False)
-        return embedding, emotion_desc
+        embedding = get_fancy_sentiment_embedding(sentiment_desc, use_strong_instruction=False)
+        return embedding, sentiment_desc
     else:
         # 直接获取原始文本的 embedding
-        embedding = get_fancy_emotion_embedding(text, use_strong_instruction=False)
+        embedding = get_fancy_sentiment_embedding(text, use_strong_instruction=False)
         return embedding, None
 
-def test_embedding_similarity(text1, text2, description="", use_strong_instruction=False, normalize=False, use_emotion_extraction=False):
+def test_embedding_similarity(text1, text2, description="", use_strong_instruction=False, normalize=False, use_sentiment_extraction=False):
     """
     Test similarity between two texts and print results
     
@@ -197,33 +197,33 @@ def test_embedding_similarity(text1, text2, description="", use_strong_instructi
         text1: First text
         text2: Second text
         description: Test description
-        use_strong_instruction: Whether to use stronger emotion-focused instruction
+        use_strong_instruction: Whether to use stronger sentiment-focused instruction
         normalize: Whether to normalize vectors before dot product
-        use_emotion_extraction: If True, extract emotion descriptions first, then get embeddings
+        use_sentiment_extraction: If True, extract sentiment descriptions first, then get embeddings
     """
     print(f"\n{'='*60}")
     print(f"Test: {description}")
     if use_strong_instruction:
-        print("(Using strong emotion-focused instruction)")
-    if use_emotion_extraction:
-        print("(Using emotion extraction pipeline)")
+        print("(Using strong sentiment-focused instruction)")
+    if use_sentiment_extraction:
+        print("(Using sentiment extraction pipeline)")
     print(f"{'='*60}")
     print(f"Text 1: {text1}")
     print(f"Text 2: {text2}")
     
-    if use_emotion_extraction:
+    if use_sentiment_extraction:
         # 使用情绪提取流程
-        vec1, emotion1 = get_emotion_based_embedding(text1, use_emotion_extraction=True)
-        vec2, emotion2 = get_emotion_based_embedding(text2, use_emotion_extraction=True)
-        print(f"\nExtracted Emotion 1: {emotion1}")
-        print(f"Extracted Emotion 2: {emotion2}")
+        vec1, sentiment1 = get_sentiment_based_embedding(text1, use_sentiment_extraction=True)
+        vec2, sentiment2 = get_sentiment_based_embedding(text2, use_sentiment_extraction=True)
+        print(f"\nExtracted sentiment 1: {sentiment1}")
+        print(f"Extracted sentiment 2: {sentiment2}")
     else:
         # 直接获取原始文本的 embedding
-        vec1 = get_fancy_emotion_embedding(text1, use_strong_instruction)
-        vec2 = get_fancy_emotion_embedding(text2, use_strong_instruction)
+        vec1 = get_fancy_sentiment_embedding(text1, use_strong_instruction)
+        vec2 = get_fancy_sentiment_embedding(text2, use_strong_instruction)
     
     # Check normalization (only for first test to avoid too much output)
-    if "Different descriptions, both positive emotions" in description and not use_emotion_extraction:
+    if "Different descriptions, both positive sentiments" in description and not use_sentiment_extraction:
         print("\nVector Normalization Check:")
         check_vector_normalization(vec1, "Vector 1")
         check_vector_normalization(vec2, "Vector 2")
@@ -241,31 +241,31 @@ def test_embedding_similarity(text1, text2, description="", use_strong_instructi
     
     return similarity
 
-# --- Test Cases: Different Descriptions but Similar Emotions ---
+# --- Test Cases: Different Descriptions but Similar sentiments ---
 
-print("Testing Emotion-Aware Embedding Similarity")
+print("Testing sentiment-Aware Embedding Similarity")
 print("=" * 60)
 print("Note: Vectors from API are NOT normalized (L2 norm ~152)")
 print("Using normalized dot product (equivalent to cosine similarity) for values in [-1, 1] range")
 print("=" * 60)
 
-# Test Case 1: Positive emotions, different descriptions
+# Test Case 1: Positive sentiments, different descriptions
 test1_sim = test_embedding_similarity(
     "I'm thrilled about winning the competition!",
     "The sunset over the ocean was absolutely breathtaking.",
-    "Different descriptions, both positive emotions",
+    "Different descriptions, both positive sentiments",
     normalize=True
 )
 
-# Test Case 2: Negative emotions, different descriptions
+# Test Case 2: Negative sentiments, different descriptions
 test2_sim = test_embedding_similarity(
     "I'm devastated by the loss of my pet.",
     "The storm destroyed everything in its path.",
-    "Different descriptions, both negative emotions",
+    "Different descriptions, both negative sentiments",
     normalize=True
 )
 
-# Test Case 3: Mixed positive emotions, different contexts
+# Test Case 3: Mixed positive sentiments, different contexts
 test3_sim = test_embedding_similarity(
     "Getting accepted to my dream university fills me with joy.",
     "The concert last night was absolutely amazing and unforgettable.",
@@ -273,7 +273,7 @@ test3_sim = test_embedding_similarity(
     normalize=True
 )
 
-# Test Case 4: Mixed negative emotions, different contexts
+# Test Case 4: Mixed negative sentiments, different contexts
 test4_sim = test_embedding_similarity(
     "I'm deeply disappointed by the test results.",
     "The news about the accident made me feel very sad.",
@@ -281,7 +281,7 @@ test4_sim = test_embedding_similarity(
     normalize=True
 )
 
-# Test Case 5: Extremely different topics, same strong positive emotion
+# Test Case 5: Extremely different topics, same strong positive sentiment
 test5_sim = test_embedding_similarity(
     "I won the lottery! This is the happiest day of my life!",
     "The rainbow after the storm was the most beautiful thing I've ever seen.",
@@ -289,7 +289,7 @@ test5_sim = test_embedding_similarity(
     normalize=True
 )
 
-# Test Case 6: Extremely different topics, same strong negative emotion
+# Test Case 6: Extremely different topics, same strong negative sentiment
 test6_sim = test_embedding_similarity(
     "My house burned down in the fire. Everything is gone.",
     "I failed the most important exam of my life. I'm devastated.",
@@ -297,7 +297,7 @@ test6_sim = test_embedding_similarity(
     normalize=True
 )
 
-# Test Case 7: Fear/anxiety emotions, different contexts
+# Test Case 7: Fear/anxiety sentiments, different contexts
 test7_sim = test_embedding_similarity(
     "I'm terrified of speaking in public.",
     "The dark alley at night made me feel very anxious.",
@@ -305,54 +305,54 @@ test7_sim = test_embedding_similarity(
     normalize=True
 )
 
-# --- Control Cases: Similar descriptions but different emotions ---
+# --- Control Cases: Similar descriptions but different sentiments ---
 
 print("\n" + "="*60)
-print("Control Cases: Similar Descriptions, Different Emotions")
+print("Control Cases: Similar Descriptions, Different sentiments")
 print("="*60)
 
-# Control Case 1: Similar description, opposite emotions
+# Control Case 1: Similar description, opposite sentiments
 control1_sim = test_embedding_similarity(
     "I love this new restaurant.",
     "I hate this new restaurant.",
-    "Similar description, opposite emotions",
+    "Similar description, opposite sentiments",
     normalize=True
 )
 
-# Control Case 2: Similar description, different emotions
+# Control Case 2: Similar description, different sentiments
 control2_sim = test_embedding_similarity(
     "The movie was fantastic and entertaining.",
     "The movie was boring and disappointing.",
-    "Similar description, different emotions",
+    "Similar description, different sentiments",
     normalize=True
 )
 
-# Control Case 3: Same topic, opposite extreme emotions
+# Control Case 3: Same topic, opposite extreme sentiments
 control3_sim = test_embedding_similarity(
     "I won the lottery! This is the happiest day of my life!",
     "I lost all my money in a scam. This is the worst day of my life.",
-    "Same topic (money/life event), opposite extreme emotions",
+    "Same topic (money/life event), opposite extreme sentiments",
     normalize=True
 )
 
-# Control Case 4: Same topic, opposite emotions
+# Control Case 4: Same topic, opposite sentiments
 control4_sim = test_embedding_similarity(
     "The rainbow after the storm was the most beautiful thing I've ever seen.",
     "The storm destroyed my house and everything I owned.",
-    "Same topic (storm), opposite emotions",
+    "Same topic (storm), opposite sentiments",
     normalize=True
 )
 
 # --- Baseline Case: Completely different ---
 
 print("\n" + "="*60)
-print("Baseline Case: Different Descriptions and Emotions")
+print("Baseline Case: Different Descriptions and sentiments")
 print("="*60)
 
 baseline_sim = test_embedding_similarity(
     "The weather is nice today.",
     "I'm feeling terrible about the exam.",
-    "Different descriptions and emotions (baseline)",
+    "Different descriptions and sentiments (baseline)",
     normalize=True
 )
 
@@ -368,33 +368,33 @@ print(f"Test 4 (Sadness, different contexts): {test4_sim:.4f}")
 print(f"Test 5 (Extreme happiness, diff topics): {test5_sim:.4f}")
 print(f"Test 6 (Extreme sadness, diff topics): {test6_sim:.4f}")
 print(f"Test 7 (Fear/anxiety, diff contexts): {test7_sim:.4f}")
-print(f"\nControl 1 (Opposite emotions):    {control1_sim:.4f}")
-print(f"Control 2 (Different emotions):    {control2_sim:.4f}")
+print(f"\nControl 1 (Opposite sentiments):    {control1_sim:.4f}")
+print(f"Control 2 (Different sentiments):    {control2_sim:.4f}")
 print(f"Control 3 (Same topic, opposite extreme): {control3_sim:.4f}")
 print(f"Control 4 (Same topic, opposite):   {control4_sim:.4f}")
 print(f"\nBaseline (Different everything):  {baseline_sim:.4f}")
 
-avg_same_emotion = (test1_sim + test2_sim + test3_sim + test4_sim + test5_sim + test6_sim + test7_sim) / 7
+avg_same_sentiment = (test1_sim + test2_sim + test3_sim + test4_sim + test5_sim + test6_sim + test7_sim) / 7
 avg_control = (control1_sim + control2_sim + control3_sim + control4_sim) / 4
 
-print(f"\nAverage similarity (same emotion, different desc): {avg_same_emotion:.4f}")
-print(f"Average similarity (different emotions, similar desc): {avg_control:.4f}")
+print(f"\nAverage similarity (same sentiment, different desc): {avg_same_sentiment:.4f}")
+print(f"Average similarity (different sentiments, similar desc): {avg_control:.4f}")
 print(f"Baseline similarity (different everything): {baseline_sim:.4f}")
 
-print(f"\nDifference (same emotion vs different emotions): {avg_same_emotion - avg_control:.4f}")
-print(f"Difference (same emotion vs baseline): {avg_same_emotion - baseline_sim:.4f}")
+print(f"\nDifference (same sentiment vs different sentiments): {avg_same_sentiment - avg_control:.4f}")
+print(f"Difference (same sentiment vs baseline): {avg_same_sentiment - baseline_sim:.4f}")
 
 print("\n" + "="*60)
-print("Detailed Analysis: Semantic vs Emotion Similarity")
+print("Detailed Analysis: Semantic vs sentiment Similarity")
 print("="*60)
 
 # Calculate percentage differences
-semantic_advantage = avg_control - avg_same_emotion
-emotion_advantage = avg_same_emotion - baseline_sim
-semantic_advantage_pct = (semantic_advantage / avg_same_emotion) * 100
-emotion_advantage_pct = (emotion_advantage / baseline_sim) * 100
+semantic_advantage = avg_control - avg_same_sentiment
+sentiment_advantage = avg_same_sentiment - baseline_sim
+semantic_advantage_pct = (semantic_advantage / avg_same_sentiment) * 100
+sentiment_advantage_pct = (sentiment_advantage / baseline_sim) * 100
 
-print(f"\n1. 相同情感但不同描述的相似度: {avg_same_emotion:.4f}")
+print(f"\n1. 相同情感但不同描述的相似度: {avg_same_sentiment:.4f}")
 print(f"   (7个测试用例的平均值)")
 print(f"\n2. 不同情感但相似描述的相似度: {avg_control:.4f}")
 print(f"   (4个对照测试的平均值)")
@@ -404,21 +404,21 @@ print(f"\n{'='*60}")
 print("关键发现:")
 print(f"{'='*60}")
 
-if avg_same_emotion > avg_control and avg_same_emotion > baseline_sim:
+if avg_same_sentiment > avg_control and avg_same_sentiment > baseline_sim:
     print("✓ 结论: 模型更关注情绪相似度")
-    print(f"  - 相同情绪但不同描述的相似度 ({avg_same_emotion:.4f})")
+    print(f"  - 相同情绪但不同描述的相似度 ({avg_same_sentiment:.4f})")
     print(f"    高于不同情绪但相似描述的相似度 ({avg_control:.4f})")
-    print(f"  - 差异: +{abs(avg_same_emotion - avg_control):.4f} ({abs(semantic_advantage_pct):.2f}%)")
+    print(f"  - 差异: +{abs(avg_same_sentiment - avg_control):.4f} ({abs(semantic_advantage_pct):.2f}%)")
 else:
     print("✗ 结论: 模型更关注语义相似度")
     print(f"\n  证据1: 相似描述的相似度 ({avg_control:.4f})")
-    print(f"         高于相同情绪的相似度 ({avg_same_emotion:.4f})")
+    print(f"         高于相同情绪的相似度 ({avg_same_sentiment:.4f})")
     print(f"         差异: +{abs(semantic_advantage):.4f} ({abs(semantic_advantage_pct):.2f}%)")
     
     print(f"\n  证据2: 相同情绪与基线的差异很小")
-    print(f"         相同情绪: {avg_same_emotion:.4f}")
+    print(f"         相同情绪: {avg_same_sentiment:.4f}")
     print(f"         基线:     {baseline_sim:.4f}")
-    print(f"         差异: {emotion_advantage:.4f} ({emotion_advantage_pct:.2f}%)")
+    print(f"         差异: {sentiment_advantage:.4f} ({sentiment_advantage_pct:.2f}%)")
     print(f"         → 说明情绪相似性对相似度影响很小")
     
     print(f"\n  证据3: 具体案例对比")
@@ -438,9 +438,9 @@ else:
     print(f"  2. 当前指令可能不足以引导模型关注情绪维度")
     print(f"  3. 情绪信息可能存在于向量的某些维度，但被语义信息主导")
 
-# Test with stronger emotion instruction
+# Test with stronger sentiment instruction
 print("\n" + "="*60)
-print("Testing with Stronger Emotion-Focused Instruction")
+print("Testing with Stronger sentiment-Focused Instruction")
 print("="*60)
 
 test_strong_1 = test_embedding_similarity(
@@ -454,433 +454,433 @@ test_strong_1 = test_embedding_similarity(
 test_strong_2 = test_embedding_similarity(
     "I love this new restaurant.",
     "I hate this new restaurant.",
-    "Opposite emotions, similar description (strong instruction)",
+    "Opposite sentiments, similar description (strong instruction)",
     use_strong_instruction=True,
     normalize=True
 )
 
 print(f"\nComparison:")
-print(f"Same emotion (strong instruction): {test_strong_1:.4f}")
-print(f"Opposite emotion (strong instruction): {test_strong_2:.4f}")
+print(f"Same sentiment (strong instruction): {test_strong_1:.4f}")
+print(f"Opposite sentiment (strong instruction): {test_strong_2:.4f}")
 print(f"Difference: {test_strong_1 - test_strong_2:.4f}")
 
 if test_strong_1 > test_strong_2:
-    print("✓ Stronger instruction helps capture emotion similarity!")
+    print("✓ Stronger instruction helps capture sentiment similarity!")
 else:
     print("✗ Stronger instruction doesn't significantly change the pattern.")
 
-# --- Testing with Emotion Extraction Pipeline ---
+# --- Testing with sentiment Extraction Pipeline ---
 
 print("\n" + "="*60)
-print("Comprehensive Testing with Emotion Extraction Pipeline")
+print("Comprehensive Testing with sentiment Extraction Pipeline")
 print("="*60)
-print("Using Qwen3-Next-80B-A3B-Instruct to extract emotion descriptions first")
-print("Then comparing embeddings of emotion descriptions")
+print("Using Qwen3-Next-80B-A3B-Instruct to extract sentiment descriptions first")
+print("Then comparing embeddings of sentiment descriptions")
 print("="*60)
 
-# ===== Category 1: Same Emotion Type, Different Descriptions (Should have HIGH similarity) =====
+# ===== Category 1: Same sentiment Type, Different Descriptions (Should have HIGH similarity) =====
 print("\n" + "="*60)
-print("Category 1: Same Emotion Type, Different Descriptions")
-print("(Should have HIGH similarity after emotion extraction)")
+print("Category 1: Same sentiment Type, Different Descriptions")
+print("(Should have HIGH similarity after sentiment extraction)")
 print("="*60)
 
 # 1.1 Extreme Happiness - completely different contexts
-emotion_test1_1 = test_embedding_similarity(
+sentiment_test1_1 = test_embedding_similarity(
     "I'm ecstatic! I just got accepted to my dream university!",
     "Winning the championship was the most incredible moment of my entire life!",
     "1.1 Extreme happiness - different achievements",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-emotion_test1_2 = test_embedding_similarity(
+sentiment_test1_2 = test_embedding_similarity(
     "The birth of my child filled me with indescribable joy.",
     "Seeing the northern lights for the first time was absolutely magical and euphoric.",
     "1.2 Extreme happiness - different experiences",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.3 Moderate Happiness - different contexts
-emotion_test1_3 = test_embedding_similarity(
+sentiment_test1_3 = test_embedding_similarity(
     "I'm really pleased with how the project turned out.",
     "The coffee this morning tasted perfect, making me feel content.",
     "1.3 Moderate happiness - different sources",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.4 Extreme Sadness - different contexts
-emotion_test2_1 = test_embedding_similarity(
+sentiment_test2_1 = test_embedding_similarity(
     "My grandmother passed away last week. I'm completely heartbroken.",
     "The company I worked for 20 years just went bankrupt. I feel utterly devastated.",
     "2.1 Extreme sadness - different losses",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-emotion_test2_2 = test_embedding_similarity(
+sentiment_test2_2 = test_embedding_similarity(
     "I failed the most important exam of my life. Everything feels hopeless.",
     "My best friend moved to another country. I'm crushed and lonely.",
     "2.2 Extreme sadness - different situations",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.5 Moderate Sadness - different contexts
-emotion_test2_3 = test_embedding_similarity(
+sentiment_test2_3 = test_embedding_similarity(
     "I'm feeling a bit down after missing the deadline.",
     "The rainy weather today makes me feel melancholic.",
     "2.3 Moderate sadness - different triggers",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.6 Fear/Anxiety - different contexts
-emotion_test3_1 = test_embedding_similarity(
+sentiment_test3_1 = test_embedding_similarity(
     "I'm terrified of giving the presentation tomorrow.",
     "Walking alone in that dark alley made me feel extremely anxious.",
     "3.1 Fear/anxiety - different sources",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-emotion_test3_2 = test_embedding_similarity(
+sentiment_test3_2 = test_embedding_similarity(
     "The thought of losing my job keeps me awake at night.",
     "I'm worried sick about my daughter's health condition.",
     "3.2 Fear/anxiety - different concerns",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.7 Anger - different contexts
-emotion_test4_1 = test_embedding_similarity(
+sentiment_test4_1 = test_embedding_similarity(
     "I'm absolutely furious about the unfair treatment I received.",
     "The constant noise from the construction site is driving me insane with rage.",
     "4.1 Anger - different triggers",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-emotion_test4_2 = test_embedding_similarity(
+sentiment_test4_2 = test_embedding_similarity(
     "I'm really annoyed by the slow internet connection.",
     "The rude customer service made me feel irritated and frustrated.",
     "4.2 Moderate anger - different situations",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.8 Surprise/Wonder - different contexts
-emotion_test5_1 = test_embedding_similarity(
+sentiment_test5_1 = test_embedding_similarity(
     "I was completely astonished by the unexpected gift.",
     "The magician's trick left me in absolute amazement.",
     "5.1 Surprise/wonder - different sources",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.9 Disgust - different contexts
-emotion_test6_1 = test_embedding_similarity(
+sentiment_test6_1 = test_embedding_similarity(
     "The spoiled food made me feel nauseous and disgusted.",
     "I'm repulsed by the unethical behavior I witnessed.",
     "6.1 Disgust - different triggers",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.10 Love/Affection - different contexts
-emotion_test7_1 = test_embedding_similarity(
+sentiment_test7_1 = test_embedding_similarity(
     "I adore spending time with my family.",
     "My heart swells with love when I see my pet.",
     "7.1 Love/affection - different objects",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 1.11 Relief - different contexts
-emotion_test8_1 = test_embedding_similarity(
+sentiment_test8_1 = test_embedding_similarity(
     "I felt immense relief when I found my lost wallet.",
     "Finally finishing the difficult project brought me great peace.",
     "8.1 Relief - different sources",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-# ===== Category 2: Different Emotions, Similar Descriptions (Should have LOW similarity) =====
+# ===== Category 2: Different sentiments, Similar Descriptions (Should have LOW similarity) =====
 print("\n" + "="*60)
-print("Category 2: Different Emotions, Similar Descriptions")
-print("(Should have LOW similarity after emotion extraction)")
+print("Category 2: Different sentiments, Similar Descriptions")
+print("(Should have LOW similarity after sentiment extraction)")
 print("="*60)
 
 # 2.1 Love vs Hate - same object
-emotion_control1_1 = test_embedding_similarity(
+sentiment_control1_1 = test_embedding_similarity(
     "I absolutely love this new book I'm reading.",
     "I absolutely hate this new book I'm reading.",
     "2.1 Love vs Hate - same object",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 2.2 Joy vs Sadness - same event type
-emotion_control2_1 = test_embedding_similarity(
+sentiment_control2_1 = test_embedding_similarity(
     "Graduating from college was the happiest moment of my life.",
     "Graduating from college was the saddest moment of my life.",
     "2.2 Joy vs Sadness - same event",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 2.3 Excitement vs Disappointment - same context
-emotion_control3_1 = test_embedding_similarity(
+sentiment_control3_1 = test_embedding_similarity(
     "I'm so excited about the upcoming vacation!",
     "I'm so disappointed about the cancelled vacation.",
     "2.3 Excitement vs Disappointment - same context",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 2.4 Pride vs Shame - same achievement
-emotion_control4_1 = test_embedding_similarity(
+sentiment_control4_1 = test_embedding_similarity(
     "I'm proud of my performance in the competition.",
     "I'm ashamed of my performance in the competition.",
     "2.4 Pride vs Shame - same achievement",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 2.5 Hope vs Despair - same situation
-emotion_control5_1 = test_embedding_similarity(
+sentiment_control5_1 = test_embedding_similarity(
     "I feel hopeful about my future prospects.",
     "I feel hopeless about my future prospects.",
     "2.5 Hope vs Despair - same situation",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 2.6 Gratitude vs Resentment - same person
-emotion_control6_1 = test_embedding_similarity(
+sentiment_control6_1 = test_embedding_similarity(
     "I'm grateful for my teacher's guidance.",
     "I resent my teacher's guidance.",
     "2.6 Gratitude vs Resentment - same person",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 2.7 Contentment vs Frustration - same activity
-emotion_control7_1 = test_embedding_similarity(
+sentiment_control7_1 = test_embedding_similarity(
     "I'm satisfied with my work progress.",
     "I'm frustrated with my work progress.",
     "2.7 Contentment vs Frustration - same activity",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-# ===== Category 3: Different Emotion Types (Should have LOW similarity) =====
+# ===== Category 3: Different sentiment Types (Should have LOW similarity) =====
 print("\n" + "="*60)
-print("Category 3: Different Emotion Types")
+print("Category 3: Different sentiment Types")
 print("(Should have LOW similarity)")
 print("="*60)
 
 # 3.1 Happiness vs Fear
-emotion_diff1 = test_embedding_similarity(
+sentiment_diff1 = test_embedding_similarity(
     "I'm overjoyed about the upcoming trip!",
     "I'm terrified about the upcoming trip!",
     "3.1 Happiness vs Fear",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 3.2 Sadness vs Anger
-emotion_diff2 = test_embedding_similarity(
+sentiment_diff2 = test_embedding_similarity(
     "I'm deeply saddened by the news.",
     "I'm extremely angry about the news.",
     "3.2 Sadness vs Anger",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 3.3 Surprise vs Disgust
-emotion_diff3 = test_embedding_similarity(
+sentiment_diff3 = test_embedding_similarity(
     "I was amazed by what I saw.",
     "I was disgusted by what I saw.",
     "3.3 Surprise vs Disgust",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # 3.4 Love vs Fear
-emotion_diff4 = test_embedding_similarity(
+sentiment_diff4 = test_embedding_similarity(
     "I love going to new places.",
     "I fear going to new places.",
     "3.4 Love vs Fear",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-# ===== Category 4: Neutral vs Emotional (Should have LOW similarity) =====
+# ===== Category 4: Neutral vs sentimental (Should have LOW similarity) =====
 print("\n" + "="*60)
-print("Category 4: Neutral vs Emotional")
+print("Category 4: Neutral vs sentimental")
 print("(Should have LOW similarity)")
 print("="*60)
 
-emotion_neutral1 = test_embedding_similarity(
+sentiment_neutral1 = test_embedding_similarity(
     "The meeting is scheduled for 3 PM tomorrow.",
     "I'm thrilled about the meeting tomorrow!",
     "4.1 Neutral vs Excitement",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-emotion_neutral2 = test_embedding_similarity(
+sentiment_neutral2 = test_embedding_similarity(
     "The document contains important information.",
     "I'm devastated by the information in the document.",
     "4.2 Neutral vs Sadness",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-# ===== Category 5: Mixed/Complex Emotions =====
+# ===== Category 5: Mixed/Complex sentiments =====
 print("\n" + "="*60)
-print("Category 5: Mixed/Complex Emotions")
+print("Category 5: Mixed/Complex sentiments")
 print("="*60)
 
-emotion_mixed1 = test_embedding_similarity(
+sentiment_mixed1 = test_embedding_similarity(
     "I'm excited but also nervous about the new job.",
     "I feel both happy and anxious about the changes.",
     "5.1 Mixed: Excitement+Nervousness",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-emotion_mixed2 = test_embedding_similarity(
+sentiment_mixed2 = test_embedding_similarity(
     "I'm sad but also relieved that it's over.",
     "I feel both melancholy and peaceful now.",
     "5.2 Mixed: Sadness+Relief",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
 # Baseline
-emotion_baseline = test_embedding_similarity(
+sentiment_baseline = test_embedding_similarity(
     "The weather is nice today.",
     "I'm feeling terrible about the exam.",
-    "Baseline: Different descriptions and emotions",
+    "Baseline: Different descriptions and sentiments",
     normalize=True,
-    use_emotion_extraction=True
+    use_sentiment_extraction=True
 )
 
-# --- Comprehensive Analysis: With vs Without Emotion Extraction ---
+# --- Comprehensive Analysis: With vs Without sentiment Extraction ---
 
 print("\n" + "="*60)
-print("Comprehensive Analysis: Emotion Extraction Pipeline Results")
+print("Comprehensive Analysis: sentiment Extraction Pipeline Results")
 print("="*60)
 
 # Calculate averages for each category
-same_emotion_tests = [
-    emotion_test1_1, emotion_test1_2, emotion_test1_3,
-    emotion_test2_1, emotion_test2_2, emotion_test2_3,
-    emotion_test3_1, emotion_test3_2,
-    emotion_test4_1, emotion_test4_2,
-    emotion_test5_1,
-    emotion_test6_1,
-    emotion_test7_1,
-    emotion_test8_1
+same_sentiment_tests = [
+    sentiment_test1_1, sentiment_test1_2, sentiment_test1_3,
+    sentiment_test2_1, sentiment_test2_2, sentiment_test2_3,
+    sentiment_test3_1, sentiment_test3_2,
+    sentiment_test4_1, sentiment_test4_2,
+    sentiment_test5_1,
+    sentiment_test6_1,
+    sentiment_test7_1,
+    sentiment_test8_1
 ]
 
-different_emotion_controls = [
-    emotion_control1_1, emotion_control2_1, emotion_control3_1,
-    emotion_control4_1, emotion_control5_1, emotion_control6_1,
-    emotion_control7_1
+different_sentiment_controls = [
+    sentiment_control1_1, sentiment_control2_1, sentiment_control3_1,
+    sentiment_control4_1, sentiment_control5_1, sentiment_control6_1,
+    sentiment_control7_1
 ]
 
-different_emotion_types = [
-    emotion_diff1, emotion_diff2, emotion_diff3, emotion_diff4
+different_sentiment_types = [
+    sentiment_diff1, sentiment_diff2, sentiment_diff3, sentiment_diff4
 ]
 
-neutral_vs_emotional = [
-    emotion_neutral1, emotion_neutral2
+neutral_vs_sentimental = [
+    sentiment_neutral1, sentiment_neutral2
 ]
 
-mixed_emotions = [
-    emotion_mixed1, emotion_mixed2
+mixed_sentiments = [
+    sentiment_mixed1, sentiment_mixed2
 ]
 
-avg_same_emotion = sum(same_emotion_tests) / len(same_emotion_tests)
-avg_different_emotion_similar_desc = sum(different_emotion_controls) / len(different_emotion_controls)
-avg_different_emotion_types = sum(different_emotion_types) / len(different_emotion_types)
-avg_neutral_vs_emotional = sum(neutral_vs_emotional) / len(neutral_vs_emotional)
-avg_mixed = sum(mixed_emotions) / len(mixed_emotions)
+avg_same_sentiment = sum(same_sentiment_tests) / len(same_sentiment_tests)
+avg_different_sentiment_similar_desc = sum(different_sentiment_controls) / len(different_sentiment_controls)
+avg_different_sentiment_types = sum(different_sentiment_types) / len(different_sentiment_types)
+avg_neutral_vs_sentimental = sum(neutral_vs_sentimental) / len(neutral_vs_sentimental)
+avg_mixed = sum(mixed_sentiments) / len(mixed_sentiments)
 
-print(f"\nCategory 1: Same Emotion, Different Descriptions")
-print(f"  Number of tests: {len(same_emotion_tests)}")
-print(f"  Average similarity: {avg_same_emotion:.4f}")
-print(f"  Range: {min(same_emotion_tests):.4f} - {max(same_emotion_tests):.4f}")
-print(f"  Std deviation: {np.std(same_emotion_tests):.4f}")
+print(f"\nCategory 1: Same sentiment, Different Descriptions")
+print(f"  Number of tests: {len(same_sentiment_tests)}")
+print(f"  Average similarity: {avg_same_sentiment:.4f}")
+print(f"  Range: {min(same_sentiment_tests):.4f} - {max(same_sentiment_tests):.4f}")
+print(f"  Std deviation: {np.std(same_sentiment_tests):.4f}")
 
-print(f"\nCategory 2: Different Emotions, Similar Descriptions")
-print(f"  Number of tests: {len(different_emotion_controls)}")
-print(f"  Average similarity: {avg_different_emotion_similar_desc:.4f}")
-print(f"  Range: {min(different_emotion_controls):.4f} - {max(different_emotion_controls):.4f}")
-print(f"  Std deviation: {np.std(different_emotion_controls):.4f}")
+print(f"\nCategory 2: Different sentiments, Similar Descriptions")
+print(f"  Number of tests: {len(different_sentiment_controls)}")
+print(f"  Average similarity: {avg_different_sentiment_similar_desc:.4f}")
+print(f"  Range: {min(different_sentiment_controls):.4f} - {max(different_sentiment_controls):.4f}")
+print(f"  Std deviation: {np.std(different_sentiment_controls):.4f}")
 
-print(f"\nCategory 3: Different Emotion Types")
-print(f"  Number of tests: {len(different_emotion_types)}")
-print(f"  Average similarity: {avg_different_emotion_types:.4f}")
-print(f"  Range: {min(different_emotion_types):.4f} - {max(different_emotion_types):.4f}")
+print(f"\nCategory 3: Different sentiment Types")
+print(f"  Number of tests: {len(different_sentiment_types)}")
+print(f"  Average similarity: {avg_different_sentiment_types:.4f}")
+print(f"  Range: {min(different_sentiment_types):.4f} - {max(different_sentiment_types):.4f}")
 
-print(f"\nCategory 4: Neutral vs Emotional")
-print(f"  Number of tests: {len(neutral_vs_emotional)}")
-print(f"  Average similarity: {avg_neutral_vs_emotional:.4f}")
-print(f"  Range: {min(neutral_vs_emotional):.4f} - {max(neutral_vs_emotional):.4f}")
+print(f"\nCategory 4: Neutral vs sentimental")
+print(f"  Number of tests: {len(neutral_vs_sentimental)}")
+print(f"  Average similarity: {avg_neutral_vs_sentimental:.4f}")
+print(f"  Range: {min(neutral_vs_sentimental):.4f} - {max(neutral_vs_sentimental):.4f}")
 
-print(f"\nCategory 5: Mixed/Complex Emotions")
-print(f"  Number of tests: {len(mixed_emotions)}")
+print(f"\nCategory 5: Mixed/Complex sentiments")
+print(f"  Number of tests: {len(mixed_sentiments)}")
 print(f"  Average similarity: {avg_mixed:.4f}")
-print(f"  Range: {min(mixed_emotions):.4f} - {max(mixed_emotions):.4f}")
+print(f"  Range: {min(mixed_sentiments):.4f} - {max(mixed_sentiments):.4f}")
 
-print(f"\nBaseline: Different descriptions and emotions")
-print(f"  Similarity: {emotion_baseline:.4f}")
+print(f"\nBaseline: Different descriptions and sentiments")
+print(f"  Similarity: {sentiment_baseline:.4f}")
 
 # Key comparisons
 print(f"\n{'='*60}")
 print("Key Comparisons")
 print(f"{'='*60}")
 
-diff1 = avg_same_emotion - avg_different_emotion_similar_desc
-diff2 = avg_same_emotion - avg_different_emotion_types
-diff3 = avg_same_emotion - avg_neutral_vs_emotional
-diff4 = avg_same_emotion - emotion_baseline
+diff1 = avg_same_sentiment - avg_different_sentiment_similar_desc
+diff2 = avg_same_sentiment - avg_different_sentiment_types
+diff3 = avg_same_sentiment - avg_neutral_vs_sentimental
+diff4 = avg_same_sentiment - sentiment_baseline
 
-print(f"\n1. Same Emotion vs Different Emotions (Similar Descriptions):")
-print(f"   Same emotion:     {avg_same_emotion:.4f}")
-print(f"   Different emotion: {avg_different_emotion_similar_desc:.4f}")
-print(f"   Difference:       {diff1:+.4f} ({diff1/avg_same_emotion*100:+.2f}%)")
+print(f"\n1. Same sentiment vs Different sentiments (Similar Descriptions):")
+print(f"   Same sentiment:     {avg_same_sentiment:.4f}")
+print(f"   Different sentiment: {avg_different_sentiment_similar_desc:.4f}")
+print(f"   Difference:       {diff1:+.4f} ({diff1/avg_same_sentiment*100:+.2f}%)")
 
-print(f"\n2. Same Emotion vs Different Emotion Types:")
-print(f"   Same emotion:     {avg_same_emotion:.4f}")
-print(f"   Different types:   {avg_different_emotion_types:.4f}")
-print(f"   Difference:       {diff2:+.4f} ({diff2/avg_same_emotion*100:+.2f}%)")
+print(f"\n2. Same sentiment vs Different sentiment Types:")
+print(f"   Same sentiment:     {avg_same_sentiment:.4f}")
+print(f"   Different types:   {avg_different_sentiment_types:.4f}")
+print(f"   Difference:       {diff2:+.4f} ({diff2/avg_same_sentiment*100:+.2f}%)")
 
-print(f"\n3. Same Emotion vs Neutral:")
-print(f"   Same emotion:     {avg_same_emotion:.4f}")
-print(f"   Neutral:          {avg_neutral_vs_emotional:.4f}")
-print(f"   Difference:       {diff3:+.4f} ({diff3/avg_same_emotion*100:+.2f}%)")
+print(f"\n3. Same sentiment vs Neutral:")
+print(f"   Same sentiment:     {avg_same_sentiment:.4f}")
+print(f"   Neutral:          {avg_neutral_vs_sentimental:.4f}")
+print(f"   Difference:       {diff3:+.4f} ({diff3/avg_same_sentiment*100:+.2f}%)")
 
-print(f"\n4. Same Emotion vs Baseline:")
-print(f"   Same emotion:     {avg_same_emotion:.4f}")
-print(f"   Baseline:         {emotion_baseline:.4f}")
-print(f"   Difference:       {diff4:+.4f} ({diff4/avg_same_emotion*100:+.2f}%)")
+print(f"\n4. Same sentiment vs Baseline:")
+print(f"   Same sentiment:     {avg_same_sentiment:.4f}")
+print(f"   Baseline:         {sentiment_baseline:.4f}")
+print(f"   Difference:       {diff4:+.4f} ({diff4/avg_same_sentiment*100:+.2f}%)")
 
 # Final assessment
 print(f"\n{'='*60}")
-print("Final Assessment: Emotion Extraction Pipeline")
+print("Final Assessment: sentiment Extraction Pipeline")
 print(f"{'='*60}")
 
 success_criteria = [
-    (diff1 > 0, "Same emotions > Different emotions (similar desc)"),
-    (diff2 > 0.05, "Same emotions > Different emotion types (gap > 0.05)"),
-    (diff3 > 0.05, "Same emotions > Neutral (gap > 0.05)"),
-    (avg_different_emotion_similar_desc < avg_different_emotion_types, "Different emotions (similar desc) < Different types"),
+    (diff1 > 0, "Same sentiments > Different sentiments (similar desc)"),
+    (diff2 > 0.05, "Same sentiments > Different sentiment types (gap > 0.05)"),
+    (diff3 > 0.05, "Same sentiments > Neutral (gap > 0.05)"),
+    (avg_different_sentiment_similar_desc < avg_different_sentiment_types, "Different sentiments (similar desc) < Different types"),
 ]
 
 passed = sum(1 for condition, _ in success_criteria if condition)
@@ -892,37 +892,37 @@ for condition, desc in success_criteria:
     print(f"  {status} {desc}")
 
 if passed >= 3:
-    print(f"\n✓ SUCCESS: Emotion extraction pipeline is working effectively!")
-    print(f"  - Successfully distinguishes same emotions from different emotions")
+    print(f"\n✓ SUCCESS: sentiment extraction pipeline is working effectively!")
+    print(f"  - Successfully distinguishes same sentiments from different sentiments")
     print(f"  - Reduces semantic bias in similarity calculation")
-    print(f"  - Makes emotion similarity more prominent")
+    print(f"  - Makes sentiment similarity more prominent")
 else:
     print(f"\n⚠ PARTIAL SUCCESS: Pipeline shows improvement but needs refinement")
     print(f"  - Some criteria met, but not all")
-    print(f"  - Consider refining the emotion extraction prompt")
+    print(f"  - Consider refining the sentiment extraction prompt")
 
-# Detailed breakdown by emotion type
+# Detailed breakdown by sentiment type
 print(f"\n{'='*60}")
-print("Breakdown by Emotion Type")
+print("Breakdown by sentiment Type")
 print(f"{'='*60}")
 
-happiness_tests = [emotion_test1_1, emotion_test1_2, emotion_test1_3]
-sadness_tests = [emotion_test2_1, emotion_test2_2, emotion_test2_3]
-fear_tests = [emotion_test3_1, emotion_test3_2]
-anger_tests = [emotion_test4_1, emotion_test4_2]
+happiness_tests = [sentiment_test1_1, sentiment_test1_2, sentiment_test1_3]
+sadness_tests = [sentiment_test2_1, sentiment_test2_2, sentiment_test2_3]
+fear_tests = [sentiment_test3_1, sentiment_test3_2]
+anger_tests = [sentiment_test4_1, sentiment_test4_2]
 
-print(f"\nHappiness (same emotion, different contexts):")
+print(f"\nHappiness (same sentiment, different contexts):")
 print(f"  Average: {sum(happiness_tests)/len(happiness_tests):.4f}")
 print(f"  Range: {min(happiness_tests):.4f} - {max(happiness_tests):.4f}")
 
-print(f"\nSadness (same emotion, different contexts):")
+print(f"\nSadness (same sentiment, different contexts):")
 print(f"  Average: {sum(sadness_tests)/len(sadness_tests):.4f}")
 print(f"  Range: {min(sadness_tests):.4f} - {max(sadness_tests):.4f}")
 
-print(f"\nFear/Anxiety (same emotion, different contexts):")
+print(f"\nFear/Anxiety (same sentiment, different contexts):")
 print(f"  Average: {sum(fear_tests)/len(fear_tests):.4f}")
 print(f"  Range: {min(fear_tests):.4f} - {max(fear_tests):.4f}")
 
-print(f"\nAnger (same emotion, different contexts):")
+print(f"\nAnger (same sentiment, different contexts):")
 print(f"  Average: {sum(anger_tests)/len(anger_tests):.4f}")
 print(f"  Range: {min(anger_tests):.4f} - {max(anger_tests):.4f}")
