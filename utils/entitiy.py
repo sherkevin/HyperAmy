@@ -63,24 +63,29 @@ class Entity:
     def extract_entities(self, chunk: str) -> list:
         """
         从 chunk 中提取命名实体
-        
+
         Args:
             chunk: 输入文本片段
-        
+
         Returns:
             list: 命名实体列表
         """
+        # 检查空文本
+        if not chunk or not chunk.strip():
+            logger.debug("Input chunk is empty, returning empty entity list")
+            return []
+
         try:
             # 使用 OpenIE 的 NER 功能
             ner_output = self.openie.ner(chunk_key="temp", passage=chunk)
-            
+
             # 返回唯一实体列表
             entities = ner_output.unique_entities
-            
+
             logger.debug(f"Extracted {len(entities)} entities from chunk: {entities}")
-            
+
             return entities
-            
+
         except Exception as e:
             logger.error(f"Failed to extract entities: {e}")
             raise

@@ -64,6 +64,9 @@ class Sentence:
         )
 
         try:
+            logger.info(f"[Sentence.generate_affective_description] 开始为实体 '{entity}' 生成情感描述")
+            logger.debug(f"  Prompt: {prompt[:200]}{'...' if len(prompt) > 200 else ''}")
+            
             result = self.client.complete(
                 query=prompt,
                 max_tokens=50,  # 情绪词列表较短，减少 token 数
@@ -72,14 +75,19 @@ class Sentence:
             
             description = result.get_answer_text().strip()
             
-            logger.debug(
-                f"Generated affective description for entity '{entity}': {description[:50]}..."
+            logger.info(
+                f"[Sentence.generate_affective_description] 成功生成描述: {description[:100]}{'...' if len(description) > 100 else ''}"
             )
             
             return description
             
         except Exception as e:
-            logger.error(f"Failed to generate affective description for entity '{entity}': {e}")
+            logger.error(f"[Sentence.generate_affective_description] 生成失败")
+            logger.error(f"  实体: {entity}")
+            logger.error(f"  句子: {sentence[:100]}{'...' if len(sentence) > 100 else ''}")
+            logger.error(f"  错误信息: {str(e)}")
+            import traceback
+            logger.error(f"  错误堆栈:\n{traceback.format_exc()}")
             raise
     
     def generate_affective_descriptions(

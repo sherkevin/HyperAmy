@@ -1,154 +1,20 @@
-WARNING 12-25 11:10:46 [importing.py:53] Triton is installed, but `triton.backends` could not be imported. Disabling Triton.
-INFO 12-25 11:10:46 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
-[2025-12-25 11:10:47] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
-[2025-12-25 11:10:48] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
-[2025-12-25 11:10:48] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
-[2025-12-25 11:10:48] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
-[2025-12-25 11:10:48] INFO emotion_v2.py:84: EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
-[2025-12-25 11:10:54] INFO emotion_v2.py:159: Extracted 4 entities from text: ['Barack Obama', 'United States', '2009', '2017']
-[2025-12-25 11:11:13] INFO sentence.py:112: Generated 4 affective descriptions for 4 entities
-[2025-12-25 11:11:13] INFO emotion_v2.py:174: Generated 4 affective descriptions for 4 entities
-[2025-12-25 11:11:15] INFO emotion_v2.py:217: Successfully processed 4/4 entities for text_id: test_text_1
-[2025-12-25 11:11:15] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
-[2025-12-25 11:11:15] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
-[2025-12-25 11:11:15] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
-[2025-12-25 11:11:15] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
-[2025-12-25 11:11:15] INFO emotion_v2.py:84: EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
-[2025-12-25 11:11:20] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
-[2025-12-25 11:11:20] INFO emotion_v2.py:174: Generated 2 affective descriptions for 2 entities
-[2025-12-25 11:11:21] INFO emotion_v2.py:217: Successfully processed 2/2 entities for text_id: test_text_2
-[2025-12-25 11:11:21] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
-[2025-12-25 11:11:21] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
-[2025-12-25 11:11:21] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
-[2025-12-25 11:11:21] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
-[2025-12-25 11:11:21] INFO emotion_v2.py:84: EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
-[2025-12-25 11:11:24] INFO emotion_v2.py:159: Extracted 2 entities from text: ['Microsoft', 'Bill Gates']
-[2025-12-25 11:11:39] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
-[2025-12-25 11:11:39] INFO emotion_v2.py:174: Generated 2 affective descriptions for 2 entities
-[2025-12-25 11:11:41] INFO emotion_v2.py:217: Successfully processed 2/2 entities for text_id: text_1
-[2025-12-25 11:11:44] INFO emotion_v2.py:159: Extracted 1 entities from text: ['Google']
-[2025-12-25 11:11:47] INFO sentence.py:112: Generated 1 affective descriptions for 1 entities
-[2025-12-25 11:11:47] INFO emotion_v2.py:174: Generated 1 affective descriptions for 1 entities
-[2025-12-25 11:11:47] INFO emotion_v2.py:217: Successfully processed 1/1 entities for text_id: text_2
-[2025-12-25 11:11:51] INFO emotion_v2.py:159: Extracted 2 entities from text: ['Amazon', 'Jeff Bezos']
-[2025-12-25 11:11:59] INFO sentence.py:112: Generated 2 affective descriptions for 2 entities
-[2025-12-25 11:11:59] INFO emotion_v2.py:174: Generated 2 affective descriptions for 2 entities
-[2025-12-25 11:12:00] INFO emotion_v2.py:217: Successfully processed 2/2 entities for text_id: text_3
-[2025-12-25 11:12:00] INFO emotion_v2.py:255: Batch processing completed: 5 nodes from 3 texts
-[2025-12-25 11:12:00] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
-[2025-12-25 11:12:00] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
-[2025-12-25 11:12:00] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
-[2025-12-25 11:12:00] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
-[2025-12-25 11:12:00] INFO emotion_v2.py:84: EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
-[2025-12-25 11:12:00] INFO emotion_v2.py:159: Extracted 7 entities from text: ['Radio City', 'India', '3 July 2001', 'Hindi', 'English', 'May 2008', 'PlanetRadiocity.com']
-[2025-12-25 11:12:32] INFO sentence.py:112: Generated 7 affective descriptions for 7 entities
-[2025-12-25 11:12:32] INFO emotion_v2.py:174: Generated 7 affective descriptions for 7 entities
-[2025-12-25 11:12:36] INFO emotion_v2.py:217: Successfully processed 7/7 entities for text_id: empty_text
-Traceback (most recent call last):
-  File "/mnt/d/Codes/HyperAmy/test/test_emotion_v2.py", line 335, in <module>
-    test_empty_text()
-  File "/mnt/d/Codes/HyperAmy/test/test_emotion_v2.py", line 158, in test_empty_text
-    assert len(nodes) == 0, "空文本应该返回空列表"
-AssertionError: 空文本应该返回空列表
-
-============================================================
-EmotionV2 测试套件
-============================================================
-============================================================
-测试 1: 基本处理流程
-============================================================
-
-原始文本: Barack Obama was the 44th president of the United States. He served from 2009 to 2017.
-文本 ID: test_text_1
-
-生成的情绪节点数量: 4
-
-节点信息:
-  - 实体 ID: test_text_1_entity_0
-  - 实体名称: Barack Obama
-  - 情绪向量形状: (2048,)
-  - 情绪向量维度: 2048
-  - 原文本 ID: test_text_1
-  - 情绪向量前5维: [-0.03374545  0.02395927  0.01012364 -0.00354026 -0.02837028]
-  - 情绪向量L2范数: 1.0000
-
-节点信息:
-  - 实体 ID: test_text_1_entity_1
-  - 实体名称: United States
-  - 情绪向量形状: (2048,)
-  - 情绪向量维度: 2048
-  - 原文本 ID: test_text_1
-  - 情绪向量前5维: [-0.01939367 -0.0015137  -0.04308689  0.00233273 -0.01559727]
-  - 情绪向量L2范数: 1.0000
-
-节点信息:
-  - 实体 ID: test_text_1_entity_2
-  - 实体名称: 2009
-  - 情绪向量形状: (2048,)
-  - 情绪向量维度: 2048
-  - 原文本 ID: test_text_1
-  - 情绪向量前5维: [-0.00261012  0.00041969 -0.05293246  0.00560843 -0.01624591]
-  - 情绪向量L2范数: 1.0000
-
-节点信息:
-  - 实体 ID: test_text_1_entity_3
-  - 实体名称: 2017
-  - 情绪向量形状: (2048,)
-  - 情绪向量维度: 2048
-  - 原文本 ID: test_text_1
-  - 情绪向量前5维: [-0.01434261  0.02223465 -0.0308234   0.02332777 -0.00900317]
-  - 情绪向量L2范数: 1.0000
-
-✓ 基本处理流程测试通过
-
-============================================================
-测试 2: 使用预定义实体
-============================================================
-
-原始文本: Apple Inc. is a technology company founded by Steve Jobs.
-预定义实体: ['Apple Inc.', 'Steve Jobs']
-
-生成的情绪节点数量: 2
-
-节点信息:
-  - 实体: Apple Inc.
-  - 情绪向量形状: (2048,)
-
-节点信息:
-  - 实体: Steve Jobs
-  - 情绪向量形状: (2048,)
-
-✓ 预定义实体测试通过
-
-============================================================
-测试 3: 批量处理
-============================================================
-
-批量处理 3 个文本
-
-总共生成 5 个情绪节点
-  - text_1: 2 个节点
-  - text_2: 1 个节点
-  - text_3: 2 个节点
-
-✓ 批量处理测试通过
-
-============================================================
-测试 4: EmotionNode 结构验证
-============================================================
-
-节点结构:
-  - entity_id: test_entity_1 (类型: <class 'str'>)
-  - entity: Test Entity (类型: <class 'str'>)
-  - emotion_vector: shape=(2560,), dtype=float64
-  - text_id: test_text_1 (类型: <class 'str'>)
-
-✓ EmotionNode 结构验证通过
-
-============================================================
-测试 5: 空文本处理
-============================================================
-
-空文本处理结果: 7 个节点
-
-❌ 测试失败: 空文本应该返回空列表
+WARNING 12-29 13:51:14 [importing.py:53] Triton is installed, but `triton.backends` could not be imported. Disabling Triton.
+INFO 12-29 13:51:14 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
+[2025-12-29 13:51:24] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-29 13:51:27] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-29 13:51:27] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-29 13:51:27] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-29 13:51:27] INFO emotion_v2.py:84: EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+[2025-12-29 13:51:27] INFO emotion_v2.py:156: ================================================================================
+[2025-12-29 13:51:27] INFO emotion_v2.py:157: [EmotionV2.process] 开始处理文本
+[2025-12-29 13:51:27] INFO emotion_v2.py:158:   输入 - text_id: test_text_1
+[2025-12-29 13:51:27] INFO emotion_v2.py:159:   输入 - text: Barack Obama was the 44th president of the United States. He served from 2009 to 2017.
+[2025-12-29 13:51:27] INFO emotion_v2.py:160:   输入 - text_length: 86 字符
+[2025-12-29 13:51:27] INFO emotion_v2.py:161:   输入 - entities: None (将自动抽取)
+[2025-12-29 13:51:27] INFO emotion_v2.py:165: [EmotionV2.process] 开始抽取实体...
+[2025-12-29 13:51:28] INFO emotion_v2.py:167: [EmotionV2.process] 实体抽取完成
+[2025-12-29 13:51:28] INFO emotion_v2.py:168:   抽取结果 - 实体数量: 4
+[2025-12-29 13:51:28] INFO emotion_v2.py:169:   抽取结果 - 实体列表: ['Barack Obama', 'United States', '2009', '2017']
+[2025-12-29 13:51:28] INFO emotion_v2.py:191: [EmotionV2.process] 开始为实体生成情感描述...
+[2025-12-29 13:51:28] INFO emotion_v2.py:192:   实体数量: 4
+[2025-12-29 13:51:28] INFO emotion_v2.py:193:   实体列表: ['Barack Obama', 'United States', '2009', '2017']

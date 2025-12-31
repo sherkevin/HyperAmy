@@ -1,0 +1,42 @@
+WARNING 12-25 14:42:51 [importing.py:53] Triton is installed, but `triton.backends` could not be imported. Disabling Triton.
+INFO 12-25 14:42:51 [importing.py:68] Triton not installed or not compatible; certain GPU-related functions will not be available.
+[2025-12-25 14:42:52] INFO prompt_template_manager.py:58: Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[2025-12-25 14:42:52] INFO entitiy.py:61: Entity initialized with model: DeepSeek-V3.2
+[2025-12-25 14:42:52] INFO prompt_template_manager.py:51: Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[2025-12-25 14:42:52] INFO sentence.py:43: Sentence initialized with model: DeepSeek-V3.2
+[2025-12-25 14:42:52] INFO emotion_v2.py:84: EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+[2025-12-25 14:42:52] INFO speed.py:22: Speed module initialized
+[2025-12-25 14:42:52] INFO temperature.py:22: Temperature module initialized
+[2025-12-25 14:42:52] INFO particle.py:77: Particle module initialized
+[2025-12-25 14:42:54] INFO emotion_v2.py:159: Extracted 0 entities from text: []
+[2025-12-25 14:42:54] WARNING emotion_v2.py:165: No entities found in text (text_id: test_001)
+[2025-12-25 14:42:54] INFO particle.py:105: Extracted 0 emotion nodes for text_id: test_001
+[2025-12-25 14:42:54] WARNING particle.py:111: No emotion nodes found for text_id: test_001
+
+============================================================
+测试：ParticleEntity 数据结构
+============================================================
+
+示例 ParticleEntity:
+  entity_id: test_entity_001
+  entity: Python
+  text_id: text_001
+  emotion_vector shape: (30,)
+  speed: 0.5
+  temperature: 0.5
+  born: 1766644972.3494694
+
+✓ 数据结构验证完成！
+============================================================
+测试：Particle 基本功能
+============================================================
+
+输入文本: I love Python programming and I'm excited about machine learning!
+文本 ID: test_001
+
+✓ 处理成功，生成 0 个粒子实体
+
+粒子实体详情:
+------------------------------------------------------------
+
+✓ 测试完成！

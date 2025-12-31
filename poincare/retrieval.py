@@ -7,11 +7,17 @@ import time
 import json
 import logging
 import torch
-from typing import List, Dict, Any
+import numpy as np
+from typing import List, Dict, Any, TYPE_CHECKING
 
-from .types import Point, SearchResult
+from .types import SearchResult
 from .storage import HyperAmyStorage
 from .physics import ParticleProjector
+from ods import ChromaClient
+
+if TYPE_CHECKING:
+    # 仅用于类型检查，避免运行时导入
+    from particle import ParticleEntity
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +38,7 @@ class HyperAmyRetrieval:
             storage: 存储层实例
             projector: 投影器实例
         """
-        self.collection = storage.collection
+        self.storage = storage
         self.projector = projector
 
     def _poincare_dist(self, u: torch.Tensor, v: torch.Tensor) -> float:
@@ -68,21 +74,29 @@ class HyperAmyRetrieval:
         
         Args:
             dynamic_query: 查询点的动态状态（已预计算）
-            cand_vec: 候选点的向量
+            cand_vec: 候选点的向量（归一化后的方向向量）
             cand_meta: 候选点的元数据
             t_now: 当前时间戳
             
         Returns:
-            双曲距离
+            双曲距离（如果粒子已消失，返回 inf）
         """
         # 计算候选点的动态状态
+        # cand_vec 是 List[float]，需要转换为 numpy array
+        cand_vec_array = np.array(cand_vec)
+        weight = cand_meta.get('weight', 1.0)  # 获取 weight，默认为 1.0（向后兼容）
         dynamic_cand = self.projector.compute_state(
-            vec=torch.tensor(cand_vec),
+            vec=cand_vec_array,
             v=cand_meta['v'],
             T=cand_meta['T'],
             born=cand_meta['born'],
-            t_now=t_now
+            t_now=t_now,
+            weight=weight
         )
+        
+        # 如果候选粒子已消失，返回无穷大距离
+        if dynamic_cand.get('is_expired', False):
+            return float('inf')
         
         # 计算双曲距离
         return self._poincare_dist(
@@ -91,7 +105,7 @@ class HyperAmyRetrieval:
         )
 
     def search(self, 
-               query_point: Point, 
+               query_entity: 'ParticleEntity', 
                top_k: int = 3, 
                cone_width: int = 50, 
                max_neighbors: int = 20,
@@ -100,7 +114,7 @@ class HyperAmyRetrieval:
         执行混合检索
         
         Args:
-            query_point: 查询点
+            query_entity: 查询粒子实体
             top_k: 返回结果数量
             cone_width: 锥体搜索宽度。建议值 50-100。
                        值越大，召回率越高，但后续物理计算开销越大。
@@ -115,21 +129,28 @@ class HyperAmyRetrieval:
         t_now = time.time()
         
         # 预计算 Query 状态（避免在循环中重复计算）
+        # ParticleEntity.emotion_vector 是归一化后的方向向量，compute_state 会自动转换
         dynamic_query = self.projector.compute_state(
-            vec=query_point.emotion_vector,
-            v=query_point.v,
-            T=query_point.T,
-            born=query_point.born,
-            t_now=t_now
+            vec=query_entity.emotion_vector,
+            v=query_entity.speed,
+            T=query_entity.temperature,
+            born=query_entity.born,
+            t_now=t_now,
+            weight=query_entity.weight
         )
+        
+        # 如果查询粒子已消失，返回空结果
+        if dynamic_query.get('is_expired', False):
+            logger.warning(f"Query particle {query_entity.entity_id} has expired (distance >= max_radius)")
+            return []
 
         # --- Step 1: Cone Search (锥体锁定) ---
-        query_vec_list = torch.nn.functional.normalize(
-            query_point.emotion_vector, p=2, dim=-1
-        ).tolist()
+        # 使用 ods 层的归一化方法
+        query_vec_list = ChromaClient.normalize_vector(query_entity.emotion_vector)
         
         try:
-            results = self.collection.query(
+            # 通过 storage 的 ods_client 进行查询
+            results = self.storage.ods_client.query(
                 query_embeddings=[query_vec_list],
                 n_results=cone_width,
                 include=["metadatas", "embeddings"]
@@ -151,6 +172,10 @@ class HyperAmyRetrieval:
         for pid, meta, vec in zip(ids, metas, vecs):
             try:
                 score = self._calculate_score_raw(dynamic_query, vec, meta, t_now)
+                # 跳过已消失的粒子（距离为 inf）
+                if score == float('inf'):
+                    logger.debug(f"Skipping expired particle {pid}")
+                    continue
                 scored_candidates.append(SearchResult(
                     id=pid, 
                     score=score, 
@@ -189,7 +214,8 @@ class HyperAmyRetrieval:
 
         if neighbor_ids:
             try:
-                nb_results = self.collection.get(
+                # 通过 storage 的 ods_client 获取邻居节点
+                nb_results = self.storage.ods_client.get(
                     ids=neighbor_ids, 
                     include=["metadatas", "embeddings"]
                 )
@@ -199,6 +225,10 @@ class HyperAmyRetrieval:
                         vec = nb_results['embeddings'][i]
                         try:
                             score = self._calculate_score_raw(dynamic_query, vec, meta, t_now)
+                            # 跳过已消失的粒子（距离为 inf）
+                            if score == float('inf'):
+                                logger.debug(f"Skipping expired neighbor particle {nid}")
+                                continue
                             # 应用邻居惩罚系数
                             score *= neighbor_penalty 
                             

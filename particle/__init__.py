@@ -1,12 +1,21 @@
 """
 Particle 模块
 
-简洁的情感向量提取模块：输入 chunk，输出 emotion vector
+粒子处理模块：整合 emotion、speed、temperature 的逻辑。
+输入文本和id，输出包含实体属性列表。
 """
 
-from .emotion import Emotion
 from .emotion_v2 import EmotionV2, EmotionNode
-from .particle import Particle, ParticleProperty
+from .speed import Speed
+from .temperature import Temperature
+from .particle import Particle, ParticleEntity
 
-__all__ = ['Emotion', 'EmotionV2', 'EmotionNode', 'Particle', 'ParticleProperty']
+__all__ = [
+    'EmotionV2',
+    'EmotionNode',
+    'Speed',
+    'Temperature',
+    'Particle',
+    'ParticleEntity',
+]
 

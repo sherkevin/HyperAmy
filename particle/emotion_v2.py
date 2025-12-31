@@ -152,43 +152,92 @@ class EmotionV2:
         Returns:
             List[EmotionNode]: 情绪节点列表
         """
+        # Step 0: 检查空文本
+        if not text or not text.strip():
+            logger.warning("=" * 80)
+            logger.warning(f"[EmotionV2.process] 输入文本为空，跳过处理")
+            logger.warning(f"  text_id: {text_id}")
+            logger.warning(f"  text_length: {len(text) if text else 0} 字符")
+            logger.warning("=" * 80)
+            return []
+
         # Step 1: 抽取实体（如果未提供）
+        logger.info("=" * 80)
+        logger.info(f"[EmotionV2.process] 开始处理文本")
+        logger.info(f"  输入 - text_id: {text_id}")
+        logger.info(f"  输入 - text: {text[:200]}{'...' if len(text) > 200 else ''}")
+        logger.info(f"  输入 - text_length: {len(text)} 字符")
+        logger.info(f"  输入 - entities: {entities if entities is not None else 'None (将自动抽取)'}")
+        
         if entities is None:
             try:
+                logger.info(f"[EmotionV2.process] 开始抽取实体...")
                 entities = self.entity_extractor.extract_entities(text)
-                logger.info(f"Extracted {len(entities)} entities from text: {entities}")
+                logger.info(f"[EmotionV2.process] 实体抽取完成")
+                logger.info(f"  抽取结果 - 实体数量: {len(entities)}")
+                logger.info(f"  抽取结果 - 实体列表: {entities}")
+                if not entities:
+                    logger.warning(f"[EmotionV2.process] 警告: 未从文本中提取到任何实体")
+                    logger.warning(f"  文本内容: {text[:200]}{'...' if len(text) > 200 else ''}")
+                    logger.warning(f"  可能原因: 1) 文本中确实没有命名实体 2) 实体提取器无法识别该类型的实体")
             except Exception as e:
-                logger.error(f"Failed to extract entities: {e}")
+                logger.error(f"[EmotionV2.process] 实体抽取失败")
+                logger.error(f"  文本内容: {text[:200]}{'...' if len(text) > 200 else ''}")
+                logger.error(f"  text_id: {text_id}")
+                logger.error(f"  错误信息: {str(e)}")
+                import traceback
+                logger.error(f"  错误堆栈:\n{traceback.format_exc()}")
                 return []  # 如果抽取失败，返回空列表
         
         if not entities:
-            logger.warning(f"No entities found in text (text_id: {text_id})")
+            logger.warning(f"[EmotionV2.process] 处理终止: 没有实体可处理")
+            logger.warning(f"  text_id: {text_id}")
+            logger.warning(f"  文本内容: {text[:200]}{'...' if len(text) > 200 else ''}")
+            logger.warning("=" * 80)
             return []
         
         # Step 2: 为每个实体生成情感描述
+        logger.info(f"[EmotionV2.process] 开始为实体生成情感描述...")
+        logger.info(f"  实体数量: {len(entities)}")
+        logger.info(f"  实体列表: {entities}")
         try:
             affective_descriptions = self.sentence_processor.generate_affective_descriptions(
                 sentence=text,
                 entities=entities
             )
-            logger.info(
-                f"Generated {len([d for d in affective_descriptions.values() if d])} "
-                f"affective descriptions for {len(entities)} entities"
-            )
+            successful_descriptions = [d for d in affective_descriptions.values() if d]
+            logger.info(f"[EmotionV2.process] 情感描述生成完成")
+            logger.info(f"  成功生成: {len(successful_descriptions)}/{len(entities)} 个描述")
+            for entity, desc in affective_descriptions.items():
+                if desc:
+                    logger.debug(f"    实体 '{entity}': {desc[:100]}{'...' if len(desc) > 100 else ''}")
+                else:
+                    logger.warning(f"    实体 '{entity}': 描述为空")
         except Exception as e:
-            logger.error(f"Failed to generate affective descriptions: {e}")
+            logger.error(f"[EmotionV2.process] 情感描述生成失败")
+            logger.error(f"  文本内容: {text[:200]}{'...' if len(text) > 200 else ''}")
+            logger.error(f"  实体列表: {entities}")
+            logger.error(f"  错误信息: {str(e)}")
+            import traceback
+            logger.error(f"  错误堆栈:\n{traceback.format_exc()}")
             return []
         
         # Step 3: 对每个情感描述进行嵌入，生成 EmotionNode 列表
+        logger.info(f"[EmotionV2.process] 开始生成情绪嵌入向量...")
         nodes = []
         for idx, entity in enumerate(entities):
             description = affective_descriptions.get(entity, "")
             
             if not description:
-                logger.warning(f"Empty affective description for entity '{entity}', skipping...")
+                logger.warning(f"[EmotionV2.process] 跳过实体 '{entity}': 情感描述为空")
+                logger.warning(f"  实体索引: {idx}/{len(entities)}")
+                logger.warning(f"  文本内容: {text[:200]}{'...' if len(text) > 200 else ''}")
                 continue
             
             try:
+                logger.debug(f"[EmotionV2.process] 处理实体 {idx+1}/{len(entities)}: '{entity}'")
+                logger.debug(f"  情感描述: {description[:150]}{'...' if len(description) > 150 else ''}")
+                
                 # 获取情绪嵌入向量
                 emotion_vector = self._get_emotion_embedding(description)
                 
@@ -205,19 +254,32 @@ class EmotionV2:
                 
                 nodes.append(node)
                 
-                logger.debug(
-                    f"Created node: entity_id={entity_id}, entity={entity}, "
-                    f"vector_shape={emotion_vector.shape}, text_id={text_id}"
+                logger.info(
+                    f"[EmotionV2.process] 成功创建 EmotionNode: "
+                    f"entity_id={entity_id}, entity={entity}, "
+                    f"vector_shape={emotion_vector.shape}, "
+                    f"vector_norm={np.linalg.norm(emotion_vector):.6f}"
                 )
                 
             except Exception as e:
-                logger.error(f"Failed to process entity '{entity}': {e}")
+                logger.error(f"[EmotionV2.process] 处理实体 '{entity}' 失败")
+                logger.error(f"  实体索引: {idx}/{len(entities)}")
+                logger.error(f"  情感描述: {description[:150]}{'...' if len(description) > 150 else ''}")
+                logger.error(f"  错误信息: {str(e)}")
+                import traceback
+                logger.error(f"  错误堆栈:\n{traceback.format_exc()}")
                 continue  # 跳过失败的实体，继续处理其他实体
         
-        logger.info(
-            f"Successfully processed {len(nodes)}/{len(entities)} entities "
-            f"for text_id: {text_id}"
-        )
+        logger.info(f"[EmotionV2.process] 处理完成")
+        logger.info(f"  成功处理: {len(nodes)}/{len(entities)} 个实体")
+        logger.info(f"  生成的 EmotionNode 列表:")
+        for i, node in enumerate(nodes, 1):
+            logger.info(
+                f"    {i}. entity_id={node.entity_id}, "
+                f"entity={node.entity}, "
+                f"vector_shape={node.emotion_vector.shape}"
+            )
+        logger.info("=" * 80)
         
         return nodes
     

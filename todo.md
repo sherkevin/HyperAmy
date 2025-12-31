@@ -20,3 +20,10 @@ I love Apple products, especially the iPhone.
 - Global Token Injection (全局锚点注入):引入整句话的 [CLS] 向量 $c_{global}$ 作为第 $M+1$ 个节点。它是全句的摘要（包含 "Apple" 的语境）。$$\mathbf{H}^{(0)} = [e_1, e_2, \dots, e_M, c_{global}]$$
 - Interaction (交互/消息传递):在这些向量上跑一层标准的 Multi-Head Self-Attention (MHSA)。$$\mathbf{H}^{(1)} = \text{LayerNorm}(\mathbf{H}^{(0)} + \text{MHSA}(\mathbf{H}^{(0)}))$$
 - 发生了什么？当计算 "Phone" ($e_2$) 的新向量时，Attention 机制会计算它和 "Apple products" ($e_1$) 以及全局语境 ($c_{global}$) 的相似度。由于 "Phone" 和 "Apple" 在语义空间（BGE）本来就有关联，Attention 权重会很高。于是，$e_2$ “吸取” 了 $e_1$ 的信息。输出的 $e_2'$ 不再是 "Phone"，而是 "Phone (context: Apple)"。
+ 
+# 数据集构建
+- 纯案例
+- 老友记、生活大爆炸、甄嬛传等台词清晰
+- 抽取台词QA对
+- 对QA对打标签
+- 训练情绪识别模型
