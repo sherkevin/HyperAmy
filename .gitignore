@@ -1,8 +1,9 @@
+# 配置文件
 .env
 **/.env
 *.env
-outputs/
-log/
+
+
 
 # GoT 实验数据文件（版权保护）
 data/books/*.txt
@@ -39,3 +40,12 @@ RETRY_STATUS.md
 RETRY_SUMMARY.md
 PROJECT_STATUS.md
 README_EXPERIMENT.md
+
+# 测试数据库文件
+test_*_db/
+test_*_only_db/
+hyperamy_db_*/
+*_hipporag_db/
+*_amygdala_db/
+
+
