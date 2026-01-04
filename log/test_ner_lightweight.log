@@ -1,7 +1,0 @@
-Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
-Entity initialized with model: DeepSeek-V3.2
-spaCy not installed. Install with: pip install spacy
-RuleBasedNER initialized (fallback mode)
-Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
-Entity initialized with model: DeepSeek-V3.2
-LightweightNER initialized with spaCy model: en_core_web_sm

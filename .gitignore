@@ -31,7 +31,7 @@ __pycache__/
 # 日志文件
 *.log
 *.pid
-log/*
+log/
 
 # 临时文档
 DELIVERY_SUMMARY.md
