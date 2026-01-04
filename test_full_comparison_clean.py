@@ -130,7 +130,7 @@ logger.info("✓ HippoRAG 初始化完成")
 
 # 添加数据
 logger.info(f"\n添加 {len(chunks)} 个对话...")
-hipporag.add_docs(chunks)
+hipporag.add(chunks)
 logger.info(f"✓ HippoRAG 数据库创建完成（{len(chunks)} 个对话）")
 
 # ========== Step 4: 创建 GraphFusion ==========
@@ -221,28 +221,24 @@ if query_particles:
     # 获取所有 conversation_id
     conversation_ids = [r.metadata.get("conversation_id", "") for r in search_results]
 
-    # 批量获取对话文本
-    if conversation_ids:
-        conversations = amygdala.conversation_store.get_strings_by_ids(conversation_ids)
-
-        # 创建 conversation_id 到文本的映射
-        conv_to_text = {}
-        for conv in conversations:
-            conv_id = conv.get('id', '')
-            text = conv.get('text', '')
-            if conv_id and text:
+    # 创建 conversation_id 到文本的映射
+    conv_to_text = {}
+    for conv_id in conversation_ids:
+        if conv_id:
+            text = amygdala.conversation_store.get_text(conv_id)
+            if text:
                 conv_to_text[conv_id] = text
 
-        for rank, result in enumerate(search_results):
-            conv_id = result.metadata.get("conversation_id", "")
-            chunk_text = conv_to_text.get(conv_id, "")
+    for rank, result in enumerate(search_results):
+        conv_id = result.metadata.get("conversation_id", "")
+        chunk_text = conv_to_text.get(conv_id, "")
 
-            if chunk_text:
-                amygdala_results.append({
-                    'rank': rank + 1,
-                    'text': chunk_text,
-                    'score': result.score
-                })
+        if chunk_text:
+            amygdala_results.append({
+                'rank': rank + 1,
+                'text': chunk_text,
+                'score': result.score
+            })
 
 amygdala_time = time.time() - start_time
 

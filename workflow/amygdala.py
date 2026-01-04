@@ -228,10 +228,11 @@ class Amygdala:
         logger.info(f"Particle storage initialized: collection={particle_collection_name}")
         
         # 初始化粒子投影器（用于邻域链接）
+        # max_radius 增大到 10000，允许粒子存在更长时间（约 5.5 小时）
         self.particle_projector = ParticleProjector(
             curvature=1.0,
             scaling_factor=2.0,
-            max_radius=100.0
+            max_radius=10000.0
         )
         
         # 初始化对话存储

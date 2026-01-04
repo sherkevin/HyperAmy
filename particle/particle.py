@@ -139,10 +139,10 @@ class Particle:
             return []
         
         # Step 2: 提取实体信息
-        entity_ids = [node.entity_id for node in emotion_nodes]
+        entity_ids = [node.entity_id for node in emotion_nodes]  # 标准 entity_id（用于与 HippoRAG 匹配）
         entity_names = [node.entity for node in emotion_nodes]
         emotion_vectors = [node.emotion_vector for node in emotion_nodes]
-        
+
         # Step 3: 计算速度和温度
         try:
             speeds = self.speed.compute(
@@ -154,7 +154,7 @@ class Particle:
             logger.error(f"Failed to compute speeds: {e}")
             # 使用默认值
             speeds = [0.5] * len(entity_ids)
-        
+
         try:
             temperatures = self.temperature.compute(
                 entity_ids=entity_ids,
@@ -165,24 +165,28 @@ class Particle:
             logger.error(f"Failed to compute temperatures: {e}")
             # 使用默认值
             temperatures = [0.5] * len(entity_ids)
-        
+
         # Step 4: 聚合所有信息，生成 ParticleEntity 列表
         particles = []
-        for i, (entity_id, entity_name, emotion_vector, speed, temp) in enumerate(
+        for i, (standard_entity_id, entity_name, emotion_vector, speed, temp) in enumerate(
             zip(entity_ids, entity_names, emotion_vectors, speeds, temperatures)
         ):
             # 计算权重（初始情绪向量的模长）
             weight = float(np.linalg.norm(emotion_vector))
-            
+
             # 归一化情绪向量（存储方向）
             if weight > 1e-9:
                 normalized_vector = emotion_vector / weight
             else:
                 normalized_vector = emotion_vector.copy()
                 weight = 0.0
-            
+
+            # 生成唯一的粒子 ID（避免不同文档中的同名实体冲突）
+            # 使用格式：text_id_standard_entity_id
+            unique_particle_id = f"{text_id}_{standard_entity_id}"
+
             particle = ParticleEntity(
-                entity_id=entity_id,
+                entity_id=unique_particle_id,  # 粒子唯一 ID
                 entity=entity_name,
                 text_id=text_id,
                 emotion_vector=normalized_vector,  # 归一化后的方向向量
@@ -194,7 +198,7 @@ class Particle:
             particles.append(particle)
             
             logger.debug(
-                f"Created particle: entity_id={entity_id}, entity={entity_name}, "
+                f"Created particle: entity_id={unique_particle_id}, entity={entity_name}, "
                 f"speed={speed:.4f}, temperature={temp:.4f}, text_id={text_id}"
             )
         

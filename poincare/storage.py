@@ -104,6 +104,14 @@ class HyperAmyStorage:
                 
                 # 准备 Metadata
                 links = (links_map or {}).get(entity.entity_id, [])
+
+                # 提取标准 entity_id（如果粒子 ID 格式为 text_id_standard_entity_id）
+                # 例如：full_test-abc_entity-count123 → entity-count123
+                standard_entity_id = entity.entity_id
+                if '_' in entity.entity_id and entity.entity_id.startswith(entity.text_id):
+                    # 粒子 ID 包含 text_id 前缀，提取标准的 entity_id 部分
+                    standard_entity_id = entity.entity_id[len(entity.text_id) + 1:]
+
                 metadata = {
                     "v": float(entity.speed),
                     "T": float(entity.temperature),
@@ -111,7 +119,9 @@ class HyperAmyStorage:
                     "born": float(entity.born),
                     "last_updated": float(time.time()),
                     "text_id": entity.text_id,
+                    "conversation_id": entity.text_id,  # text_id 就是 conversation_id（在 Amygdala 工作流中）
                     "entity": entity.entity,
+                    "entity_id": standard_entity_id,  # 标准 entity_id（用于与 HippoRAG 匹配）
                     "links": json.dumps(links)
                 }
                 metadatas.append(ChromaClient.serialize_metadata(metadata))

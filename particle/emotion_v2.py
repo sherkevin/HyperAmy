@@ -413,12 +413,20 @@ class EmotionV2:
                 logger.debug(f"[EmotionV2.process] 处理实体 {idx+1}/{len(entities)}: '{entity}'")
                 logger.debug(f"  情感描述: {description[:150]}{'...' if len(description) > 150 else ''}")
 
-                # 生成实体 ID（格式：text_id_entity_idx）
-                entity_id = f"{text_id}_entity_{idx}"
+                # 生成实体 ID（兼容 HippoRAG 格式：MD5 hash with "entity-" prefix）
+                # 这样可以确保 Amygdala 和 HippoRAG 使用相同的实体 ID
+                # 重要：统一转换为小写，因为 HippoRAG 的 OpenIE 会将实体小写化
+                from hipporag.utils.misc_utils import compute_mdhash_id
+                standard_entity_id = compute_mdhash_id(content=entity.lower(), prefix="entity-")
+
+                # 生成粒子唯一 ID（包含 text_id，避免不同文档中的同名实体冲突）
+                particle_entity_id = f"{text_id}_{standard_entity_id}"
 
                 # 创建 EmotionNode
+                # 注意：entity_id 使用标准格式（用于与 HippoRAG 匹配）
+                # 但实际上每个粒子有唯一的 particle_entity_id（在 ParticleEntity 中使用）
                 node = EmotionNode(
-                    entity_id=entity_id,
+                    entity_id=standard_entity_id,  # 使用标准 entity_id
                     entity=entity,
                     emotion_vector=emotion_vector,
                     text_id=text_id
@@ -428,7 +436,7 @@ class EmotionV2:
 
                 logger.info(
                     f"[EmotionV2.process] 成功创建 EmotionNode: "
-                    f"entity_id={entity_id}, entity={entity}, "
+                    f"entity_id={standard_entity_id}, entity={entity}, "
                     f"vector_shape={emotion_vector.shape}, "
                     f"vector_norm={np.linalg.norm(emotion_vector):.6f}"
                 )

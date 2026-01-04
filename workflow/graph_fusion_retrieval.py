@@ -293,9 +293,10 @@ class GraphFusionRetriever:
         entity_embeddings = self._hipporag_core.entity_embeddings
 
         # 对每个 query entity 找相似实体
+        # 重要：统一转换为小写，因为 HippoRAG 的 OpenIE 会将实体小写化
         for entity in query_entities:
             # 获取 entity embedding
-            entity_id = compute_mdhash_id(content=entity, prefix="entity-")
+            entity_id = compute_mdhash_id(content=entity.lower(), prefix="entity-")
 
             # 如果 entity 在 embedding store 中，找其相似实体
             if entity_id in self._hipporag_core.entity_embedding_store.hash_id_to_row:
@@ -329,7 +330,7 @@ class GraphFusionRetriever:
         top_k: int = 20
     ) -> Dict[str, float]:
         """
-        情绪扩展：使用 Amygdala 找到情绪相似的粒子，提取实体文本
+        情绪扩展：使用 Amygdala 找到情绪相似的粒子，提取标准 entity_id
 
         Args:
             query_particle: 查询粒子
@@ -354,19 +355,30 @@ class GraphFusionRetriever:
             cone_width=50
         )
 
-        # 提取粒子的 entity 文本
+        # 提取粒子的 entity 文本和标准 entity_id
         for result in search_results:
             # score 是双曲距离，越小越相似，转换为相似度分数
             similarity = 1.0 / (1.0 + result.score)
             entity_text = result.metadata.get("entity", "")
+            standard_entity_id = result.metadata.get("entity_id", "")
 
+            # 优先使用标准 entity_id（兼容 HippoRAG）
+            # fallback 到 entity 文本
             if entity_text:
+                # 使用 entity_text 作为键（因为 HippoRAG 的图谱使用文本内容）
                 emotion_entities[entity_text] += similarity
+
+                logger.debug(f"[GraphFusion._emotion_expansion] "
+                           f"entity={entity_text}, "
+                           f"standard_entity_id={standard_entity_id}, "
+                           f"similarity={similarity:.4f}")
 
         # 归一化
         if emotion_entities:
             max_score = max(emotion_entities.values())
             emotion_entities = {k: v / max_score for k, v in emotion_entities.items()}
+
+        logger.info(f"[GraphFusion._emotion_expansion] 找到 {len(emotion_entities)} 个情绪实体")
 
         return emotion_entities
 
@@ -453,7 +465,8 @@ class GraphFusionRetriever:
         node_name_to_idx = self._hipporag_core.node_name_to_vertex_idx
 
         for entity in all_entities:
-            entity_key = compute_mdhash_id(content=entity, prefix="entity-")
+            # 重要：统一转换为小写，因为 HippoRAG 的 OpenIE 会将实体小写化
+            entity_key = compute_mdhash_id(content=entity.lower(), prefix="entity-")
 
             if entity_key not in node_name_to_idx:
                 continue
