@@ -24,11 +24,15 @@ tenacity>=8.5.0
 # 其他工具
 tqdm>=4.66.0
 
+# GoT 实验依赖
+transformers>=4.45.0  # 用于情感和惊奇度计算
+sentence-transformers>=2.2.0  # 用于 all-MiniLM-L6-v2 embedding
+torch>=2.0.0  # PyTorch（transformers 需要）
+datasets>=2.14.0  # HuggingFace 数据集加载
+faiss-cpu>=1.7.4  # 向量检索（或 faiss-gpu 如果使用 GPU）
+
 # 可选依赖（根据需要安装）
-# transformers>=4.45.0  # 如果使用 Transformers 模型
-# sentence-transformers>=2.2.0  # 如果使用 Transformers embedding
 # litellm>=1.73.0  # 如果使用 Bedrock
-# torch>=2.0.0  # 如果使用 PyTorch
 # vllm>=0.2.0  # 如果使用 VLLM
 # gritlm>=1.0.0  # 如果使用 GritLM embedding
 # outlines>=0.0.1  # 如果使用 Transformers 离线模式

@@ -30,5 +30,11 @@ API_URL_EMBEDDINGS = os.getenv("API_URL_EMBEDDINGS", f"{BASE_URL}/embeddings")
 DEFAULT_MODEL = "DeepSeek-V3.2"
 DEFAULT_EMBEDDING_MODEL = "GLM-Embedding-3"
 
+# GoT 实验配置
+BETA_WARPING = 10  # 庞加莱畸变参数
+MASS_THRESHOLD = 0.8  # 高质量块阈值
+CHUNK_SIZE = 300  # 分块大小（词数）
+CHUNK_OVERLAP = 50  # 重叠大小（词数）
+
 if not API_KEY:
     raise ValueError("API_KEY not found in environment variables. Please set it in .env file.")
