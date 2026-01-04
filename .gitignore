@@ -31,6 +31,7 @@ __pycache__/
 # 日志文件
 *.log
 *.pid
+log/*
 
 # 临时文档
 DELIVERY_SUMMARY.md
@@ -48,4 +49,9 @@ hyperamy_db_*/
 *_hipporag_db/
 *_amygdala_db/
 
+# 测试缓存和临时文件
+test_emotion_cache/
+emotion_cache/
+test_db/
+todo.md
 
