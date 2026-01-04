@@ -22,6 +22,9 @@ __pycache__/
 *.pyd
 .Python
 
+# Debug 文件
+debug/
+
 # 系统文件
 .DS_Store
 *.swp
