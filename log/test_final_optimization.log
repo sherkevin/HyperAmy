@@ -1,0 +1,703 @@
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+EmotionV2 caching disabled
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=disabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: False
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v1
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（并行模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_parallel] 开始并行生成情感描述
+  实体数量: 13
+  并行度: 5
+[Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'terror' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'eyes' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'hand' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'plate' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, despair, anguish, dread
+[Sentence.generate_affective_description] 开始为实体 'refuse' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, anxiety, distress, vulnerability
+[Sentence.generate_affective_description] 开始为实体 'whispered' 生成情感描述
+  进度: 2/13 (1.46s)
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, desperation, sorrow, anguish, dread
+[Sentence.generate_affective_description] 开始为实体 'voice' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, desperation, despair, anguish
+[Sentence.generate_affective_description] 开始为实体 'tears' 生成情感描述
+  进度: 4/13 (1.49s)
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, sorrow, desperation, apprehension, grief
+[Sentence.generate_affective_description] 开始为实体 'enemy' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, sadness, desperation, dread, despair, anguish
+[Sentence.generate_affective_description] 开始为实体 'bread' 生成情感描述
+  进度: 6/13 (2.54s)
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sadness, betrayal, despair, hostility, dread
+[Sentence.generate_affective_description] 开始为实体 'death' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, distrust, despair, dread, hostility
+[Sentence.generate_affective_description] 开始为实体 'house' 生成情感描述
+  进度: 8/13 (2.83s)
+[Sentence.generate_affective_description] 成功生成描述: fear, despair, anguish, sorrow, dread, distress
+[Sentence.generate_affective_description] 成功生成描述: fear, sorrow, despair, anxiety, dread
+  进度: 10/13 (2.86s)
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, desperation, sorrow, betrayal, despair, anguish
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, despair, sorrow, horror, grief
+  进度: 12/13 (3.32s)
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, sorrow, despair, threat, hopelessness
+  进度: 13/13 (3.42s)
+[Sentence.generate_affective_descriptions_parallel] 并行生成完成 (3.42s, 13/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 13/13 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Generated 13 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 13/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v1_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v1_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v1_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v1_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v1_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v1_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v1_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v1_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v1_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v1_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v1_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v1_entity_11, entity=death, vector_shape=(2048,)
+    13. entity_id=test_comprehensive_optimization_v1_entity_12, entity=house, vector_shape=(2048,)
+================================================================================
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+EmotionV2 caching disabled
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=disabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: True
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v2
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 13
+[Batch] 原始响应: Mercedes: fear, despair, vulnerability, anguish, dread, horror  
+terror: fear, panic, alarm, horror, dread, agitation  
+eyes: fear, alarm, distress, apprehension, horror  
+hand: anxiety, nervousness, ...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.31s, 13/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 13/13 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Generated 13 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 13/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v2_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v2_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v2_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v2_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v2_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v2_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v2_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v2_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v2_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v2_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v2_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v2_entity_11, entity=death, vector_shape=(2048,)
+    13. entity_id=test_comprehensive_optimization_v2_entity_12, entity=house, vector_shape=(2048,)
+================================================================================
+LightweightNER initialized with spaCy model: en_core_web_sm
+EmotionV2 caching disabled
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=disabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: True
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v3
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 12
+  抽取结果 - 实体列表: ['Mercedes', 'him', 'terror', 'her eyes', 'Her hand', 'the plate', 'her voice', 'tears', 'our enemy', 'bread', 'death', 'this house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 12
+  实体列表: ['Mercedes', 'him', 'terror', 'her eyes', 'Her hand', 'the plate', 'her voice', 'tears', 'our enemy', 'bread', 'death', 'this house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 12
+[Batch] 原始响应: Mercedes: terror, fear, desperation, anguish, sorrow, disbelief, dread  
+him: suspicion, rejection, hostility, distrust, defiance, coldness  
+terror: fear, panic, horror, alarm, dread, distress  
+her ...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.50s, 12/12 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 12/12 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Generated 12 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 12 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_1, entity=him, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_2, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_3, entity=her eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_4, entity=Her hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_5, entity=the plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_6, entity=her voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_7, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_8, entity=our enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_9, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_10, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_11, entity=this house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 12/12 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v3_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v3_entity_1, entity=him, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v3_entity_2, entity=terror, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v3_entity_3, entity=her eyes, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v3_entity_4, entity=Her hand, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v3_entity_5, entity=the plate, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v3_entity_6, entity=her voice, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v3_entity_7, entity=tears, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v3_entity_8, entity=our enemy, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v3_entity_9, entity=bread, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v3_entity_10, entity=death, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v3_entity_11, entity=this house, vector_shape=(2048,)
+================================================================================
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+EmotionCache initialized with cache_dir: ./emotion_cache
+EmotionV2 caching enabled: cache_dir=./emotion_cache
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=enabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: True
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v4_first
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 13
+[Batch] 原始响应: Mercedes: fear, desperation, sorrow, dread, vulnerability, hurt, betrayal  
+terror: fear, panic, alarm, horror, dread, distress  
+eyes: fear, alarm, apprehension, vulnerability, distress  
+hand: anxie...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.27s, 13/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 13/13 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Batch embedding: 0 cache hits, 13 cache misses
+Generated 13 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 13/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v4_first_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v4_first_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v4_first_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v4_first_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v4_first_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v4_first_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v4_first_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v4_first_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v4_first_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v4_first_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v4_first_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v4_first_entity_11, entity=death, vector_shape=(2048,)
+    13. entity_id=test_comprehensive_optimization_v4_first_entity_12, entity=house, vector_shape=(2048,)
+================================================================================
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v4_cached
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 13
+[Batch] 原始响应: Mercedes: fear, anxiety, desperation, sorrow, dread, vulnerability, despair  
+terror: fear, panic, alarm, horror, distress, agitation, unease  
+eyes: fear, apprehension, alarm, sorrow, vulnerability, ...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.49s, 12/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 12/13 个描述
+    实体 'house': 描述为空
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Batch embedding: 0 cache hits, 12 cache misses
+Generated 12 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 跳过实体 'house': 情感描述为空
+  实体索引: 12/13
+  文本内容: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+[EmotionV2.process] 处理完成
+  成功处理: 12/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v4_cached_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v4_cached_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v4_cached_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v4_cached_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v4_cached_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v4_cached_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v4_cached_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v4_cached_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v4_cached_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v4_cached_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v4_cached_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v4_cached_entity_11, entity=death, vector_shape=(2048,)
+================================================================================
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+EmotionV2 caching disabled
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=disabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: False
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v1
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（并行模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_parallel] 开始并行生成情感描述
+  实体数量: 13
+  并行度: 5
+[Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'terror' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'eyes' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'hand' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'plate' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, anxiety, distress, vulnerability, dread, unease
+[Sentence.generate_affective_description] 开始为实体 'refuse' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, anxiety, dread, sorrow, despair, desperation
+[Sentence.generate_affective_description] 开始为实体 'whispered' 生成情感描述
+  进度: 2/13 (2.51s)
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, despair, anxiety, sorrow, desperation, dread
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sadness, despair, anxiety, dread
+[Sentence.generate_affective_description] 开始为实体 'voice' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, panic, anguish, despair, horror
+[Sentence.generate_affective_description] 开始为实体 'tears' 生成情感描述
+  进度: 4/13 (2.52s)
+[Sentence.generate_affective_description] 开始为实体 'enemy' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, sadness, despair, distress, vulnerability, sorrow
+[Sentence.generate_affective_description] 开始为实体 'bread' 生成情感描述
+  进度: 6/13 (3.99s)
+[Sentence.generate_affective_description] 成功生成描述: fear, sadness, desperation, distrust, dread, anguish
+[Sentence.generate_affective_description] 开始为实体 'death' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, distress, vulnerability, desperation, sorrow, anxiety, apprehension
+[Sentence.generate_affective_description] 成功生成描述: fear, sorrow, dread, distrust, despair, hostility
+[Sentence.generate_affective_description] 开始为实体 'house' 生成情感描述
+  进度: 8/13 (4.04s)
+[Sentence.generate_affective_description] 成功生成描述: sadness, fear, despair, anxiety, sorrow, dread
+  进度: 10/13 (4.06s)
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, despair, betrayal, dread, sorrow
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sorrow, dread, despair, anguish
+  进度: 12/13 (4.81s)
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, despair, sorrow, foreboding, threat
+  进度: 13/13 (4.86s)
+[Sentence.generate_affective_descriptions_parallel] 并行生成完成 (4.86s, 13/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 13/13 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Generated 13 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v1_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 13/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v1_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v1_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v1_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v1_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v1_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v1_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v1_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v1_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v1_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v1_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v1_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v1_entity_11, entity=death, vector_shape=(2048,)
+    13. entity_id=test_comprehensive_optimization_v1_entity_12, entity=house, vector_shape=(2048,)
+================================================================================
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+EmotionV2 caching disabled
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=disabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: True
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v2
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 13
+[Batch] 原始响应: Mercedes: terror, fear, desperation, sorrow, vulnerability, anxiety, anguish, dread  
+terror: fear, panic, alarm, horror, dread, distress, agitation  
+eyes: fear, alarm, apprehension, distress, vulner...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.83s, 12/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 12/13 个描述
+    实体 'house': 描述为空
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Generated 12 embeddings (batch + cache)
+Failed to get embedding for text at index 12
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v2_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 跳过实体 'house': 情感描述为空
+  实体索引: 12/13
+  文本内容: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+[EmotionV2.process] 处理完成
+  成功处理: 12/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v2_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v2_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v2_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v2_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v2_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v2_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v2_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v2_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v2_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v2_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v2_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v2_entity_11, entity=death, vector_shape=(2048,)
+================================================================================
+LightweightNER initialized with spaCy model: en_core_web_sm
+EmotionV2 caching disabled
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=disabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: True
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v3
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 12
+  抽取结果 - 实体列表: ['Mercedes', 'him', 'terror', 'her eyes', 'Her hand', 'the plate', 'her voice', 'tears', 'our enemy', 'bread', 'death', 'this house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 12
+  实体列表: ['Mercedes', 'him', 'terror', 'her eyes', 'Her hand', 'the plate', 'her voice', 'tears', 'our enemy', 'bread', 'death', 'this house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 12
+[Batch] 原始响应: Mercedes: terror, fear, desperation, sorrow, anxiety, pleading  
+him: suspicion, hostility, distrust, rejection, coldness  
+terror: fear, dread, panic, alarm, horror  
+her eyes: fear, alarm, pleading,...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.10s, 12/12 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 12/12 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Generated 12 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 12 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_1, entity=him, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_2, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_3, entity=her eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_4, entity=Her hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_5, entity=the plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_6, entity=her voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_7, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_8, entity=our enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_9, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_10, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v3_entity_11, entity=this house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 12/12 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v3_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v3_entity_1, entity=him, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v3_entity_2, entity=terror, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v3_entity_3, entity=her eyes, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v3_entity_4, entity=Her hand, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v3_entity_5, entity=the plate, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v3_entity_6, entity=her voice, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v3_entity_7, entity=tears, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v3_entity_8, entity=our enemy, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v3_entity_9, entity=bread, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v3_entity_10, entity=death, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v3_entity_11, entity=this house, vector_shape=(2048,)
+================================================================================
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+EmotionCache initialized with cache_dir: ./emotion_cache
+EmotionV2 caching enabled: cache_dir=./emotion_cache
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2, cache=enabled
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3, batch_prompt: True
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v4_first
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 13
+[Batch] 原始响应: Mercedes: terror, fear, desperation, anguish, disbelief, sorrow, betrayal  
+terror: fear, dread, panic, alarm, horror, shock  
+eyes: fear, alarm, distress, vulnerability, apprehension, sorrow  
+hand: ...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.55s, 13/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 13/13 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Batch embedding: 0 cache hits, 13 cache misses
+Generated 13 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_first_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 13/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v4_first_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v4_first_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v4_first_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v4_first_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v4_first_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v4_first_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v4_first_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v4_first_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v4_first_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v4_first_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v4_first_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v4_first_entity_11, entity=death, vector_shape=(2048,)
+    13. entity_id=test_comprehensive_optimization_v4_first_entity_12, entity=house, vector_shape=(2048,)
+================================================================================
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: test_comprehensive_optimization_v4_cached
+  输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate.
+"You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy?
+To refuse to break brea...
+  输入 - text_length: 241 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 13
+  抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[EmotionV2.process] 开始为实体生成情感描述（批量Prompt模式）...
+  实体数量: 13
+  实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house']
+[Sentence.generate_affective_descriptions_batch] 开始批量生成情感描述
+  实体数量: 13
+[Batch] 原始响应: Mercedes: terror, fear, desperation, sorrow, pleading, anguish  
+terror: fear, dread, panic, horror, alarm  
+eyes: fear, dread, alarm, vulnerability, distress  
+hand: anxiety, fear, nervousness, agita...
+[Sentence.generate_affective_descriptions_batch] 批量生成完成 (2.09s, 13/13 成功)
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 13/13 个描述
+[EmotionV2.process] 开始批量生成情绪嵌入向量...
+  使用批量Embedding调用（优化方案二）
+Batch embedding: 0 cache hits, 13 cache misses
+Generated 13 embeddings (batch + cache)
+[EmotionV2.process] 批量嵌入生成完成，共 13 个向量
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=test_comprehensive_optimization_v4_cached_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 13/13 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=test_comprehensive_optimization_v4_cached_entity_0, entity=Mercedes, vector_shape=(2048,)
+    2. entity_id=test_comprehensive_optimization_v4_cached_entity_1, entity=terror, vector_shape=(2048,)
+    3. entity_id=test_comprehensive_optimization_v4_cached_entity_2, entity=eyes, vector_shape=(2048,)
+    4. entity_id=test_comprehensive_optimization_v4_cached_entity_3, entity=hand, vector_shape=(2048,)
+    5. entity_id=test_comprehensive_optimization_v4_cached_entity_4, entity=plate, vector_shape=(2048,)
+    6. entity_id=test_comprehensive_optimization_v4_cached_entity_5, entity=refuse, vector_shape=(2048,)
+    7. entity_id=test_comprehensive_optimization_v4_cached_entity_6, entity=whispered, vector_shape=(2048,)
+    8. entity_id=test_comprehensive_optimization_v4_cached_entity_7, entity=voice, vector_shape=(2048,)
+    9. entity_id=test_comprehensive_optimization_v4_cached_entity_8, entity=tears, vector_shape=(2048,)
+    10. entity_id=test_comprehensive_optimization_v4_cached_entity_9, entity=enemy, vector_shape=(2048,)
+    11. entity_id=test_comprehensive_optimization_v4_cached_entity_10, entity=bread, vector_shape=(2048,)
+    12. entity_id=test_comprehensive_optimization_v4_cached_entity_11, entity=death, vector_shape=(2048,)
+    13. entity_id=test_comprehensive_optimization_v4_cached_entity_12, entity=house, vector_shape=(2048,)
+================================================================================

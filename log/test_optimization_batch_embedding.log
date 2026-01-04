@@ -1,0 +1,13 @@
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+Generated 10 embeddings in one batch call

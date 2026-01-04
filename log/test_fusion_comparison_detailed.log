@@ -1,0 +1,235 @@
+初始化 Amygdala...
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+Speed module initialized
+Temperature module initialized
+Particle module initialized
+Particle module initialized
+Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+ChromaClient initialized: path=./hyperamy_db_fusion_particles, collection=fusion_particles
+HyperAmyStorage initialized: path=./hyperamy_db_fusion_particles, collection=fusion_particles
+Particle storage initialized: collection=fusion_particles
+Loaded 5 conversation records from test_graph_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+Conversation store initialized without embedding model
+Loaded 48 relationship mappings for 5 conversations
+Amygdala workflow initialized
+✓ Amygdala 初始化完成
+初始化 HippoRAG...
+Initializing HippoRAG wrapper with save_dir: ./test_graph_fusion_hipporag_db
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Loaded graph from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/graph.pickle with 46 nodes, 130 edges
+Loaded 5 records from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/chunk_embeddings/vdb_chunk.parquet
+Loaded 41 records from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/entity_embeddings/vdb_entity.parquet
+Loaded 41 records from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/fact_embeddings/vdb_fact.parquet
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+✓ HippoRAG wrapper initialized
+✓ HippoRAG 初始化完成
+✓ 图谱融合检索器初始化完成
+Initializing HippoRAG wrapper with save_dir: ./test_graph_fusion_hipporag_db
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Loaded graph from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/graph.pickle with 46 nodes, 130 edges
+Loaded 5 records from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/chunk_embeddings/vdb_chunk.parquet
+Loaded 41 records from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/entity_embeddings/vdb_entity.parquet
+Loaded 41 records from ./test_graph_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/fact_embeddings/vdb_fact.parquet
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+✓ HippoRAG wrapper initialized
+Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+Entity initialized with model: DeepSeek-V3.2
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2
+EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+Speed module initialized
+Temperature module initialized
+Particle module initialized
+Particle module initialized
+ChromaClient initialized: path=./hyperamy_db_fusion_particles, collection=fusion_particles
+HyperAmyStorage initialized: path=./hyperamy_db_fusion_particles, collection=fusion_particles
+Particle storage initialized: collection=fusion_particles
+Loaded 5 conversation records from test_graph_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+Conversation store initialized without embedding model
+Loaded 48 relationship mappings for 5 conversations
+Amygdala workflow initialized
+================================================================================
+[GraphFusionRetriever.retrieve] 开始融合检索
+  Query: Why did the Count strictly refuse the muscatel grapes and any refreshment offered by Madame de Morcerf (Mercedes) during his visit to her house?
+  权重配置: emotion=0.3, semantic=0.5, fact=0.2
+Preparing for fast retrieval.
+Loading keys.
+Loading embeddings.
+Adding OpenIE triples to graph.
+[GraphFusionRetriever.retrieve] Step 1: 从 query 抽取实体
+================================================================================
+[Particle.process] 开始处理文本
+  输入 - text_id: query_1767167013
+  输入 - text: Why did the Count strictly refuse the muscatel grapes and any refreshment offered by Madame de Morcerf (Mercedes) during his visit to her house?
+  输入 - text_length: 144 字符
+  输入 - entities: None (将自动抽取)
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: query_1767167013
+  输入 - text: Why did the Count strictly refuse the muscatel grapes and any refreshment offered by Madame de Morcerf (Mercedes) during his visit to her house?
+  输入 - text_length: 144 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 7
+  抽取结果 - 实体列表: ['Count', 'muscatel grapes', 'refreshment', 'Madame de Morcerf', 'Mercedes', 'visit', 'house']
+[EmotionV2.process] 开始为实体生成情感描述...
+  实体数量: 7
+  实体列表: ['Count', 'muscatel grapes', 'refreshment', 'Madame de Morcerf', 'Mercedes', 'visit', 'house']
+[Sentence.generate_affective_description] 开始为实体 'Count' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: pride, resentment, resolve, disdain, bitterness
+[Sentence.generate_affective_description] 开始为实体 'muscatel grapes' 生成情感描述
+[CompletionClient] 请求超时（60秒），尝试 1/3
+  URL: https://llmapi.paratera.com/v1/chat/completions
+  Model: DeepSeek-V3.2
+[CompletionClient] 等待 2.0 秒后重试...
+[Sentence.generate_affective_description] 成功生成描述: rejection, disdain, distrust, defiance
+[Sentence.generate_affective_description] 开始为实体 'refreshment' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, distrust, coldness, aversion, defiance, discomfort
+[Sentence.generate_affective_description] 开始为实体 'Madame de Morcerf' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, suspicion, distrust, coldness, pride
+[Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, refusal, discomfort, avoidance, distrust
+[Sentence.generate_affective_description] 开始为实体 'visit' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: distrust, suspicion, rejection, discomfort
+[Sentence.generate_affective_description] 开始为实体 'house' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: suspicion, distrust, tension, aversion, discomfort
+Generated 7 affective descriptions for 7 entities
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 7/7 个描述
+[EmotionV2.process] 开始生成情绪嵌入向量...
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_0, entity=Count, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_1, entity=muscatel grapes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_2, entity=refreshment, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_3, entity=Madame de Morcerf, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_4, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_5, entity=visit, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167013_entity_6, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 7/7 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=query_1767167013_entity_0, entity=Count, vector_shape=(2048,)
+    2. entity_id=query_1767167013_entity_1, entity=muscatel grapes, vector_shape=(2048,)
+    3. entity_id=query_1767167013_entity_2, entity=refreshment, vector_shape=(2048,)
+    4. entity_id=query_1767167013_entity_3, entity=Madame de Morcerf, vector_shape=(2048,)
+    5. entity_id=query_1767167013_entity_4, entity=Mercedes, vector_shape=(2048,)
+    6. entity_id=query_1767167013_entity_5, entity=visit, vector_shape=(2048,)
+    7. entity_id=query_1767167013_entity_6, entity=house, vector_shape=(2048,)
+================================================================================
+[Particle.process] 情绪节点提取完成
+  提取结果 - emotion_nodes数量: 7
+  提取结果 - emotion_nodes详情:
+    1. entity_id=query_1767167013_entity_0, entity=Count, vector_shape=(2048,)
+    2. entity_id=query_1767167013_entity_1, entity=muscatel grapes, vector_shape=(2048,)
+    3. entity_id=query_1767167013_entity_2, entity=refreshment, vector_shape=(2048,)
+    4. entity_id=query_1767167013_entity_3, entity=Madame de Morcerf, vector_shape=(2048,)
+    5. entity_id=query_1767167013_entity_4, entity=Mercedes, vector_shape=(2048,)
+    6. entity_id=query_1767167013_entity_5, entity=visit, vector_shape=(2048,)
+    7. entity_id=query_1767167013_entity_6, entity=house, vector_shape=(2048,)
+Successfully created 7 particles for text_id: query_1767167013
+  ✓ 抽取到 7 个实体: ['Count', 'muscatel grapes', 'refreshment', 'Madame de Morcerf', 'Mercedes', 'visit', 'house']
+[GraphFusionRetriever.retrieve] Step 2: 获取 query embedding
+Encoding 1 queries for query_to_fact.
+Encoding 1 queries for query_to_passage.
+  ✓ Query embedding 准备完成
+[GraphFusionRetriever.retrieve] Step 3: HippoRAG 语义扩展
+  ✓ 语义扩展找到 0 个相似实体
+[GraphFusionRetriever.retrieve] Step 4: Amygdala 情绪扩展
+  ✓ 情绪扩展找到 0 个实体
+[GraphFusionRetriever.retrieve] Step 5: 提取 HippoRAG fact 实体
+  ✓ Fact 扩展找到 19 个实体
+[GraphFusionRetriever.retrieve] Step 6: 融合实体权重
+    - Query 实体: 7
+    - 语义实体: 0
+    - 情绪实体: 0
+    - Fact 实体: 19
+    - 合并后唯一实体: 26
+  ✓ 融合后共有 46 个实体节点
+[GraphFusionRetriever.retrieve] Step 7: 运行 PPR 传播
+  ✓ PPR 完成
+[GraphFusionRetriever.retrieve] 检索完成，耗时 159.82s
+================================================================================
+Retrieving top-5 chunks for query: Why did the Count strictly refuse the muscatel grapes and any refreshment offered by Madame de Morce...
+Preparing for fast retrieval.
+Loading keys.
+Loading embeddings.
+Adding OpenIE triples to graph.
+Encoding 1 queries for query_to_fact.
+Encoding 1 queries for query_to_passage.
+Total Retrieval Time 1.01s
+Total Recognition Memory Time 0.03s
+Total PPR Time 0.00s
+Total Misc Time 0.98s
+✓ Retrieved 5 chunks
+================================================================================
+[Particle.process] 开始处理文本
+  输入 - text_id: query_1767167174
+  输入 - text: Why did the Count strictly refuse the muscatel grapes and any refreshment offered by Madame de Morcerf (Mercedes) during his visit to her house?
+  输入 - text_length: 144 字符
+  输入 - entities: None (将自动抽取)
+================================================================================
+[EmotionV2.process] 开始处理文本
+  输入 - text_id: query_1767167174
+  输入 - text: Why did the Count strictly refuse the muscatel grapes and any refreshment offered by Madame de Morcerf (Mercedes) during his visit to her house?
+  输入 - text_length: 144 字符
+  输入 - entities: None (将自动抽取)
+[EmotionV2.process] 开始抽取实体...
+[EmotionV2.process] 实体抽取完成
+  抽取结果 - 实体数量: 7
+  抽取结果 - 实体列表: ['Count', 'muscatel grapes', 'refreshment', 'Madame de Morcerf', 'Mercedes', 'visit', 'house']
+[EmotionV2.process] 开始为实体生成情感描述...
+  实体数量: 7
+  实体列表: ['Count', 'muscatel grapes', 'refreshment', 'Madame de Morcerf', 'Mercedes', 'visit', 'house']
+[Sentence.generate_affective_description] 开始为实体 'Count' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: distrust, resentment, restraint, pride, bitterness
+[Sentence.generate_affective_description] 开始为实体 'muscatel grapes' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, distrust, refusal, disdain
+[Sentence.generate_affective_description] 开始为实体 'refreshment' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, disdain, distrust, avoidance
+[Sentence.generate_affective_description] 开始为实体 'Madame de Morcerf' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, distrust, bitterness, avoidance
+[Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: refusal, resentment, bitterness, distance, rejection, hurt
+[Sentence.generate_affective_description] 开始为实体 'visit' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, distrust, coldness, disdain, distance
+[Sentence.generate_affective_description] 开始为实体 'house' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: rejection, discomfort, suspicion, distrust, tension, coldness
+Generated 7 affective descriptions for 7 entities
+[EmotionV2.process] 情感描述生成完成
+  成功生成: 7/7 个描述
+[EmotionV2.process] 开始生成情绪嵌入向量...
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_0, entity=Count, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_1, entity=muscatel grapes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_2, entity=refreshment, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_3, entity=Madame de Morcerf, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_4, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_5, entity=visit, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 成功创建 EmotionNode: entity_id=query_1767167174_entity_6, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[EmotionV2.process] 处理完成
+  成功处理: 7/7 个实体
+  生成的 EmotionNode 列表:
+    1. entity_id=query_1767167174_entity_0, entity=Count, vector_shape=(2048,)
+    2. entity_id=query_1767167174_entity_1, entity=muscatel grapes, vector_shape=(2048,)
+    3. entity_id=query_1767167174_entity_2, entity=refreshment, vector_shape=(2048,)
+    4. entity_id=query_1767167174_entity_3, entity=Madame de Morcerf, vector_shape=(2048,)
+    5. entity_id=query_1767167174_entity_4, entity=Mercedes, vector_shape=(2048,)
+    6. entity_id=query_1767167174_entity_5, entity=visit, vector_shape=(2048,)
+    7. entity_id=query_1767167174_entity_6, entity=house, vector_shape=(2048,)
+================================================================================
+[Particle.process] 情绪节点提取完成
+  提取结果 - emotion_nodes数量: 7
+  提取结果 - emotion_nodes详情:
+    1. entity_id=query_1767167174_entity_0, entity=Count, vector_shape=(2048,)
+    2. entity_id=query_1767167174_entity_1, entity=muscatel grapes, vector_shape=(2048,)
+    3. entity_id=query_1767167174_entity_2, entity=refreshment, vector_shape=(2048,)
+    4. entity_id=query_1767167174_entity_3, entity=Madame de Morcerf, vector_shape=(2048,)
+    5. entity_id=query_1767167174_entity_4, entity=Mercedes, vector_shape=(2048,)
+    6. entity_id=query_1767167174_entity_5, entity=visit, vector_shape=(2048,)
+    7. entity_id=query_1767167174_entity_6, entity=house, vector_shape=(2048,)
+Successfully created 7 particles for text_id: query_1767167174

@@ -1,0 +1,53 @@
+Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+Sentence initialized with model: DeepSeek-V3.2
+[Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sadness, despair, anxiety, sorrow
+[Sentence.generate_affective_description] 开始为实体 'terror' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, despair, anguish, anxiety, distress
+[Sentence.generate_affective_description] 开始为实体 'eyes' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sadness, distress, anxiety, despair
+[Sentence.generate_affective_description] 开始为实体 'hand' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, anxiety, distress, helplessness, dread, agitation
+[Sentence.generate_affective_description] 开始为实体 'plate' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, anxiety, distress, despair
+[Sentence.generate_affective_description] 开始为实体 'refuse' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, terror, sadness, despair, betrayal, anxiety
+[Sentence.generate_affective_description] 开始为实体 'tears' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, despair, betrayal, sorrow, anguish
+[Sentence.generate_affective_description] 开始为实体 'enemy' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, hostility, sadness, dread, distrust, sorrow
+[Sentence.generate_affective_description] 开始为实体 'bread' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, despair, betrayal, dread
+[Sentence.generate_affective_description] 开始为实体 'death' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, terror, dread, despair, anguish
+Generated 10 affective descriptions for 10 entities
+[Sentence.generate_affective_descriptions_parallel] 开始并行生成情感描述
+  实体数量: 10
+  并行度: 5
+[Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'terror' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'eyes' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'hand' 生成情感描述
+[Sentence.generate_affective_description] 开始为实体 'plate' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, desperation, anxiety, sorrow
+[Sentence.generate_affective_description] 开始为实体 'refuse' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, desperation, sorrow, despair
+[Sentence.generate_affective_description] 开始为实体 'tears' 生成情感描述
+  进度: 2/10 (4.44s)
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, anxiety, despair, sorrow
+[Sentence.generate_affective_description] 开始为实体 'enemy' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: fear, anxiety, distress, dread, vulnerability
+[Sentence.generate_affective_description] 开始为实体 'bread' 生成情感描述
+  进度: 4/10 (5.04s)
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sadness, betrayal, despair, hostility
+[Sentence.generate_affective_description] 开始为实体 'death' 生成情感描述
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, despair, betrayal, dread
+  进度: 6/10 (8.45s)
+[Sentence.generate_affective_description] 成功生成描述: terror, fear, sadness, dread, despair, anguish
+[Sentence.generate_affective_description] 成功生成描述: fear, distrust, sorrow, dread, desperation
+  进度: 8/10 (9.40s)
+[Sentence.generate_affective_description] 成功生成描述: fear, dread, distress, despair, anguish, hopelessness
+[Sentence.generate_affective_description] 成功生成描述: fear, sadness, desperation, anguish, dread
+  进度: 10/10 (14.44s)
+[Sentence.generate_affective_descriptions_parallel] 并行生成完成 (14.44s, 10/10 成功)

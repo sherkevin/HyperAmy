@@ -1,0 +1,704 @@
+[INFO] [__main__] ====================================================================================================
+[INFO] [__main__] 融合检索对比测试：GraphFusion vs HippoRAG vs Amygdala
+[INFO] [__main__] ====================================================================================================
+[INFO] [__main__] 
+====================================================================================================
+[INFO] [__main__] 【初始化】三个检索系统
+[INFO] [__main__] ====================================================================================================
+[INFO] [__main__] 
+[1/3] 初始化图谱融合检索器...
+[INFO] [workflow.graph_fusion_retrieval] 初始化 Amygdala...
+[INFO] [hipporag.prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[INFO] [utils.entitiy] Entity initialized with model: DeepSeek-V3.2
+[INFO] [prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[WARNING] [prompts.prompt_template_manager] Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+[INFO] [utils.sentence] Sentence initialized with model: DeepSeek-V3.2
+[INFO] [particle.emotion_v2] EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+[INFO] [particle.speed] Speed module initialized
+[INFO] [particle.temperature] Temperature module initialized
+[INFO] [particle.particle] Particle module initialized
+[INFO] [workflow.amygdala] Particle module initialized
+[INFO] [chromadb.telemetry.product.posthog] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[INFO] [ods.chroma_client] ChromaClient initialized: path=./hyperamy_db_fusion_particles, collection=fusion_particles
+[INFO] [poincare.storage] HyperAmyStorage initialized: path=./hyperamy_db_fusion_particles, collection=fusion_particles
+[INFO] [workflow.amygdala] Particle storage initialized: collection=fusion_particles
+[INFO] [workflow.amygdala] Creating working directory: test_comparison_fusion_amygdala_db/conversation_embeddings
+[INFO] [workflow.amygdala] Conversation store initialized without embedding model
+[INFO] [workflow.amygdala] No existing relationship mapping file found
+[INFO] [workflow.amygdala] Amygdala workflow initialized
+[INFO] [workflow.graph_fusion_retrieval] ✓ Amygdala 初始化完成
+[INFO] [workflow.graph_fusion_retrieval] 初始化 HippoRAG...
+[INFO] [workflow.hipporag_wrapper] Initializing HippoRAG wrapper with save_dir: ./test_comparison_fusion_hipporag_db
+[INFO] [hipporag.HippoRAG] Creating working directory: ./test_comparison_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3
+[INFO] [hipporag.prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[INFO] [hipporag.embedding_store] Creating working directory: ./test_comparison_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/chunk_embeddings
+[INFO] [hipporag.embedding_store] Creating working directory: ./test_comparison_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/entity_embeddings
+[INFO] [hipporag.embedding_store] Creating working directory: ./test_comparison_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/fact_embeddings
+[INFO] [hipporag.prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[INFO] [workflow.hipporag_wrapper] ✓ HippoRAG wrapper initialized
+[INFO] [workflow.graph_fusion_retrieval] ✓ HippoRAG 初始化完成
+[INFO] [workflow.graph_fusion_retrieval] ✓ 图谱融合检索器初始化完成
+[INFO] [__main__] ✓ 图谱融合检索器初始化完成
+[INFO] [__main__] 
+[2/3] 初始化 HippoRAG...
+[INFO] [workflow.hipporag_wrapper] Initializing HippoRAG wrapper with save_dir: ./test_comparison_hipporag_only_db
+[INFO] [hipporag.HippoRAG] Creating working directory: ./test_comparison_hipporag_only_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3
+[INFO] [hipporag.prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[INFO] [hipporag.embedding_store] Creating working directory: ./test_comparison_hipporag_only_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/chunk_embeddings
+[INFO] [hipporag.embedding_store] Creating working directory: ./test_comparison_hipporag_only_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/entity_embeddings
+[INFO] [hipporag.embedding_store] Creating working directory: ./test_comparison_hipporag_only_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/fact_embeddings
+[INFO] [hipporag.prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[INFO] [workflow.hipporag_wrapper] ✓ HippoRAG wrapper initialized
+[INFO] [__main__] ✓ HippoRAG 初始化完成
+[INFO] [__main__] 
+[3/3] 初始化 Amygdala...
+[INFO] [hipporag.prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/hipporag/prompts/templates
+[INFO] [utils.entitiy] Entity initialized with model: DeepSeek-V3.2
+[INFO] [prompts.prompt_template_manager] Loading templates from directory: /mnt/d/Codes/HyperAmy/prompts/templates
+[WARNING] [prompts.prompt_template_manager] Module 'ner_improved' does not define a 'prompt_template'. Skipping.
+[INFO] [utils.sentence] Sentence initialized with model: DeepSeek-V3.2
+[INFO] [particle.emotion_v2] EmotionV2 initialized with model: DeepSeek-V3.2, embedding_model: GLM-Embedding-3
+[INFO] [particle.speed] Speed module initialized
+[INFO] [particle.temperature] Temperature module initialized
+[INFO] [particle.particle] Particle module initialized
+[INFO] [workflow.amygdala] Particle module initialized
+[INFO] [chromadb.telemetry.product.posthog] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[INFO] [ods.chroma_client] ChromaClient initialized: path=./hyperamy_db_comparison_particles, collection=comparison_particles
+[INFO] [poincare.storage] HyperAmyStorage initialized: path=./hyperamy_db_comparison_particles, collection=comparison_particles
+[INFO] [workflow.amygdala] Particle storage initialized: collection=comparison_particles
+[INFO] [workflow.amygdala] Creating working directory: test_comparison_amygdala_only_db/conversation_embeddings
+[INFO] [workflow.amygdala] Conversation store initialized without embedding model
+[INFO] [workflow.amygdala] No existing relationship mapping file found
+[INFO] [workflow.amygdala] Amygdala workflow initialized
+[INFO] [__main__] ✓ Amygdala 初始化完成
+[INFO] [__main__] 
+====================================================================================================
+[INFO] [__main__] 【添加数据】
+[INFO] [__main__] ====================================================================================================
+[INFO] [__main__] 
+[1/3] 添加数据到融合检索器...
+[INFO] [workflow.graph_fusion_retrieval] 添加 5 个 chunks 到融合检索器
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] [Amygdala.add] 开始处理对话
+[INFO] [workflow.amygdala]   输入 - conversation_id: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [workflow.amygdala]   输入 - conversation_text: "I have an excellent appetite," said Albert. "I hope, my dear Count, you have the same." "I?" said Monte Cristo. "I never eat, or rather, I eat so little that it is not worth talking about. I have my ...
+[INFO] [workflow.amygdala]   输入 - conversation_length: 221 字符
+[INFO] [particle.particle] ================================================================================
+[INFO] [particle.particle] [Particle.process] 开始处理文本
+[INFO] [particle.particle]   输入 - text_id: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [particle.particle]   输入 - text: "I have an excellent appetite," said Albert. "I hope, my dear Count, you have the same." "I?" said Monte Cristo. "I never eat, or rather, I eat so little that it is not worth talking about. I have my ...
+[INFO] [particle.particle]   输入 - text_length: 221 字符
+[INFO] [particle.particle]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始处理文本
+[INFO] [particle.emotion_v2]   输入 - text_id: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [particle.emotion_v2]   输入 - text: "I have an excellent appetite," said Albert. "I hope, my dear Count, you have the same." "I?" said Monte Cristo. "I never eat, or rather, I eat so little that it is not worth talking about. I have my ...
+[INFO] [particle.emotion_v2]   输入 - text_length: 221 字符
+[INFO] [particle.emotion_v2]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始抽取实体...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 实体抽取完成
+[INFO] [particle.emotion_v2]   抽取结果 - 实体数量: 5
+[INFO] [particle.emotion_v2]   抽取结果 - 实体列表: ['Albert', 'Count', 'Monte Cristo', 'appetite', 'habits']
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始为实体生成情感描述...
+[INFO] [particle.emotion_v2]   实体数量: 5
+[INFO] [particle.emotion_v2]   实体列表: ['Albert', 'Count', 'Monte Cristo', 'appetite', 'habits']
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Albert' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: hope, admiration, cheerfulness, confidence, sociability
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Count' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, hope, curiosity, concern
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Monte Cristo' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: indifference, detachment, resignation
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'appetite' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, hope, contentment
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'habits' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: hope, admiration, peculiarity, pride
+[INFO] [utils.sentence] Generated 5 affective descriptions for 5 entities
+[INFO] [particle.emotion_v2] [EmotionV2.process] 情感描述生成完成
+[INFO] [particle.emotion_v2]   成功生成: 5/5 个描述
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始生成情绪嵌入向量...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0, entity=Albert, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1, entity=Count, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2, entity=Monte Cristo, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3, entity=appetite, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4, entity=habits, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 处理完成
+[INFO] [particle.emotion_v2]   成功处理: 5/5 个实体
+[INFO] [particle.emotion_v2]   生成的 EmotionNode 列表:
+[INFO] [particle.emotion_v2]     1. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0, entity=Albert, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     2. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1, entity=Count, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     3. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2, entity=Monte Cristo, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     4. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3, entity=appetite, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     5. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4, entity=habits, vector_shape=(2048,)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.particle] [Particle.process] 情绪节点提取完成
+[INFO] [particle.particle]   提取结果 - emotion_nodes数量: 5
+[INFO] [particle.particle]   提取结果 - emotion_nodes详情:
+[INFO] [particle.particle]     1. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0, entity=Albert, vector_shape=(2048,)
+[INFO] [particle.particle]     2. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1, entity=Count, vector_shape=(2048,)
+[INFO] [particle.particle]     3. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2, entity=Monte Cristo, vector_shape=(2048,)
+[INFO] [particle.particle]     4. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3, entity=appetite, vector_shape=(2048,)
+[INFO] [particle.particle]     5. entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4, entity=habits, vector_shape=(2048,)
+[INFO] [particle.particle] Successfully created 5 particles for text_id: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子生成完成: 5 个粒子
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子详细信息:
+[INFO] [workflow.amygdala]   粒子 1/5: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0, entity=Albert, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.005819006195077103, 0.01028475463781071, -0.036808598703743485, 0.0030871181912836346, -0.020659727272444292], born=1767164535.8907053
+[INFO] [workflow.amygdala]   粒子 2/5: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1, entity=Count, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.00763093946386373, 0.015528209222976116, -0.04620250217574549, 0.0018310201673345258, -0.028300479495118297], born=1767164535.8907053
+[INFO] [workflow.amygdala]   粒子 3/5: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2, entity=Monte Cristo, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.01829951334774819, 0.015885632301876874, -0.025908984492352027, 0.023702007450412538, -0.0022816916433593027], born=1767164535.8907053
+[INFO] [workflow.amygdala]   粒子 4/5: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3, entity=appetite, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.02177872656610905, 0.012324030754472078, -0.046003445083487346, 0.01395861122190683, -0.01749824365138781], born=1767164535.8907053
+[INFO] [workflow.amygdala]   粒子 5/5: entity_id=fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4, entity=habits, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.01987426041032086, 0.008043257166059824, -0.04860181100342535, 0.019771582408200983, -0.01860787538417527], born=1767164535.8907053
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储粒子到数据库
+[INFO] [workflow.amygdala]   粒子数量: 5
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4']
+[INFO] [poincare.storage] Batch upserted 5 entities
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子存储成功: 5 个粒子已存储到数据库
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储对话到数据库
+[INFO] [workflow.amygdala]   conversation_id: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [workflow.amygdala]   对话内容长度: 221 字符
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 开始插入对话文本
+[INFO] [workflow.amygdala]   输入文本数量: 1
+[INFO] [workflow.amygdala]   文本 1: "I have an excellent appetite," said Albert. "I hope, my dear Count, you have the same." "I?" said M... (长度: 221 字符)
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入统计: 1 条新记录, 0 条已存在
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 准备插入 1 条新记录
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 保存新记录到文件
+[INFO] [workflow.amygdala] Saved 1 conversation records to test_comparison_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入完成，当前总记录数: 1
+[INFO] [workflow.amygdala] [Amygdala.add] 对话存储成功: conversation_id=fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [workflow.amygdala] [Amygdala.add] 开始记录关系映射
+[INFO] [workflow.amygdala] [Amygdala.add] 关系映射记录完成:
+[INFO] [workflow.amygdala]   对话ID: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [workflow.amygdala]   关联粒子数: 5
+[INFO] [workflow.amygdala]   关系映射详情: {'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0': 'fusion-5d7761622dd0be3a97e353427bb3e9cd', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1': 'fusion-5d7761622dd0be3a97e353427bb3e9cd', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2': 'fusion-5d7761622dd0be3a97e353427bb3e9cd', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3': 'fusion-5d7761622dd0be3a97e353427bb3e9cd', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4': 'fusion-5d7761622dd0be3a97e353427bb3e9cd'}
+[INFO] [workflow.amygdala] [Amygdala.add] 处理完成
+[INFO] [workflow.amygdala]   对话ID: fusion-5d7761622dd0be3a97e353427bb3e9cd
+[INFO] [workflow.amygdala]   生成粒子数: 5
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_0', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_1', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_2', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_3', 'fusion-5d7761622dd0be3a97e353427bb3e9cd_entity_4']
+[INFO] [workflow.amygdala]   关系映射数: 5
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] [Amygdala.add] 开始处理对话
+[INFO] [workflow.amygdala]   输入 - conversation_id: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [workflow.amygdala]   输入 - conversation_text: The Count took from his pocket a small case made of hollowed emerald, took out a small greenish pill, and swallowed it. "This is my food," he said to the guests. "With this, I feel neither hunger nor ...
+[INFO] [workflow.amygdala]   输入 - conversation_length: 247 字符
+[INFO] [particle.particle] ================================================================================
+[INFO] [particle.particle] [Particle.process] 开始处理文本
+[INFO] [particle.particle]   输入 - text_id: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [particle.particle]   输入 - text: The Count took from his pocket a small case made of hollowed emerald, took out a small greenish pill, and swallowed it. "This is my food," he said to the guests. "With this, I feel neither hunger nor ...
+[INFO] [particle.particle]   输入 - text_length: 247 字符
+[INFO] [particle.particle]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始处理文本
+[INFO] [particle.emotion_v2]   输入 - text_id: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [particle.emotion_v2]   输入 - text: The Count took from his pocket a small case made of hollowed emerald, took out a small greenish pill, and swallowed it. "This is my food," he said to the guests. "With this, I feel neither hunger nor ...
+[INFO] [particle.emotion_v2]   输入 - text_length: 247 字符
+[INFO] [particle.emotion_v2]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始抽取实体...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 实体抽取完成
+[INFO] [particle.emotion_v2]   抽取结果 - 实体数量: 8
+[INFO] [particle.emotion_v2]   抽取结果 - 实体列表: ['Count', 'emerald', 'greenish pill', 'food', 'hunger', 'fatigue', 'secret', 'East']
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始为实体生成情感描述...
+[INFO] [particle.emotion_v2]   实体数量: 8
+[INFO] [particle.emotion_v2]   实体列表: ['Count', 'emerald', 'greenish pill', 'food', 'hunger', 'fatigue', 'secret', 'East']
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Count' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, curiosity, pride, trust
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'emerald' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, fascination, mystery, curiosity, wonder
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'greenish pill' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, trust, hope, fascination, curiosity
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'food' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, curiosity, pride, awe, intrigue
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'hunger' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: disgust, pride, superiority, disdain
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'fatigue' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: weariness, relief, admiration, hope
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'secret' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: intrigue, admiration, mystery, pride, exclusivity, awe
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'East' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, curiosity, awe, fascination, intrigue
+[INFO] [utils.sentence] Generated 8 affective descriptions for 8 entities
+[INFO] [particle.emotion_v2] [EmotionV2.process] 情感描述生成完成
+[INFO] [particle.emotion_v2]   成功生成: 8/8 个描述
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始生成情绪嵌入向量...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0, entity=Count, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1, entity=emerald, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2, entity=greenish pill, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3, entity=food, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4, entity=hunger, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5, entity=fatigue, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6, entity=secret, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7, entity=East, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 处理完成
+[INFO] [particle.emotion_v2]   成功处理: 8/8 个实体
+[INFO] [particle.emotion_v2]   生成的 EmotionNode 列表:
+[INFO] [particle.emotion_v2]     1. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0, entity=Count, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     2. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1, entity=emerald, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     3. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2, entity=greenish pill, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     4. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3, entity=food, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     5. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4, entity=hunger, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     6. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5, entity=fatigue, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     7. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6, entity=secret, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     8. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7, entity=East, vector_shape=(2048,)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.particle] [Particle.process] 情绪节点提取完成
+[INFO] [particle.particle]   提取结果 - emotion_nodes数量: 8
+[INFO] [particle.particle]   提取结果 - emotion_nodes详情:
+[INFO] [particle.particle]     1. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0, entity=Count, vector_shape=(2048,)
+[INFO] [particle.particle]     2. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1, entity=emerald, vector_shape=(2048,)
+[INFO] [particle.particle]     3. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2, entity=greenish pill, vector_shape=(2048,)
+[INFO] [particle.particle]     4. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3, entity=food, vector_shape=(2048,)
+[INFO] [particle.particle]     5. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4, entity=hunger, vector_shape=(2048,)
+[INFO] [particle.particle]     6. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5, entity=fatigue, vector_shape=(2048,)
+[INFO] [particle.particle]     7. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6, entity=secret, vector_shape=(2048,)
+[INFO] [particle.particle]     8. entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7, entity=East, vector_shape=(2048,)
+[INFO] [particle.particle] Successfully created 8 particles for text_id: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子生成完成: 8 个粒子
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子详细信息:
+[INFO] [workflow.amygdala]   粒子 1/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0, entity=Count, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.014113441182594265, 0.012356301159861065, -0.047668062616711034, -0.0021260271275057203, -0.01918211624817083], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 2/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1, entity=emerald, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.02285611323299942, 0.01910994135871266, -0.03784080473014633, 0.009237215690019483, -0.013535279545785973], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 3/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2, entity=greenish pill, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.005632426598002701, 0.013579548995184593, -0.04851145298279749, 0.0016088564994294879, -0.01772885599371322], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 4/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3, entity=food, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.023268603091897842, 0.02587837010220495, -0.035308626139449135, 0.004706903018589609, -0.013794487054480433], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 5/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4, entity=hunger, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.0014723189698497275, 0.007899193838239641, -0.02431352350210561, 0.00718599725284454, -0.004452076608829999], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 6/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5, entity=fatigue, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.025653015551725358, 0.016110762718471835, -0.032794776426926374, 0.03284254942609156, -0.008389777853392493], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 7/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6, entity=secret, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.02292513039667842, 0.010213944731199204, -0.032711619139127, 0.01644579956719523, 0.004522032880993478], born=1767164553.3109078
+[INFO] [workflow.amygdala]   粒子 8/8: entity_id=fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7, entity=East, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.02006122227215255, 0.027145549015123886, -0.030500119893415657, 0.0026317941045150587, -0.011829279570818224], born=1767164553.3109078
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储粒子到数据库
+[INFO] [workflow.amygdala]   粒子数量: 8
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7']
+[INFO] [poincare.storage] Batch upserted 8 entities
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子存储成功: 8 个粒子已存储到数据库
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储对话到数据库
+[INFO] [workflow.amygdala]   conversation_id: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [workflow.amygdala]   对话内容长度: 247 字符
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 开始插入对话文本
+[INFO] [workflow.amygdala]   输入文本数量: 1
+[INFO] [workflow.amygdala]   文本 1: The Count took from his pocket a small case made of hollowed emerald, took out a small greenish pill... (长度: 247 字符)
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入统计: 1 条新记录, 0 条已存在
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 准备插入 1 条新记录
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 保存新记录到文件
+[INFO] [workflow.amygdala] Saved 2 conversation records to test_comparison_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入完成，当前总记录数: 2
+[INFO] [workflow.amygdala] [Amygdala.add] 对话存储成功: conversation_id=fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [workflow.amygdala] [Amygdala.add] 开始记录关系映射
+[INFO] [workflow.amygdala] [Amygdala.add] 关系映射记录完成:
+[INFO] [workflow.amygdala]   对话ID: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [workflow.amygdala]   关联粒子数: 8
+[INFO] [workflow.amygdala]   关系映射详情: {'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6': 'fusion-64e985bb975c0274800eaf1db9e9d8c6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7': 'fusion-64e985bb975c0274800eaf1db9e9d8c6'}
+[INFO] [workflow.amygdala] [Amygdala.add] 处理完成
+[INFO] [workflow.amygdala]   对话ID: fusion-64e985bb975c0274800eaf1db9e9d8c6
+[INFO] [workflow.amygdala]   生成粒子数: 8
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_0', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_1', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_2', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_3', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_4', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_5', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_6', 'fusion-64e985bb975c0274800eaf1db9e9d8c6_entity_7']
+[INFO] [workflow.amygdala]   关系映射数: 8
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] [Amygdala.add] 开始处理对话
+[INFO] [workflow.amygdala]   输入 - conversation_id: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [workflow.amygdala]   输入 - conversation_text: "Will you not take anything?" asked Mercedes. "A peach? Some grapes?" "I thank you, Madame," replied Monte Cristo with a bow, "but I never eat between meals. It is a rule I have imposed upon myself to...
+[INFO] [workflow.amygdala]   输入 - conversation_length: 221 字符
+[INFO] [particle.particle] ================================================================================
+[INFO] [particle.particle] [Particle.process] 开始处理文本
+[INFO] [particle.particle]   输入 - text_id: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [particle.particle]   输入 - text: "Will you not take anything?" asked Mercedes. "A peach? Some grapes?" "I thank you, Madame," replied Monte Cristo with a bow, "but I never eat between meals. It is a rule I have imposed upon myself to...
+[INFO] [particle.particle]   输入 - text_length: 221 字符
+[INFO] [particle.particle]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始处理文本
+[INFO] [particle.emotion_v2]   输入 - text_id: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [particle.emotion_v2]   输入 - text: "Will you not take anything?" asked Mercedes. "A peach? Some grapes?" "I thank you, Madame," replied Monte Cristo with a bow, "but I never eat between meals. It is a rule I have imposed upon myself to...
+[INFO] [particle.emotion_v2]   输入 - text_length: 221 字符
+[INFO] [particle.emotion_v2]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始抽取实体...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 实体抽取完成
+[INFO] [particle.emotion_v2]   抽取结果 - 实体数量: 6
+[INFO] [particle.emotion_v2]   抽取结果 - 实体列表: ['Mercedes', 'Monte Cristo', 'Madame', 'peach', 'grapes', 'health']
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始为实体生成情感描述...
+[INFO] [particle.emotion_v2]   实体数量: 6
+[INFO] [particle.emotion_v2]   实体列表: ['Mercedes', 'Monte Cristo', 'Madame', 'peach', 'grapes', 'health']
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: kindness, concern, hospitality, generosity, warmth
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Monte Cristo' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: restraint, politeness, discipline, gratitude, self-control
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Madame' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, respect, courtesy, gratitude
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'peach' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: desire, politeness, gratitude, restraint, care
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'grapes' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: desire, offering, politeness, refusal, restraint
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'health' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: admiration, pride, discipline, resolve
+[INFO] [utils.sentence] Generated 6 affective descriptions for 6 entities
+[INFO] [particle.emotion_v2] [EmotionV2.process] 情感描述生成完成
+[INFO] [particle.emotion_v2]   成功生成: 6/6 个描述
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始生成情绪嵌入向量...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_1, entity=Monte Cristo, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_2, entity=Madame, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_3, entity=peach, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_4, entity=grapes, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_5, entity=health, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 处理完成
+[INFO] [particle.emotion_v2]   成功处理: 6/6 个实体
+[INFO] [particle.emotion_v2]   生成的 EmotionNode 列表:
+[INFO] [particle.emotion_v2]     1. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_0, entity=Mercedes, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     2. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_1, entity=Monte Cristo, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     3. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_2, entity=Madame, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     4. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_3, entity=peach, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     5. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_4, entity=grapes, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     6. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_5, entity=health, vector_shape=(2048,)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.particle] [Particle.process] 情绪节点提取完成
+[INFO] [particle.particle]   提取结果 - emotion_nodes数量: 6
+[INFO] [particle.particle]   提取结果 - emotion_nodes详情:
+[INFO] [particle.particle]     1. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_0, entity=Mercedes, vector_shape=(2048,)
+[INFO] [particle.particle]     2. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_1, entity=Monte Cristo, vector_shape=(2048,)
+[INFO] [particle.particle]     3. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_2, entity=Madame, vector_shape=(2048,)
+[INFO] [particle.particle]     4. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_3, entity=peach, vector_shape=(2048,)
+[INFO] [particle.particle]     5. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_4, entity=grapes, vector_shape=(2048,)
+[INFO] [particle.particle]     6. entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_5, entity=health, vector_shape=(2048,)
+[INFO] [particle.particle] Successfully created 6 particles for text_id: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子生成完成: 6 个粒子
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子详细信息:
+[INFO] [workflow.amygdala]   粒子 1/6: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_0, entity=Mercedes, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.000800179793520301, 0.028511370769120515, -0.034004803724635775, -0.0001911776984518805, -0.01376763288851241], born=1767164583.9260569
+[INFO] [workflow.amygdala]   粒子 2/6: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_1, entity=Monte Cristo, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.005179820824763011, -0.00533687021944992, -0.021291391279697227, 0.003850511169734494, -0.0030596559964896817], born=1767164583.9260569
+[INFO] [workflow.amygdala]   粒子 3/6: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_2, entity=Madame, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.025099532455717846, 0.018668499595174488, -0.02836131638498622, -0.007871074829316121, -0.009496182794075733], born=1767164583.9260569
+[INFO] [workflow.amygdala]   粒子 4/6: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_3, entity=peach, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.0012296971398709818, 0.0011300116366388373, -0.024215575785151686, 0.016811198545076483, -0.005087599164957344], born=1767164583.9260569
+[INFO] [workflow.amygdala]   粒子 5/6: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_4, entity=grapes, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.008326579804922591, -0.001664160261011594, -0.027250624361564852, 0.029330824312829355, -0.00646017784864917], born=1767164583.9260569
+[INFO] [workflow.amygdala]   粒子 6/6: entity_id=fusion-b1c577f490db95d2644cbe4056b56900_entity_5, entity=health, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.011068996147916548, -0.00027037153361301276, -0.03533042647212545, -0.0009847735131596667, -0.012526037167387193], born=1767164583.9260569
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储粒子到数据库
+[INFO] [workflow.amygdala]   粒子数量: 6
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-b1c577f490db95d2644cbe4056b56900_entity_0', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_1', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_2', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_3', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_4', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_5']
+[INFO] [poincare.storage] Batch upserted 6 entities
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子存储成功: 6 个粒子已存储到数据库
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储对话到数据库
+[INFO] [workflow.amygdala]   conversation_id: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [workflow.amygdala]   对话内容长度: 221 字符
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 开始插入对话文本
+[INFO] [workflow.amygdala]   输入文本数量: 1
+[INFO] [workflow.amygdala]   文本 1: "Will you not take anything?" asked Mercedes. "A peach? Some grapes?" "I thank you, Madame," replied... (长度: 221 字符)
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入统计: 1 条新记录, 0 条已存在
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 准备插入 1 条新记录
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 保存新记录到文件
+[INFO] [workflow.amygdala] Saved 3 conversation records to test_comparison_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入完成，当前总记录数: 3
+[INFO] [workflow.amygdala] [Amygdala.add] 对话存储成功: conversation_id=fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [workflow.amygdala] [Amygdala.add] 开始记录关系映射
+[INFO] [workflow.amygdala] [Amygdala.add] 关系映射记录完成:
+[INFO] [workflow.amygdala]   对话ID: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [workflow.amygdala]   关联粒子数: 6
+[INFO] [workflow.amygdala]   关系映射详情: {'fusion-b1c577f490db95d2644cbe4056b56900_entity_0': 'fusion-b1c577f490db95d2644cbe4056b56900', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_1': 'fusion-b1c577f490db95d2644cbe4056b56900', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_2': 'fusion-b1c577f490db95d2644cbe4056b56900', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_3': 'fusion-b1c577f490db95d2644cbe4056b56900', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_4': 'fusion-b1c577f490db95d2644cbe4056b56900', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_5': 'fusion-b1c577f490db95d2644cbe4056b56900'}
+[INFO] [workflow.amygdala] [Amygdala.add] 处理完成
+[INFO] [workflow.amygdala]   对话ID: fusion-b1c577f490db95d2644cbe4056b56900
+[INFO] [workflow.amygdala]   生成粒子数: 6
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-b1c577f490db95d2644cbe4056b56900_entity_0', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_1', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_2', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_3', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_4', 'fusion-b1c577f490db95d2644cbe4056b56900_entity_5']
+[INFO] [workflow.amygdala]   关系映射数: 6
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] [Amygdala.add] 开始处理对话
+[INFO] [workflow.amygdala]   输入 - conversation_id: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [workflow.amygdala]   输入 - conversation_text: "In the countries of the East, where I have lived," said Monte Cristo to Franz, "people who eat and drink together are bound by a sacred tie. They become brothers. Therefore, I never eat or drink in t...
+[INFO] [workflow.amygdala]   输入 - conversation_length: 314 字符
+[INFO] [particle.particle] ================================================================================
+[INFO] [particle.particle] [Particle.process] 开始处理文本
+[INFO] [particle.particle]   输入 - text_id: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [particle.particle]   输入 - text: "In the countries of the East, where I have lived," said Monte Cristo to Franz, "people who eat and drink together are bound by a sacred tie. They become brothers. Therefore, I never eat or drink in t...
+[INFO] [particle.particle]   输入 - text_length: 314 字符
+[INFO] [particle.particle]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始处理文本
+[INFO] [particle.emotion_v2]   输入 - text_id: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [particle.emotion_v2]   输入 - text: "In the countries of the East, where I have lived," said Monte Cristo to Franz, "people who eat and drink together are bound by a sacred tie. They become brothers. Therefore, I never eat or drink in t...
+[INFO] [particle.emotion_v2]   输入 - text_length: 314 字符
+[INFO] [particle.emotion_v2]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始抽取实体...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 实体抽取完成
+[INFO] [particle.emotion_v2]   抽取结果 - 实体数量: 13
+[INFO] [particle.emotion_v2]   抽取结果 - 实体列表: ['East', 'Monte Cristo', 'Franz', 'countries', 'people', 'sacred tie', 'brothers', 'house', 'man', 'kill', 'bread', 'honor', 'revenge']
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始为实体生成情感描述...
+[INFO] [particle.emotion_v2]   实体数量: 13
+[INFO] [particle.emotion_v2]   实体列表: ['East', 'Monte Cristo', 'Franz', 'countries', 'people', 'sacred tie', 'brothers', 'house', 'man', 'kill', 'bread', 'honor', 'revenge']
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'East' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: mistrust, caution, solemnity, fear, reverence
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Monte Cristo' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: anger, resentment, honor, disdain, resolve, vengeance
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Franz' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, caution, distrust, unease, tension
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'countries' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: trust, respect, honor, brotherhood, sacredness, fear
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'people' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: trust, brotherhood, honor, sacredness, camaraderie, respect
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'sacred tie' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: trust, reverence, honor, loyalty, solemnity, duty, respect
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'brothers' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: trust, bond, loyalty, honor, sacredness
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'house' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: distrust, caution, animosity, dread, aversion
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'man' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: distrust, animosity, contempt, hostility
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'kill' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: anger, resentment, disdain, resolve, contempt, aversion
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'bread' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: trust, fear, honor, dread, sacred, forbidding, restraint
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'honor' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: obligation, restraint, respect, solemnity, reverence
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'revenge' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: anger, hostility, determination, resentment, honor
+[INFO] [utils.sentence] Generated 13 affective descriptions for 13 entities
+[INFO] [particle.emotion_v2] [EmotionV2.process] 情感描述生成完成
+[INFO] [particle.emotion_v2]   成功生成: 13/13 个描述
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始生成情绪嵌入向量...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_0, entity=East, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_1, entity=Monte Cristo, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_2, entity=Franz, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_3, entity=countries, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_4, entity=people, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_5, entity=sacred tie, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_6, entity=brothers, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_7, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_8, entity=man, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_9, entity=kill, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_11, entity=honor, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_12, entity=revenge, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 处理完成
+[INFO] [particle.emotion_v2]   成功处理: 13/13 个实体
+[INFO] [particle.emotion_v2]   生成的 EmotionNode 列表:
+[INFO] [particle.emotion_v2]     1. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_0, entity=East, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     2. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_1, entity=Monte Cristo, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     3. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_2, entity=Franz, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     4. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_3, entity=countries, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     5. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_4, entity=people, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     6. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_5, entity=sacred tie, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     7. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_6, entity=brothers, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     8. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_7, entity=house, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     9. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_8, entity=man, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     10. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_9, entity=kill, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     11. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_10, entity=bread, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     12. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_11, entity=honor, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     13. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_12, entity=revenge, vector_shape=(2048,)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.particle] [Particle.process] 情绪节点提取完成
+[INFO] [particle.particle]   提取结果 - emotion_nodes数量: 13
+[INFO] [particle.particle]   提取结果 - emotion_nodes详情:
+[INFO] [particle.particle]     1. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_0, entity=East, vector_shape=(2048,)
+[INFO] [particle.particle]     2. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_1, entity=Monte Cristo, vector_shape=(2048,)
+[INFO] [particle.particle]     3. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_2, entity=Franz, vector_shape=(2048,)
+[INFO] [particle.particle]     4. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_3, entity=countries, vector_shape=(2048,)
+[INFO] [particle.particle]     5. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_4, entity=people, vector_shape=(2048,)
+[INFO] [particle.particle]     6. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_5, entity=sacred tie, vector_shape=(2048,)
+[INFO] [particle.particle]     7. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_6, entity=brothers, vector_shape=(2048,)
+[INFO] [particle.particle]     8. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_7, entity=house, vector_shape=(2048,)
+[INFO] [particle.particle]     9. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_8, entity=man, vector_shape=(2048,)
+[INFO] [particle.particle]     10. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_9, entity=kill, vector_shape=(2048,)
+[INFO] [particle.particle]     11. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_10, entity=bread, vector_shape=(2048,)
+[INFO] [particle.particle]     12. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_11, entity=honor, vector_shape=(2048,)
+[INFO] [particle.particle]     13. entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_12, entity=revenge, vector_shape=(2048,)
+[INFO] [particle.particle] Successfully created 13 particles for text_id: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子生成完成: 13 个粒子
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子详细信息:
+[INFO] [workflow.amygdala]   粒子 1/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_0, entity=East, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.005588468823624567, 0.023494378940135924, -0.01904641376214902, -0.012055125482390131, -0.01567052362706157], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 2/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_1, entity=Monte Cristo, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.025266061271818848, 0.014139104592503582, -0.03682011593882493, 0.009811954717214313, 0.0039899698850069725], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 3/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_2, entity=Franz, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.011533788287284305, 0.03074189676572105, -0.006648102465591344, -0.01582828439425188, -0.022152904551785906], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 4/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_3, entity=countries, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.01097718284200322, 0.012633149318168564, -0.04893922729560795, -0.009247237866902663, -0.0013984668798715874], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 5/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_4, entity=people, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.00800455776125456, 0.017581743475603623, -0.04412406568394735, -0.0013923121584726364, 0.003066056808551215], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 6/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_5, entity=sacred tie, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.00863940976916726, 0.02435919534915695, -0.030415225187348446, -0.010637448715782502, -0.009202237754129296], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 7/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_6, entity=brothers, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.014268043844199425, 0.018022791803199278, -0.05171154943533331, -0.00394248595694984, -0.0073246475200181675], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 8/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_7, entity=house, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.02193613653103939, 0.024860212468527175, -0.022992360508458955, -0.01141835375589329, -0.02303683350750819], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 9/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_8, entity=man, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.011066960909310435, 0.02759812977384375, -0.021790330821436468, 1.580276887050228e-05, -0.025071070794552043], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 10/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_9, entity=kill, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.01838291438401305, 0.020172800421403184, -0.03266823068242862, 0.014780629308762496, -0.0025539645533514815], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 11/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_10, entity=bread, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.010389167089968189, 0.011910357603141405, -0.018964173164226092, -0.010586359091675834, -0.005315715446033073], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 12/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_11, entity=honor, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.004415740882460815, 0.004223127287587847, -0.026747432288030826, 0.009889420736761172, 0.0020396929457069937], born=1767164604.4839623
+[INFO] [workflow.amygdala]   粒子 13/13: entity_id=fusion-048f57b15248426b5ec1fca317810d00_entity_12, entity=revenge, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.02492965712645127, 0.023171508188057764, -0.03484742177892741, 0.0011396978600643677, -0.0028400876004817874], born=1767164604.4839623
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储粒子到数据库
+[INFO] [workflow.amygdala]   粒子数量: 13
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-048f57b15248426b5ec1fca317810d00_entity_0', 'fusion-048f57b15248426b5ec1fca317810d00_entity_1', 'fusion-048f57b15248426b5ec1fca317810d00_entity_2', 'fusion-048f57b15248426b5ec1fca317810d00_entity_3', 'fusion-048f57b15248426b5ec1fca317810d00_entity_4', 'fusion-048f57b15248426b5ec1fca317810d00_entity_5', 'fusion-048f57b15248426b5ec1fca317810d00_entity_6', 'fusion-048f57b15248426b5ec1fca317810d00_entity_7', 'fusion-048f57b15248426b5ec1fca317810d00_entity_8', 'fusion-048f57b15248426b5ec1fca317810d00_entity_9', 'fusion-048f57b15248426b5ec1fca317810d00_entity_10', 'fusion-048f57b15248426b5ec1fca317810d00_entity_11', 'fusion-048f57b15248426b5ec1fca317810d00_entity_12']
+[INFO] [poincare.storage] Batch upserted 13 entities
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子存储成功: 13 个粒子已存储到数据库
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储对话到数据库
+[INFO] [workflow.amygdala]   conversation_id: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [workflow.amygdala]   对话内容长度: 314 字符
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 开始插入对话文本
+[INFO] [workflow.amygdala]   输入文本数量: 1
+[INFO] [workflow.amygdala]   文本 1: "In the countries of the East, where I have lived," said Monte Cristo to Franz, "people who eat and ... (长度: 314 字符)
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入统计: 1 条新记录, 0 条已存在
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 准备插入 1 条新记录
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 保存新记录到文件
+[INFO] [workflow.amygdala] Saved 4 conversation records to test_comparison_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入完成，当前总记录数: 4
+[INFO] [workflow.amygdala] [Amygdala.add] 对话存储成功: conversation_id=fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [workflow.amygdala] [Amygdala.add] 开始记录关系映射
+[INFO] [workflow.amygdala] [Amygdala.add] 关系映射记录完成:
+[INFO] [workflow.amygdala]   对话ID: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [workflow.amygdala]   关联粒子数: 13
+[INFO] [workflow.amygdala]   关系映射详情: {'fusion-048f57b15248426b5ec1fca317810d00_entity_0': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_1': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_2': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_3': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_4': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_5': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_6': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_7': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_8': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_9': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_10': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_11': 'fusion-048f57b15248426b5ec1fca317810d00', 'fusion-048f57b15248426b5ec1fca317810d00_entity_12': 'fusion-048f57b15248426b5ec1fca317810d00'}
+[INFO] [workflow.amygdala] [Amygdala.add] 处理完成
+[INFO] [workflow.amygdala]   对话ID: fusion-048f57b15248426b5ec1fca317810d00
+[INFO] [workflow.amygdala]   生成粒子数: 13
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-048f57b15248426b5ec1fca317810d00_entity_0', 'fusion-048f57b15248426b5ec1fca317810d00_entity_1', 'fusion-048f57b15248426b5ec1fca317810d00_entity_2', 'fusion-048f57b15248426b5ec1fca317810d00_entity_3', 'fusion-048f57b15248426b5ec1fca317810d00_entity_4', 'fusion-048f57b15248426b5ec1fca317810d00_entity_5', 'fusion-048f57b15248426b5ec1fca317810d00_entity_6', 'fusion-048f57b15248426b5ec1fca317810d00_entity_7', 'fusion-048f57b15248426b5ec1fca317810d00_entity_8', 'fusion-048f57b15248426b5ec1fca317810d00_entity_9', 'fusion-048f57b15248426b5ec1fca317810d00_entity_10', 'fusion-048f57b15248426b5ec1fca317810d00_entity_11', 'fusion-048f57b15248426b5ec1fca317810d00_entity_12']
+[INFO] [workflow.amygdala]   关系映射数: 13
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.amygdala] [Amygdala.add] 开始处理对话
+[INFO] [workflow.amygdala]   输入 - conversation_id: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [workflow.amygdala]   输入 - conversation_text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate. "You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy? To refuse to break brea...
+[INFO] [workflow.amygdala]   输入 - conversation_length: 357 字符
+[INFO] [particle.particle] ================================================================================
+[INFO] [particle.particle] [Particle.process] 开始处理文本
+[INFO] [particle.particle]   输入 - text_id: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [particle.particle]   输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate. "You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy? To refuse to break brea...
+[INFO] [particle.particle]   输入 - text_length: 357 字符
+[INFO] [particle.particle]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始处理文本
+[INFO] [particle.emotion_v2]   输入 - text_id: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [particle.emotion_v2]   输入 - text: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate. "You refuse?" she whispered, her voice full of tears. "Is it because you are our enemy? To refuse to break brea...
+[INFO] [particle.emotion_v2]   输入 - text_length: 357 字符
+[INFO] [particle.emotion_v2]   输入 - entities: None (将自动抽取)
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始抽取实体...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 实体抽取完成
+[INFO] [particle.emotion_v2]   抽取结果 - 实体数量: 16
+[INFO] [particle.emotion_v2]   抽取结果 - 实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house', 'visitor', 'avenger', 'past']
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始为实体生成情感描述...
+[INFO] [particle.emotion_v2]   实体数量: 16
+[INFO] [particle.emotion_v2]   实体列表: ['Mercedes', 'terror', 'eyes', 'hand', 'plate', 'refuse', 'whispered', 'voice', 'tears', 'enemy', 'bread', 'death', 'house', 'visitor', 'avenger', 'past']
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'Mercedes' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: terror, fear, sorrow, despair, dread, anguish
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'terror' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, dread, despair, anxiety, horror, anguish
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'eyes' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: terror, fear, dread, despair, apprehension
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'hand' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, anxiety, distress, tension, vulnerability
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'plate' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, dread, sorrow, anxiety, desperation, foreboding
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'refuse' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, sadness, betrayal, despair, dread, anguish
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'whispered' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, sorrow, desperation, anxiety, dread, vulnerability
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'voice' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, sadness, despair, dread, sorrow
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'tears' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, despair, sorrow, dread, anguish, desperation
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'enemy' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, sorrow, dread, despair, anxiety
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'bread' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, desperation, dread, anguish, hostility, betrayal, despair
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'death' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, terror, dread, despair, sorrow
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'house' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, dread, sorrow, betrayal, doom, anguish
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'visitor' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, dread, suspicion, hostility, threat
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'avenger' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, dread, terror, anxiety, foreboding
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 开始为实体 'past' 生成情感描述
+[INFO] [utils.sentence] [Sentence.generate_affective_description] 成功生成描述: fear, dread, sorrow, resentment, vengeance, bitterness, anguish
+[INFO] [utils.sentence] Generated 16 affective descriptions for 16 entities
+[INFO] [particle.emotion_v2] [EmotionV2.process] 情感描述生成完成
+[INFO] [particle.emotion_v2]   成功生成: 16/16 个描述
+[INFO] [particle.emotion_v2] [EmotionV2.process] 开始生成情绪嵌入向量...
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_0, entity=Mercedes, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_1, entity=terror, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_2, entity=eyes, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_3, entity=hand, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_4, entity=plate, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_5, entity=refuse, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_6, entity=whispered, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_7, entity=voice, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_8, entity=tears, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_9, entity=enemy, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_10, entity=bread, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_11, entity=death, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_12, entity=house, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_13, entity=visitor, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_14, entity=avenger, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 成功创建 EmotionNode: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_15, entity=past, vector_shape=(2048,), vector_norm=1.000000
+[INFO] [particle.emotion_v2] [EmotionV2.process] 处理完成
+[INFO] [particle.emotion_v2]   成功处理: 16/16 个实体
+[INFO] [particle.emotion_v2]   生成的 EmotionNode 列表:
+[INFO] [particle.emotion_v2]     1. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_0, entity=Mercedes, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     2. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_1, entity=terror, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     3. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_2, entity=eyes, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     4. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_3, entity=hand, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     5. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_4, entity=plate, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     6. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_5, entity=refuse, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     7. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_6, entity=whispered, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     8. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_7, entity=voice, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     9. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_8, entity=tears, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     10. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_9, entity=enemy, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     11. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_10, entity=bread, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     12. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_11, entity=death, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     13. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_12, entity=house, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     14. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_13, entity=visitor, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     15. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_14, entity=avenger, vector_shape=(2048,)
+[INFO] [particle.emotion_v2]     16. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_15, entity=past, vector_shape=(2048,)
+[INFO] [particle.emotion_v2] ================================================================================
+[INFO] [particle.particle] [Particle.process] 情绪节点提取完成
+[INFO] [particle.particle]   提取结果 - emotion_nodes数量: 16
+[INFO] [particle.particle]   提取结果 - emotion_nodes详情:
+[INFO] [particle.particle]     1. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_0, entity=Mercedes, vector_shape=(2048,)
+[INFO] [particle.particle]     2. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_1, entity=terror, vector_shape=(2048,)
+[INFO] [particle.particle]     3. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_2, entity=eyes, vector_shape=(2048,)
+[INFO] [particle.particle]     4. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_3, entity=hand, vector_shape=(2048,)
+[INFO] [particle.particle]     5. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_4, entity=plate, vector_shape=(2048,)
+[INFO] [particle.particle]     6. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_5, entity=refuse, vector_shape=(2048,)
+[INFO] [particle.particle]     7. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_6, entity=whispered, vector_shape=(2048,)
+[INFO] [particle.particle]     8. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_7, entity=voice, vector_shape=(2048,)
+[INFO] [particle.particle]     9. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_8, entity=tears, vector_shape=(2048,)
+[INFO] [particle.particle]     10. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_9, entity=enemy, vector_shape=(2048,)
+[INFO] [particle.particle]     11. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_10, entity=bread, vector_shape=(2048,)
+[INFO] [particle.particle]     12. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_11, entity=death, vector_shape=(2048,)
+[INFO] [particle.particle]     13. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_12, entity=house, vector_shape=(2048,)
+[INFO] [particle.particle]     14. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_13, entity=visitor, vector_shape=(2048,)
+[INFO] [particle.particle]     15. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_14, entity=avenger, vector_shape=(2048,)
+[INFO] [particle.particle]     16. entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_15, entity=past, vector_shape=(2048,)
+[INFO] [particle.particle] Successfully created 16 particles for text_id: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子生成完成: 16 个粒子
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子详细信息:
+[INFO] [workflow.amygdala]   粒子 1/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_0, entity=Mercedes, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.0005487812571550452, 0.04162523554271249, -0.010060754131172758, 0.015125119197202275, -0.011805524153921181], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 2/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_1, entity=terror, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.003053729682418896, 0.03237634481360109, -0.015155125912748056, 0.012941455925492723, -0.00700995555964189], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 3/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_2, entity=eyes, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.002999149478726079, 0.03698013373768815, -0.005795729958889045, -0.004763189666213181, -0.01796113487259596], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 4/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_3, entity=hand, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.009573592060167028, 0.03876547524362887, -0.015939161100172634, 0.001920887612072177, -0.012708704079870225], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 5/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_4, entity=plate, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.004509787848653828, 0.029674404004142195, -0.021692079272024923, 0.003323149888476791, -0.016629842441911], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 6/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_5, entity=refuse, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.0015600977250366844, 0.019636880315135625, -0.034276930550081366, 0.02311883937101463, -0.0022921000367839683], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 7/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_6, entity=whispered, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.008428230298808447, 0.038525825365867045, -0.034006664205647935, 0.02607554292446364, -0.019906892705764727], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 8/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_7, entity=voice, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.008818367266133748, 0.027284468823431107, -0.03035368891605858, 0.014116158426018335, -0.008835292266644534], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 9/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_8, entity=tears, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.0015865893593636827, 0.039047571999899056, -0.02863187926666965, 0.02213898043296819, -0.004041152896496487], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 10/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_9, entity=enemy, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.0011143604367192658, 0.026176099862528085, -0.018341463604369158, 0.008067742265839995, -0.009204845303308652], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 11/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_10, entity=bread, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.005270608054815306, 0.029957471311563285, -0.030855075320898533, 0.020038968208409006, -0.01108538611529008], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 12/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_11, entity=death, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.0031952048284762283, 0.03724891333196888, -0.015389382137152885, 0.009386270083652093, -0.016129805143751664], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 13/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_12, entity=house, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.0008392768166531399, 0.021955140435639373, -0.03230574464101864, 0.0101454172013079, -0.005864963516374069], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 14/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_13, entity=visitor, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.005630046782413669, 0.034700275124289866, -0.008172739264796976, -0.02632434785290959, -0.019562647633830317], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 15/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_14, entity=avenger, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[0.006150229792930115, 0.027897485060729567, -0.005597998211523003, -0.008460069715160943, -0.014744853503560808], born=1767164652.1830666
+[INFO] [workflow.amygdala]   粒子 16/16: entity_id=fusion-415ca46201138d75b82d19bab11f2956_entity_15, entity=past, speed=0.500000, temperature=0.500000, weight=1.000000, emotion_vector_shape=(2048,), emotion_vector_preview=[-0.001623740688155595, 0.01645856187994273, -0.020963131847084062, 0.021952507839867044, -0.0059158866568464604], born=1767164652.1830666
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储粒子到数据库
+[INFO] [workflow.amygdala]   粒子数量: 16
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-415ca46201138d75b82d19bab11f2956_entity_0', 'fusion-415ca46201138d75b82d19bab11f2956_entity_1', 'fusion-415ca46201138d75b82d19bab11f2956_entity_2', 'fusion-415ca46201138d75b82d19bab11f2956_entity_3', 'fusion-415ca46201138d75b82d19bab11f2956_entity_4', 'fusion-415ca46201138d75b82d19bab11f2956_entity_5', 'fusion-415ca46201138d75b82d19bab11f2956_entity_6', 'fusion-415ca46201138d75b82d19bab11f2956_entity_7', 'fusion-415ca46201138d75b82d19bab11f2956_entity_8', 'fusion-415ca46201138d75b82d19bab11f2956_entity_9', 'fusion-415ca46201138d75b82d19bab11f2956_entity_10', 'fusion-415ca46201138d75b82d19bab11f2956_entity_11', 'fusion-415ca46201138d75b82d19bab11f2956_entity_12', 'fusion-415ca46201138d75b82d19bab11f2956_entity_13', 'fusion-415ca46201138d75b82d19bab11f2956_entity_14', 'fusion-415ca46201138d75b82d19bab11f2956_entity_15']
+[INFO] [poincare.storage] Batch upserted 16 entities
+[INFO] [workflow.amygdala] [Amygdala.add] 粒子存储成功: 16 个粒子已存储到数据库
+[INFO] [workflow.amygdala] [Amygdala.add] 开始存储对话到数据库
+[INFO] [workflow.amygdala]   conversation_id: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [workflow.amygdala]   对话内容长度: 357 字符
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 开始插入对话文本
+[INFO] [workflow.amygdala]   输入文本数量: 1
+[INFO] [workflow.amygdala]   文本 1: Mercedes looked at him with terror in her eyes. Her hand trembled as she held the plate. "You refuse... (长度: 357 字符)
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入统计: 1 条新记录, 0 条已存在
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 准备插入 1 条新记录
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 保存新记录到文件
+[INFO] [workflow.amygdala] Saved 5 conversation records to test_comparison_fusion_amygdala_db/conversation_embeddings/vdb_fusion.parquet
+[INFO] [workflow.amygdala] [SimpleConversationStore.insert_strings] 插入完成，当前总记录数: 5
+[INFO] [workflow.amygdala] [Amygdala.add] 对话存储成功: conversation_id=fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [workflow.amygdala] [Amygdala.add] 开始记录关系映射
+[INFO] [workflow.amygdala] [Amygdala.add] 关系映射记录完成:
+[INFO] [workflow.amygdala]   对话ID: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [workflow.amygdala]   关联粒子数: 16
+[INFO] [workflow.amygdala]   关系映射详情: {'fusion-415ca46201138d75b82d19bab11f2956_entity_0': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_1': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_2': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_3': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_4': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_5': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_6': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_7': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_8': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_9': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_10': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_11': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_12': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_13': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_14': 'fusion-415ca46201138d75b82d19bab11f2956', 'fusion-415ca46201138d75b82d19bab11f2956_entity_15': 'fusion-415ca46201138d75b82d19bab11f2956'}
+[INFO] [workflow.amygdala] [Amygdala.add] 处理完成
+[INFO] [workflow.amygdala]   对话ID: fusion-415ca46201138d75b82d19bab11f2956
+[INFO] [workflow.amygdala]   生成粒子数: 16
+[INFO] [workflow.amygdala]   粒子ID列表: ['fusion-415ca46201138d75b82d19bab11f2956_entity_0', 'fusion-415ca46201138d75b82d19bab11f2956_entity_1', 'fusion-415ca46201138d75b82d19bab11f2956_entity_2', 'fusion-415ca46201138d75b82d19bab11f2956_entity_3', 'fusion-415ca46201138d75b82d19bab11f2956_entity_4', 'fusion-415ca46201138d75b82d19bab11f2956_entity_5', 'fusion-415ca46201138d75b82d19bab11f2956_entity_6', 'fusion-415ca46201138d75b82d19bab11f2956_entity_7', 'fusion-415ca46201138d75b82d19bab11f2956_entity_8', 'fusion-415ca46201138d75b82d19bab11f2956_entity_9', 'fusion-415ca46201138d75b82d19bab11f2956_entity_10', 'fusion-415ca46201138d75b82d19bab11f2956_entity_11', 'fusion-415ca46201138d75b82d19bab11f2956_entity_12', 'fusion-415ca46201138d75b82d19bab11f2956_entity_13', 'fusion-415ca46201138d75b82d19bab11f2956_entity_14', 'fusion-415ca46201138d75b82d19bab11f2956_entity_15']
+[INFO] [workflow.amygdala]   关系映射数: 16
+[INFO] [workflow.amygdala] ================================================================================
+[INFO] [workflow.hipporag_wrapper] Adding 5 chunks to HippoRAG index
+[INFO] [hipporag.HippoRAG] Indexing Documents
+[INFO] [hipporag.HippoRAG] Performing OpenIE
+[INFO] [hipporag.embedding_store] Inserting 5 new records, 0 records already exist.
+[INFO] [hipporag.embedding_store] Saving new records.
+[INFO] [hipporag.embedding_store] Saved 5 records to ./test_comparison_fusion_hipporag_db/DeepSeek-V3.2_VLLM_GLM-Embedding-3/chunk_embeddings/vdb_chunk.parquet
