@@ -1,8 +1,9 @@
+# 配置文件
 .env
 **/.env
 *.env
-outputs/
-log/
+
+
 
 # GoT 实验数据文件（版权保护）
 data/books/*.txt
@@ -21,6 +22,9 @@ __pycache__/
 *.pyd
 .Python
 
+# Debug 文件
+debug/
+
 # 系统文件
 .DS_Store
 *.swp
@@ -30,6 +34,7 @@ __pycache__/
 # 日志文件
 *.log
 *.pid
+log/
 
 # 临时文档
 DELIVERY_SUMMARY.md
@@ -39,3 +44,17 @@ RETRY_STATUS.md
 RETRY_SUMMARY.md
 PROJECT_STATUS.md
 README_EXPERIMENT.md
+
+# 测试数据库文件
+test_*_db/
+test_*_only_db/
+hyperamy_db_*/
+*_hipporag_db/
+*_amygdala_db/
+
+# 测试缓存和临时文件
+test_emotion_cache/
+emotion_cache/
+test_db/
+todo.md
+

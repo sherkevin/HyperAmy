@@ -1,58 +1,152 @@
 """
 存储层模块
 
-负责 Point 对象的持久化存储，使用 ChromaDB 作为底层存储。
+负责 ParticleEntity 对象的持久化存储，作为调用层调用 ods 层。
 """
 import logging
-import torch
-import chromadb
-from .types import Point
+import time
+import json
+from typing import List, Optional, Dict, Any, TYPE_CHECKING
+
+from ods import ChromaClient
+
+if TYPE_CHECKING:
+    # 仅用于类型检查，避免运行时导入
+    from particle import ParticleEntity
 
 logger = logging.getLogger(__name__)
 
 
 class HyperAmyStorage:
     """
-    存储层：负责 Point 对象的持久化
+    存储层：负责 ParticleEntity 对象的持久化（调用层）
     
-    使用 ChromaDB 作为底层存储，支持向量相似度搜索和元数据过滤。
+    作为业务层和 ods 层之间的桥梁，处理业务逻辑到数据访问的转换。
     """
-    def __init__(self, persist_path="./hyperamy_db"):
+    def __init__(self, persist_path: Optional[str] = None, collection_name: str = "emotion_particles"):
         """
         Args:
-            persist_path: ChromaDB 数据库持久化路径
+            persist_path: 数据库持久化路径。如果为 None，则根据 collection_name 自动生成。
+            collection_name: 集合名称
         """
-        self.client = chromadb.PersistentClient(path=persist_path)
-        self.collection = self.client.get_or_create_collection(
-            name="emotion_particles",
-            metadata={"hnsw:space": "cosine"}  # 使用余弦相似度进行向量搜索
-        )
+        # 如果未提供 persist_path，则根据 collection_name 隐式生成
+        if persist_path is None:
+            persist_path = f"./hyperamy_db_{collection_name}"
+        
+        self.ods_client = ChromaClient(persist_path=persist_path, collection_name=collection_name)
+        logger.info(f"HyperAmyStorage initialized: path={persist_path}, collection={collection_name}")
 
-    def upsert_point(self, point: Point):
+    def upsert_entity(self, entity: 'ParticleEntity', links: Optional[List[str]] = None):
         """
-        存储或更新粒子
+        存储或更新粒子实体
         
         Args:
-            point: 要存储的 Point 对象
+            entity: 要存储的 ParticleEntity 对象
+            links: 邻居实体 ID 列表（可选）
             
         Raises:
             Exception: 存储失败时抛出异常
         """
         try:
-            # 1. 向量归一化：确保存储的是归一化向量，纯粹表示"方向"
-            norm_vec = torch.nn.functional.normalize(point.emotion_vector, p=2, dim=-1)
-            embedding_list = norm_vec.tolist()
+            # 1. 向量归一化：使用 ods 层的工具方法
+            embedding_list = ChromaClient.normalize_vector(entity.emotion_vector)
 
-            # 2. 准备 Metadata (调用 Point 的封装方法)
-            metadata = point.to_metadata()
+            # 2. 准备 Metadata
+            metadata = {
+                "v": float(entity.speed),
+                "T": float(entity.temperature),
+                "weight": float(entity.weight),  # 粒子质量
+                "born": float(entity.born),
+                "last_updated": float(time.time()),
+                "text_id": entity.text_id,
+                "entity": entity.entity,
+                "links": json.dumps(links or [])  # 序列化为 JSON 字符串
+            }
+            
+            # 序列化元数据（处理列表和字典）
+            serialized_metadata = ChromaClient.serialize_metadata(metadata)
 
-            # 3. 写入 ChromaDB
-            self.collection.upsert(
-                ids=[point.id],
+            # 3. 调用 ods 层写入
+            self.ods_client.upsert(
+                ids=[entity.entity_id],
                 embeddings=[embedding_list],
-                metadatas=[metadata]
+                metadatas=[serialized_metadata]
             )
+            
+            logger.debug(f"Upserted entity: {entity.entity_id}")
         except Exception as e:
-            logger.error(f"Failed to upsert point {point.id}: {str(e)}")
+            logger.error(f"Failed to upsert entity {entity.entity_id}: {str(e)}")
             raise e
+    
+    def upsert_entities(self, entities: List['ParticleEntity'], links_map: Optional[Dict[str, List[str]]] = None):
+        """
+        批量存储或更新粒子实体
+        
+        Args:
+            entities: ParticleEntity 对象列表
+            links_map: 实体 ID 到邻居列表的映射（可选）
+            
+        Raises:
+            Exception: 存储失败时抛出异常
+        """
+        if not entities:
+            return
+        
+        try:
+            ids = []
+            embeddings = []
+            metadatas = []
+            
+            for entity in entities:
+                # 向量归一化
+                embedding_list = ChromaClient.normalize_vector(entity.emotion_vector)
+                embeddings.append(embedding_list)
+                
+                # 准备 Metadata
+                links = (links_map or {}).get(entity.entity_id, [])
+
+                # 提取标准 entity_id（如果粒子 ID 格式为 text_id_standard_entity_id）
+                # 例如：full_test-abc_entity-count123 → entity-count123
+                standard_entity_id = entity.entity_id
+                if '_' in entity.entity_id and entity.entity_id.startswith(entity.text_id):
+                    # 粒子 ID 包含 text_id 前缀，提取标准的 entity_id 部分
+                    standard_entity_id = entity.entity_id[len(entity.text_id) + 1:]
+
+                metadata = {
+                    "v": float(entity.speed),
+                    "T": float(entity.temperature),
+                    "weight": float(entity.weight),  # 粒子质量
+                    "born": float(entity.born),
+                    "last_updated": float(time.time()),
+                    "text_id": entity.text_id,
+                    "conversation_id": entity.text_id,  # text_id 就是 conversation_id（在 Amygdala 工作流中）
+                    "entity": entity.entity,
+                    "entity_id": standard_entity_id,  # 标准 entity_id（用于与 HippoRAG 匹配）
+                    "links": json.dumps(links)
+                }
+                metadatas.append(ChromaClient.serialize_metadata(metadata))
+                
+                ids.append(entity.entity_id)
+            
+            # 批量写入
+            self.ods_client.upsert(
+                ids=ids,
+                embeddings=embeddings,
+                metadatas=metadatas
+            )
+            
+            logger.info(f"Batch upserted {len(entities)} entities")
+        except Exception as e:
+            logger.error(f"Failed to batch upsert entities: {str(e)}")
+            raise e
+    
+    @property
+    def collection(self):
+        """
+        访问底层的 ChromaDB collection（用于检索层）
+        
+        注意：此属性仅用于向后兼容检索层的实现。
+        新代码应该通过 ods_client 访问。
+        """
+        return self.ods_client.collection
 

@@ -6,6 +6,7 @@ LLM Completion API Client
 
 import requests
 import math
+import time
 from typing import Dict, List, Optional, Tuple, Any, Literal
 from dataclasses import dataclass
 from .config import API_KEY, API_URL_COMPLETIONS, API_URL_CHAT, DEFAULT_MODEL
@@ -98,11 +99,13 @@ class CompletionClient:
         default_max_tokens: int = 100,
         default_temperature: float = 0.7,
         default_stop: Optional[List[str]] = None,
-        mode: Literal["normal", "specific"] = "normal"
+        mode: Literal["normal", "specific"] = "normal",
+        max_retries: int = 3,
+        retry_delay: float = 2.0
     ):
         """
         初始化 Completion 客户端
-        
+
         Args:
             api_key: API 密钥，如果为 None 则从环境变量读取
             api_url: Completion API 地址，如果为 None 则使用默认值
@@ -112,6 +115,8 @@ class CompletionClient:
             default_temperature: 默认温度参数
             default_stop: 默认停止词列表
             mode: 模式，"normal" 使用 chat API，"specific" 使用 completion API
+            max_retries: 最大重试次数（超时或网络错误时）
+            retry_delay: 重试延迟（秒）
         """
         self.api_key = api_key or API_KEY
         self.api_url = api_url or API_URL_COMPLETIONS
@@ -121,6 +126,8 @@ class CompletionClient:
         self.default_temperature = default_temperature
         self.default_stop = default_stop or ["User:", "\n\nUser", "<|endoftext|>", "<end_of_text>"]
         self.mode = mode
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
     
     def _build_prompt(self, query: str, prompt_template: Optional[str] = None) -> str:
         """
@@ -238,20 +245,62 @@ class CompletionClient:
             **kwargs
         }
         
-        response = requests.post(self.chat_api_url, headers=headers, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        
-        # 解析响应
-        choices = data['choices'][0]
-        answer_text = choices['message']['content']
-        usage = data.get('usage', {})
-        
-        return ChatResult(
-            answer_text=answer_text,
-            usage=usage,
-            raw_response=data
-        )
+        import logging
+        logger = logging.getLogger(__name__)
+
+        # 重试逻辑
+        for attempt in range(self.max_retries):
+            try:
+                logger.debug(f"[CompletionClient] 发送请求到: {self.chat_api_url}")
+                logger.debug(f"[CompletionClient] 请求参数: model={self.model_name}, max_tokens={max_tokens}, temperature={temperature}")
+                if attempt > 0:
+                    logger.debug(f"[CompletionClient] 重试第 {attempt} 次")
+
+                response = requests.post(
+                    self.chat_api_url,
+                    headers=headers,
+                    json=payload,
+                    timeout=60  # 60秒超时
+                )
+                response.raise_for_status()
+                data = response.json()
+
+                logger.debug(f"[CompletionClient] 请求成功，响应已接收")
+
+                # 解析响应
+                choices = data['choices'][0]
+                answer_text = choices['message']['content']
+                usage = data.get('usage', {})
+
+                return ChatResult(
+                    answer_text=answer_text,
+                    usage=usage,
+                    raw_response=data
+                )
+
+            except requests.Timeout as e:
+                logger.warning(f"[CompletionClient] 请求超时（60秒），尝试 {attempt + 1}/{self.max_retries}")
+                logger.warning(f"  URL: {self.chat_api_url}")
+                logger.warning(f"  Model: {self.model_name}")
+
+                if attempt < self.max_retries - 1:
+                    logger.info(f"[CompletionClient] 等待 {self.retry_delay} 秒后重试...")
+                    time.sleep(self.retry_delay)
+                else:
+                    logger.error(f"[CompletionClient] 达到最大重试次数，请求仍然超时")
+                    raise
+
+            except requests.RequestException as e:
+                logger.warning(f"[CompletionClient] 请求失败，尝试 {attempt + 1}/{self.max_retries}")
+                logger.warning(f"  URL: {self.chat_api_url}")
+                logger.warning(f"  错误信息: {str(e)}")
+
+                if attempt < self.max_retries - 1:
+                    logger.info(f"[CompletionClient] 等待 {self.retry_delay} 秒后重试...")
+                    time.sleep(self.retry_delay)
+                else:
+                    logger.error(f"[CompletionClient] 达到最大重试次数，请求仍然失败")
+                    raise
     
     def _complete_specific(
         self,
@@ -283,40 +332,82 @@ class CompletionClient:
             **kwargs
         }
         
-        response = requests.post(self.api_url, headers=headers, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        
-        # 获取 token 数量信息
-        usage = data.get('usage', {})
-        prompt_token_count = usage.get('prompt_tokens', 0)
-        
-        # 获取 token 和 logprob 数据
-        choices = data['choices'][0]
-        all_tokens = choices['logprobs']['tokens']
-        all_logprobs = choices['logprobs']['token_logprobs']
-        
-        # 切分 prompt 和 answer
-        prompt_tokens = all_tokens[:prompt_token_count]
-        prompt_logprobs = all_logprobs[:prompt_token_count]
-        answer_tokens = all_tokens[prompt_token_count:]
-        answer_logprobs = all_logprobs[prompt_token_count:]
-        
-        # 解析为 TokenInfo
-        prompt_token_infos = self._parse_tokens(prompt_tokens, prompt_logprobs)
-        answer_token_infos = self._parse_tokens(answer_tokens, answer_logprobs)
-        
-        # 构建回答文本
-        answer_text = "".join(answer_tokens)
-        
-        return CompletionResult(
-            prompt_tokens=prompt_token_infos,
-            answer_tokens=answer_token_infos,
-            answer_text=answer_text,
-            usage=usage,
-            raw_response=data
-        )
-    
+        import logging
+        logger = logging.getLogger(__name__)
+
+        # 重试逻辑
+        for attempt in range(self.max_retries):
+            try:
+                logger.debug(f"[CompletionClient] 发送请求到: {self.api_url}")
+                logger.debug(f"[CompletionClient] 请求参数: model={self.model_name}, max_tokens={max_tokens}, temperature={temperature}")
+                if attempt > 0:
+                    logger.debug(f"[CompletionClient] 重试第 {attempt} 次")
+
+                response = requests.post(
+                    self.api_url,
+                    headers=headers,
+                    json=payload,
+                    timeout=60  # 60秒超时
+                )
+                response.raise_for_status()
+                data = response.json()
+
+                logger.debug(f"[CompletionClient] 请求成功，响应已接收")
+
+                # 获取 token 数量信息
+                usage = data.get('usage', {})
+                prompt_token_count = usage.get('prompt_tokens', 0)
+
+                # 获取 token 和 logprob 数据
+                choices = data['choices'][0]
+                all_tokens = choices['logprobs']['tokens']
+                all_logprobs = choices['logprobs']['token_logprobs']
+
+                # 切分 prompt 和 answer
+                prompt_tokens = all_tokens[:prompt_token_count]
+                prompt_logprobs = all_logprobs[:prompt_token_count]
+                answer_tokens = all_tokens[prompt_token_count:]
+                answer_logprobs = all_logprobs[prompt_token_count:]
+
+                # 解析为 TokenInfo
+                prompt_token_infos = self._parse_tokens(prompt_tokens, prompt_logprobs)
+                answer_token_infos = self._parse_tokens(answer_tokens, answer_logprobs)
+
+                # 构建回答文本
+                answer_text = "".join(answer_tokens)
+
+                return CompletionResult(
+                    prompt_tokens=prompt_token_infos,
+                    answer_tokens=answer_token_infos,
+                    answer_text=answer_text,
+                    usage=usage,
+                    raw_response=data
+                )
+
+            except requests.Timeout as e:
+                logger.warning(f"[CompletionClient] 请求超时（60秒），尝试 {attempt + 1}/{self.max_retries}")
+                logger.warning(f"  URL: {self.api_url}")
+                logger.warning(f"  Model: {self.model_name}")
+
+                if attempt < self.max_retries - 1:
+                    logger.info(f"[CompletionClient] 等待 {self.retry_delay} 秒后重试...")
+                    time.sleep(self.retry_delay)
+                else:
+                    logger.error(f"[CompletionClient] 达到最大重试次数，请求仍然超时")
+                    raise
+
+            except requests.RequestException as e:
+                logger.warning(f"[CompletionClient] 请求失败，尝试 {attempt + 1}/{self.max_retries}")
+                logger.warning(f"  URL: {self.api_url}")
+                logger.warning(f"  错误信息: {str(e)}")
+
+                if attempt < self.max_retries - 1:
+                    logger.info(f"[CompletionClient] 等待 {self.retry_delay} 秒后重试...")
+                    time.sleep(self.retry_delay)
+                else:
+                    logger.error(f"[CompletionClient] 达到最大重试次数，请求仍然失败")
+                    raise
+
     def get_answer(
         self,
         query: str,
