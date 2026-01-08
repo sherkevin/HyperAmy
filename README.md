@@ -5,67 +5,19 @@
 
 HyperAmy is an emotion-enhanced RAG framework built on top of [HippoRAG](https://github.com/OSU-NLP-Group/HippoRAG), integrating emotion analysis capabilities to enable LLMs to understand and leverage emotional context in retrieval-augmented generation tasks.
 
-```
-HyperAmy/
-├── llm/                    # LLM 客户端模块
-│   ├── __init__.py         # 模块导出
-│   ├── config.py           # 配置管理（从 .env 读取 API_KEY 和 BASE_URL）
-│   ├── completion_client.py # LLM 客户端（支持 normal 和 specific 两种模式）
-│   └── README.md           # LLM 模块详细文档
-│
-├── point_label/            # 点标签模块（情感、记忆深度、温度、惊讶值）
-│   ├── __init__.py
-│   ├── emotion.py          # 情感向量提取（输入 chunk，输出 emotion vector）
-│   ├── labels.py           # 记忆深度和温度计算（emotion vector, memory_depth, temperature）
-│   ├── speed.py            # 惊讶值计算（surprise value，基于 token 概率）
-│   └── temperature.py     # 温度计算（待实现）
-│
-├── poincare/               # 双曲空间存储与检索模块
-│   ├── __init__.py
-│   ├── types.py            # 数据类型定义（Point, SearchResult）
-│   ├── physics.py          # 双曲空间物理计算（TimePhysics, ParticleProjector）
-│   ├── storage.py          # 双曲空间存储（HyperAmyStorage）
-│   ├── retrieval.py        # 双曲空间检索（HyperAmyRetrieval）
-│   └── linking.py          # 双曲空间链接构建
-│
-├── sentiment/              # 情感分析模块（旧版，保留兼容）
-│   ├── __init__.py
-│   ├── emotion_vector.py   # 情感向量提取
-│   ├── emotion_store.py    # 情感向量存储和管理
-│   └── hipporag_enhanced.py # HippoRAG 增强版（集成情感分析）
-│
-├── utils/                  # 工具模块
-│   └── extract_entitiy.py  # 实体抽取（基于 HippoRAG 的 OpenIE）
-│
-└── test/                   # 测试文件
-    ├── test_infer.py       # 测试推理和 token 概率分析
-    ├── test_completion_client.py # 测试 Completion Client 功能
-    ├── test_emotion.py     # 测试情感向量提取
-    ├── test_bge.py         # 测试 BGE 嵌入和情感描述
-    ├── test_integration.py # 测试 HippoRAG 整合
-    ├── test_dataset_integration.py # 测试数据集整合
-    ├── test_labels.py     # 测试记忆深度和温度计算
-    ├── test_speed.py       # 测试惊讶值计算
-    ├── test_entity.py     # 测试实体抽取
-    ├── test_poincare.py   # 测试双曲空间存储和检索
-    └── test_linking.py    # 测试双曲空间链接
-```
-
-HyperAmy extends HippoRAG with emotion-aware capabilities:
-
-- **Emotion-Enhanced Retrieval**: Combines semantic and emotional similarity for more contextually relevant document retrieval
-- **Emotion Vector Extraction**: Extracts 28-dimensional emotion vectors from text using LLMs
-- **Emotion-Aware RAG**: Integrates emotional understanding into the RAG pipeline for improved answer quality
-- **Token-Level Probability Analysis**: Supports detailed token-level probability analysis for LLM outputs
-
 ## Features
 
 - 🧠 **Emotion Analysis**: Extract and quantify emotional content from text
-- 🔍 **Emotion-Enhanced Retrieval**: Combine semantic and emotional similarity for better retrieval
-- 📊 **Emotion Vectors**: 28-dimensional emotion vectors based on Plutchik's emotion wheel
-- 🔄 **Seamless Integration**: Built on HippoRAG framework with minimal changes
-- 🎯 **Token Probability**: Support for token-level probability analysis
-- 💾 **Persistent Storage**: Efficient storage of emotion vectors using Parquet format
+- 🔍 **Hyperbolic Retrieval**: Poincaré ball model for efficient semantic search
+- 📊 **Emotion Vectors**: High-dimensional emotion vectors based on affective computing
+- 🔄 **Particle Memory**: Time-evolving particle system for memory representation
+- 💾 **Persistent Storage**: ChromaDB-based storage with Parquet format
+- 🎯 **Multiple Workflow Options**:
+  - **Amygdala**: Emotion-enhanced retrieval with particle memory
+  - **HippoRAG**: Graph-based RAG with knowledge graph reasoning
+  - **Fusion**: Hybrid approaches combining both systems
+
+---
 
 ## Installation
 
@@ -76,19 +28,10 @@ HyperAmy extends HippoRAG with emotion-aware capabilities:
 
 ### Setup
 
-#### Option 1: Using Conda (Recommended)
-
 ```bash
-uv sync
-```
-
-#### Option 2: Using pip
-
-```bash
-# Ensure Python 3.10+
-python --version
-
 # Install dependencies
+uv sync
+# or
 pip install -r requirements.txt
 ```
 
@@ -101,499 +44,831 @@ API_KEY=your_api_key_here
 BASE_URL=https://llmapi.paratera.com/v1
 ```
 
-**Note**: 
-- The `.env` file should only contain `API_KEY` and `BASE_URL`
-- Model names are specified in code, not as environment variables
-- Configuration is managed through the `llm.config` module
-
-### Verify Installation
-
-Run the environment check script:
-
-```bash
-python scripts/check_environment.py
-```
-
-#### 点标签模块测试
-You should see:
-- ✅ Python version: 3.10.18
-- ✅ All required dependencies installed
-- ✅ API configuration correct
+---
 
 ## Quick Start
 
-# 测试记忆深度和温度计算
-python -m test.test_labels
+HyperAmy 提供三种 workflow 方案，满足不同的检索需求：
 
-# 测试惊讶值计算
-python -m test.test_speed
-```
+### Workflow 1: Amygdala - 情感增强检索
 
-#### 实体抽取测试
-
-```bash
-# 测试实体抽取功能
-python -m test.test_entity
-```
-
-#### 双曲空间模块测试
-
-```bash
-# 测试双曲空间存储和检索
-python -m test.test_poincare
-
-# 测试双曲空间链接
-python -m test.test_linking
-```
-
-#### 整合测试
-
-```bash
-# 测试 HippoRAG 整合（小样本数据）
-python -m test.test_integration
-
-# 测试数据集整合（真实数据集）
-python -m test.test_dataset_integration
-```
-
-## 主要模块说明
-
-### llm 模块
-
-- **`llm/config.py`**：统一管理 API 配置，从 `.env` 文件读取 `API_KEY` 和 `BASE_URL`
-- **`llm/completion_client.py`**：LLM 客户端封装
-  - `CompletionClient`：支持 normal 和 specific 两种模式
-  - `create_client()`：便捷函数创建客户端
-  - `ChatResult`：普通对话结果（normal 模式）
-  - `CompletionResult`：带 token 概率的结果（specific 模式）
-
-### point_label 模块
-
-点标签模块提供了多种文本特征提取功能：
-
-- **`point_label/emotion.py`**：情感向量提取
-  - `Emotion` 类：输入 chunk，输出 30 维情感向量（归一化）
-  - 基于 Plutchik 情绪轮和扩展情绪列表
-
-- **`point_label/labels.py`**：记忆深度和温度计算
-  - `Labels` 类：输入 chunk，输出 `LabelsResult`（包含 emotion_vector, memory_depth, temperature）
-  - `memory_depth`：记忆深度 = 纯度 × 归一化模长（0~1）
-  - `temperature`：温度 = f(纯度, 困惑度)，表示情绪波动程度（仅在 `use_specific=True` 时计算）
-
-- **`point_label/speed.py`**：惊讶值计算
-  - `Speed` 类：输入 chunk，输出惊讶值（surprise value）
-  - 基于信息论的 surprisal：`surprisal = -log(p)`
-  - 支持多种聚合方式：mean（推荐）、sum、max、geometric_mean
-
-### poincare 模块
-
-双曲空间存储与检索模块，实现基于 Poincaré 球的情绪记忆系统：
-
-- **`poincare/types.py`**：数据类型定义
-  - `Point`：双曲空间中的点（包含位置、速度、时间等属性）
-  - `SearchResult`：检索结果
-
-- **`poincare/physics.py`**：双曲空间物理计算
-  - `TimePhysics`：时间物理计算
-  - `ParticleProjector`：粒子投影器
-
-- **`poincare/storage.py`**：双曲空间存储
-  - `HyperAmyStorage`：基于 ChromaDB 的双曲空间存储
-
-- **`poincare/retrieval.py`**：双曲空间检索
-  - `HyperAmyRetrieval`：混合检索（语义检索 + 双曲空间检索）
-
-- **`poincare/linking.py`**：双曲空间链接构建
-  - `build_hyperbolic_links`：构建双曲空间链接
-  - `update_points_with_links`：更新点的链接信息
-  - `auto_link_points`：自动链接点
-
-### utils 模块
-
-- **`utils/extract_entitiy.py`**：实体抽取
-  - `Entity` 类：基于 HippoRAG 的 OpenIE 模块
-  - `extract_entities()`：提取命名实体
-  - `extract_triples()`：提取三元组（实体-关系-实体）
-  - `extract_all()`：同时提取实体和三元组
-
-### sentiment 模块（旧版，保留兼容）
-
-- **`sentiment/emotion_vector.py`**：从文本中提取情感向量
-- **`sentiment/emotion_store.py`**：情感向量的存储和管理
-- **`sentiment/hipporag_enhanced.py`**：增强版 HippoRAG，集成情感分析功能
-
-## 使用示例
-
-### 基本使用
-### Basic Usage
-
-#### Using LLM Client
+基于粒子记忆和情感向量的检索系统，擅长处理带有情感色彩的对话和文本。
 
 ```python
-from llm import create_client
-from llm.config import DEFAULT_MODEL
+from workflow import Amygdala
 
-# Create client
-client = create_client(model_name=DEFAULT_MODEL)
-
-# Normal mode (default) - Chat Completions API
-result = client.complete("What is Python?")
-print(result.get_answer_text())
-
-# Specific mode - Token probability analysis
-result = client.complete("What is the capital of China?", mode="specific")
-result.print_analysis()  # Print token probability analysis
-```
-
-#### Using Emotion-Enhanced RAG
-
-```python
-from point_label.emotion import Emotion
-
-# 提取情感向量
-emotion = Emotion()
-chunk = "I'm very happy!"
-vector = emotion.extract(chunk)
-print(f"Emotion Vector: {vector}")  # 30 维向量
-```
-
-### 使用记忆深度和温度
-
-```python
-from point_label.labels import Labels
-
-# 提取记忆深度和温度
-labels = Labels()
-chunk = "I'm very happy!"
-result = labels.extract(chunk, use_specific=True)
-
-print(f"Emotion Vector: {result.emotion_vector}")
-print(f"Memory Depth: {result.memory_depth}")  # 0~1，越大越深刻
-print(f"Temperature: {result.temperature}")    # 0~1，越大波动越大
-```
-
-### 使用惊讶值
-
-```python
-from point_label.speed import Speed
-
-# 计算惊讶值
-speed = Speed()
-chunk = "Quantum entanglement overturns our understanding of reality!"
-surprise = speed.extract(chunk, aggregation="mean")
-print(f"Surprise Value: {surprise}")  # 值越大越意外/重要
-```
-
-### 使用实体抽取
-
-```python
-from utils.extract_entitiy import Entity
-
-# 提取实体和三元组
-entity = Entity()
-chunk = "Barack Obama was the 44th president of the United States."
-
-# 提取实体
-entities = entity.extract_entities(chunk)
-print(f"Entities: {entities}")  # ['Barack Obama', 'United States']
-
-# 提取三元组
-triples = entity.extract_triples(chunk)
-print(f"Triples: {triples}")  # [['Barack Obama', 'was', '44th president'], ...]
-
-# 同时提取
-result = entity.extract_all(chunk)
-print(f"Entities: {result['entities']}")
-print(f"Triples: {result['triples']}")
-```
-
-### 使用双曲空间存储和检索
-
-```python
-from poincare import HyperAmyStorage, HyperAmyRetrieval
-
-# 创建存储
-storage = HyperAmyStorage(db_path="./hyperamy_db")
-
-# 存储点
-point = Point(
-    content="I'm very happy!",
-    emotion_vector=emotion_vector,
-    memory_depth=0.8,
-    temperature=0.2
+# 初始化
+amygdala = Amygdala(
+    save_dir="./amygdala_db",
+    particle_collection_name="particles",
+    conversation_namespace="conversations"
 )
-storage.add_point(point)
 
-# 创建检索器
-retrieval = HyperAmyRetrieval(storage)
+# 添加对话
+result = amygdala.add("I love Python programming! It makes me feel productive.")
+print(f"Added {result['particle_count']} particles")
 
-# 检索
-query = "happy"
-results = retrieval.search(query, top_k=5)
+# 检索相关对话片段
+results = amygdala.retrieval(
+    query_text="programming languages",
+    retrieval_mode="chunk",  # 或 "particle"
+    top_k=3
+)
+
 for result in results:
-    print(f"Content: {result.content}, Score: {result.score}")
+    print(f"Text: {result['text']}")
+    print(f"Score: {result['score']}")
+    print(f"Particles: {result['particle_count']}")
 ```
 
-### 使用情感增强的 HippoRAG
+**适用场景**：
+- 对话历史检索
+- 情感分析相关的文本检索
+- 需要理解情感上下文的场景
+
+### Workflow 2: HippoRAG - 知识图谱检索
+
+基于知识图谱的 RAG 系统，通过 OpenIE 提取实体和关系，构建知识图谱进行推理检索。
 
 ```python
-from sentiment.hipporag_enhanced import HippoRAGEnhanced
-from hipporag.utils.config_utils import BaseConfig
-from llm.config import BASE_URL, DEFAULT_MODEL, DEFAULT_EMBEDDING_MODEL
+from workflow import HippoRAGWrapper
 
-# Configure models
-config = BaseConfig(
-    save_dir="./outputs",
-    llm_base_url=BASE_URL,
-    llm_name=DEFAULT_MODEL,
-    embedding_model_name=DEFAULT_EMBEDDING_MODEL,
-    embedding_base_url=BASE_URL,
+# 初始化
+hipporag = HippoRAGWrapper(
+    save_dir="./hipporag_db",
+    llm_model_name="DeepSeek-V3.2",
+    embedding_model_name="GLM-Embedding-2"
 )
 
-# Create emotion-enhanced HippoRAG
-hipporag = HippoRAGEnhanced(
-    global_config=config,
-    enable_emotion=True,
-    emotion_weight=0.3,  # 30% emotion, 70% semantic
-    emotion_model_name=DEFAULT_MODEL
-)
-
-# Index documents
-docs = [
-    "I'm thrilled about winning the competition! This is amazing!",
-    "I'm devastated by the loss. Everything feels hopeless.",
-    "The weather is nice today. It's a beautiful sunny day."
+# 添加文档块
+chunks = [
+    "Python is a high-level programming language.",
+    "JavaScript is widely used for web development."
 ]
-hipporag.index(docs=docs)
+result = hipporag.add(chunks)
+print(f"Indexed {result['total_indexed']} chunks")
 
-# Retrieve with emotion enhancement
-queries = ["What makes people feel happy?", "What causes sadness?"]
-results = hipporag.retrieve(queries=queries, num_to_retrieve=2)
+# 检索相关文档
+results = hipporag.retrieve(
+    query="What programming languages are mentioned?",
+    top_k=2
+)
 
-# RAG QA with emotion awareness
-qa_results, messages, metadata = hipporag.rag_qa(queries=queries)
+for result in results:
+    print(f"Rank {result['rank']}: {result['text']}")
+    print(f"Score: {result['score']:.4f}")
+
+# 或使用 RAG 问答
+qa_result = hipporag.qa(query="Tell me about Python", top_k=3)
+print(f"Answer: {qa_result['answer']}")
 ```
+
+**适用场景**：
+- 文档问答 (QA)
+- 知识图谱推理
+- 事实性检索
+- 需要 OpenIE 提取实体关系的场景
+
+### Workflow 3: Fusion - 融合检索
+
+结合 Amygdala 和 HippoRAG 的优势，提供更强的检索能力。
+
+#### 方案 A: FusionRetriever（级联/并行融合）
+
+```python
+from workflow import FusionRetriever
+
+# 初始化融合检索器
+fusion = FusionRetriever(
+    amygdala_save_dir="./fusion_amygdala_db",
+    hipporag_save_dir="./fusion_hipporag_db"
+)
+
+# 添加数据（同时添加到两个系统）
+chunks = ["Your document chunks..."]
+result = fusion.add(chunks)
+
+# 级联检索：HippoRAG 快速筛选 → Amygdala 深度精排
+results = fusion.retrieve(
+    query="your query",
+    hipporag_top_k=20,  # HippoRAG 返回 20 个候选
+    amygdala_top_k=5,   # Amygdala 选出 5 个
+    mode="cascade"      # 可选: "cascade", "parallel", "hipporag_only", "amygdala_only"
+)
+
+for result in results:
+    print(f"Rank: {result['rank']}")
+    print(f"Text: {result['text']}")
+    print(f"HippoRAG Score: {result['hipporag_score']:.4f}")
+    print(f"Amygdala Score: {result['amygdala_score']:.4f}")
+```
+
+#### 方案 B: GraphFusionRetriever（图谱级融合）
+
+```python
+from workflow import GraphFusionRetriever
+
+# 初始化
+fusion = GraphFusionRetriever(
+    amygdala_save_dir="./graph_fusion_amygdala_db",
+    hipporag_save_dir="./graph_fusion_hipporag_db"
+)
+
+# 添加数据
+chunks = ["Your document chunks..."]
+fusion.add(chunks)
+
+# 图谱融合检索：在 HippoRAG 图谱中融合情感信号
+results = fusion.retrieve(
+    query="your query",
+    top_k=5,
+    emotion_weight=0.3,    # Amygdala 情感权重
+    semantic_weight=0.5,   # HippoRAG 语义权重
+    fact_weight=0.2        # HippoRAG fact 权重
+)
+
+for result in results:
+    print(f"Rank: {result['rank']}")
+    print(f"Text: {result['text']}")
+    print(f"PPR Score: {result['score']:.4f}")
+```
+
+**Fusion 适用场景**：
+- 需要同时利用语义和情感信息
+- 对检索质量要求高的场景
+- 复杂查询需要多路召回
+
+### Workflow 选择指南
+
+| Workflow | 优势 | 劣势 | 推荐使用场景 |
+|----------|------|------|--------------|
+| **Amygdala** | 情感感知，适合对话检索 | 依赖实体抽取 | 对话系统、情感分析 |
+| **HippoRAG** | 知识推理，适合事实检索 | 无情感感知 | 文档问答、知识检索 |
+| **FusionRetriever** | 速度快，兼顾两者 | 存储开销大 | 通用检索场景 |
+| **GraphFusionRetriever** | 融合度高，效果最好 | 实现复杂 | 高质量要求场景 |
+
+---
 
 ## Project Structure
 
-1. **测试运行方式**：始终在项目根目录下使用 `python -m test.xxx` 运行测试，不要修改 `sys.path` 或使用 `os.path`
-2. **配置管理**：所有配置通过 `llm.config` 模块访问，不要直接读取环境变量
-3. **模式选择**：默认使用 `normal` 模式（普通对话），需要 token 概率时使用 `mode="specific"`
-4. **模型名称**：模型名称在代码中自定义，不作为环境变量，可以使用 `DEFAULT_MODEL` 和 `DEFAULT_EMBEDDING_MODEL` 作为默认值
-5. **记忆深度计算**：`memory_depth = purity × normalized_magnitude`，其中纯度 = max(emotion_vector) / sum(emotion_vector)
-6. **温度计算**：仅在 `use_specific=True` 时计算，需要 token 概率信息
-
-## Core Modules
-
-- `requests`：HTTP 请求
-- `python-dotenv`：环境变量管理
-- `numpy`：数值计算
-- `pandas`：数据处理
-- `chromadb`：向量数据库
-- `hipporag`：检索增强生成框架（外部依赖）
-
-## 版本历史
-
-- **v1.2.0**：添加双曲空间存储与检索模块（poincare）
-- **v1.1.0**：添加点标签模块（point_label）和实体抽取模块（utils）
-- **v1.0.0**：初始版本，包含 LLM 客户端和情感分析模块
-### `sentiment` Module
-
-The emotion analysis module provides:
-
-- **`emotion_vector.py`**: Extracts 28-dimensional emotion vectors from text using LLMs
-- **`emotion_store.py`**: Manages persistent storage of emotion vectors using Parquet format
-- **`hipporag_enhanced.py`**: `HippoRAGEnhanced` class that extends `HippoRAG` with emotion analysis
-
-### `llm` Module
-
-The LLM client module provides:
-
-- **`completion_client.py`**: 
-  - `CompletionClient`: Supports normal and specific modes
-  - `create_client()`: Convenience function to create clients
-  - `ChatResult`: Results for normal mode (Chat Completions API)
-  - `CompletionResult`: Results for specific mode with token probabilities
-- **`config.py`**: Unified API configuration management
-
-### `hipporag` Module
-
-The core RAG framework (based on [HippoRAG](https://github.com/OSU-NLP-Group/HippoRAG)):
-
-- **`HippoRAG.py`**: Main RAG framework class
-- **`embedding_store.py`**: Embedding vector storage
-- **`embedding_model/`**: Support for various embedding models (OpenAI, NV-Embed-v2, etc.)
-- **`llm/`**: LLM inference classes (OpenAI GPT, Bedrock, Transformers, vLLM)
-- **`evaluation/`**: Evaluation metrics for retrieval and QA
-
-## Running Tests
-
-**Important**: All tests should be run from the project root directory using `python -m`:
-
-### Basic Tests
-
-```bash
-# Test token probability analysis (specific mode)
-python -m test.test_infer
-
-# Test Completion Client functionality
-python -m test.test_completion_client
+```
+HyperAmy/
+├── workflow/               # 工作流模块（高级接口）
+│   ├── amygdala.py        # Amygdala 工作流：情感增强检索
+│   ├── hipporag_wrapper.py # HippoRAG 工作流：知识图谱检索
+│   ├── fusion_retrieval.py # FusionRetriever：级联/并行融合
+│   └── graph_fusion_retrieval.py # GraphFusionRetriever：图谱级融合
+│
+├── particle/              # 粒子模块
+│   ├── __init__.py
+│   ├── emotion_v2.py      # EmotionV2（情感提取）
+│   ├── emotion_cache.py   # 情感缓存
+│   ├── speed.py           # 速度计算
+│   └── temperature.py     # 温度计算
+│
+├── poincare/              # 双曲空间模块
+│   ├── __init__.py
+│   ├── types.py           # 数据类型
+│   ├── physics.py         # 物理计算（TimePhysics, ParticleProjector）
+│   ├── storage.py         # 存储（HyperAmyStorage）
+│   ├── retrieval.py       # 检索（HyperAmyRetrieval）
+│   └── linking.py         # 链接构建
+│
+├── llm/                   # LLM 客户端
+│   ├── __init__.py
+│   ├── config.py          # 配置管理
+│   └── completion_client.py # LLM 客户端
+│
+├── prompts/               # 提示模板
+│   └── templates/
+│
+├── utils/                 # 工具模块
+│   ├── sentence.py        # 句子生成
+│   ├── ner_lightweight.py # 轻量级 NER
+│   └── entity.py          # 实体抽取
+│
+├── ods/                   # 数据库层
+│   └── chroma.py          # ChromaDB 封装
+│
+├── hipporag/              # HippoRAG 框架（外部依赖）
+│
+├── test/                  # 测试文件
+│   ├── test_amygdala.py           # Amygdala 测试
+│   ├── test_hipporag_wrapper.py   # HippoRAG 测试
+│   ├── test_fusion_retrieval.py   # FusionRetriever 测试
+│   └── test_graph_fusion_*.py     # GraphFusionRetriever 测试
+│
+└── README.md              # 本文档
 ```
 
-### Emotion Analysis Tests
+---
 
-```bash
-# Test emotion vector extraction
-python -m test.test_emotion
+## Workflow API Reference
 
-# Test BGE embedding and emotion description
-python -m test.test_bge
-```
+### Amygdala API
 
-### Integration Tests
-
-```bash
-# Test HippoRAG integration (small sample)
-python -m test.test_integration
-
-# Test dataset integration (real dataset)
-python -m test.test_dataset_integration
-```
-
-## Usage Examples
-
-### Example 1: Emotion Vector Extraction
+**初始化**
 
 ```python
-from sentiment.emotion_vector import EmotionExtractor
+from workflow import Amygdala
 
-extractor = EmotionExtractor()
-text = "I'm so happy and excited about this news!"
-emotion_vector = extractor.extract_emotion_vector(text)
-print(f"Emotion vector: {emotion_vector}")
+amygdala = Amygdala(
+    save_dir="./db",                      # 数据库保存路径
+    particle_collection_name="particles", # 粒子集合名称
+    conversation_namespace="conversations", # 对话命名空间
+    embedding_model=None,                  # 嵌入模型（None 使用默认）
+    auto_link_particles=True,             # 是否自动链接粒子
+    link_distance_threshold=1.5,          # 邻域链接距离阈值
+    link_top_k=None                        # 每个粒子的最大邻域数
+)
 ```
 
-### Example 2: Emotion-Enhanced Retrieval
+**添加文本**
 
 ```python
-from sentiment.hipporag_enhanced import HippoRAGEnhanced
-from hipporag.utils.config_utils import BaseConfig
+result = amygdala.add(conversation)
+# Returns:
+# {
+#     'conversation_id': str,
+#     'particles': List[ParticleEntity],
+#     'particle_count': int,
+#     'relationship_map': Dict[str, str]
+# }
+```
 
-# Initialize with emotion enhancement
-config = BaseConfig(
-    save_dir="./outputs",
-    llm_base_url="https://llmapi.paratera.com/v1",
-    llm_name="DeepSeek-V3.2",
+**检索**
+
+```python
+# Particle 模式 - 返回粒子
+particles = amygdala.retrieval(
+    query_text="your query",
+    retrieval_mode="particle",
+    top_k=10,
+    cone_width=50,
+    max_neighbors=20
+)
+
+# Chunk 模式 - 返回对话片段
+chunks = amygdala.retrieval(
+    query_text="your query",
+    retrieval_mode="chunk",
+    top_k=5
+)
+```
+
+**参数说明**：
+- `query_text` (str): 查询文本
+- `retrieval_mode` (str): `"particle"` 或 `"chunk"`
+- `top_k` (int): 返回结果数量
+- `cone_width` (int): 锥体搜索宽度（50-100）
+- `max_neighbors` (int): 邻域扩展最大节点数
+- `neighbor_penalty` (float): 邻居惩罚系数（默认 1.1）
+
+**Chunk 得分计算**：
+```
+chunk_score = sum((total_particles - position) for each particle in chunk)
+```
+位置靠前的粒子贡献更大，包含更多靠前粒子的 chunk 得分更高。
+
+### HippoRAG API
+
+**初始化**
+
+```python
+from workflow import HippoRAGWrapper
+
+hipporag = HippoRAGWrapper(
+    save_dir="./hipporag_db",
+    llm_model_name="DeepSeek-V3.2",
     embedding_model_name="GLM-Embedding-2",
+    llm_base_url=None,  # 可选，覆盖默认 URL
+    embedding_base_url=None  # 可选，覆盖默认 URL
 )
-
-hipporag = HippoRAGEnhanced(
-    global_config=config,
-    enable_emotion=True,
-    emotion_weight=0.3,  # Adjust emotion vs semantic weight
-)
-
-# Index documents
-hipporag.index(docs=your_documents)
-
-# Retrieve with emotion awareness
-results = hipporag.retrieve(queries=your_queries)
 ```
 
-### Example 3: Token Probability Analysis
+**添加文档**
+
+```python
+result = hipporag.add(chunks)
+# Returns:
+# {
+#     'chunk_count': int,
+#     'chunk_ids': List[str],
+#     'total_indexed': int
+# }
+```
+
+**检索**
+
+```python
+# 标准检索（使用图谱）
+results = hipporag.retrieve(
+    query="your query",
+    top_k=5,
+    return_scores=True
+)
+
+# DPR 检索（不使用图谱，更快但精度较低）
+results = hipporag.retrieve_dpr(
+    query="your query",
+    top_k=5
+)
+
+# RAG 问答
+qa_result = hipporag.qa(
+    query="your question",
+    top_k=5
+)
+# Returns:
+# {
+#     'answer': str,
+#     'retrieved_chunks': List[Dict],
+#     'messages': List,
+#     'metadata': Dict
+# }
+```
+
+**其他方法**
+
+```python
+# 删除文档
+hipporag.delete(chunks)
+
+# 获取统计信息
+stats = hipporag.get_stats()
+# Returns:
+# {
+#     'total_indexed': int,
+#     'graph_nodes': int,
+#     'graph_edges': int,
+#     'entities': int,
+#     'facts': int
+# }
+
+# 清空索引
+hipporag.clear()
+```
+
+### FusionRetriever API
+
+**初始化**
+
+```python
+from workflow import FusionRetriever
+
+fusion = FusionRetriever(
+    amygdala_save_dir="./fusion_amygdala_db",
+    hipporag_save_dir="./fusion_hipporag_db",
+    llm_model_name="DeepSeek-V3.2",
+    embedding_model_name="GLM-Embedding-2",
+    auto_link_particles=False
+)
+```
+
+**添加数据**
+
+```python
+result = fusion.add(chunks)
+# Returns:
+# {
+#     'amygdala_count': int,
+#     'hipporag_count': int,
+#     'total_chunks': int
+# }
+```
+
+**融合检索**
+
+```python
+# 级联检索（推荐）
+results = fusion.retrieve(
+    query="your query",
+    hipporag_top_k=20,  # HippoRAG 返回候选数
+    amygdala_top_k=5,   # 最终返回数
+    mode="cascade"      # 检索模式
+)
+
+# 可选模式：
+# - "cascade": 级联检索（默认）
+# - "parallel": 并行检索 + 分数融合
+# - "hipporag_only": 仅 HippoRAG
+# - "amygdala_only": 仅 Amygdala
+```
+
+**返回结果格式**：
+```python
+{
+    'rank': int,
+    'text': str,
+    'hipporag_score': float,
+    'amygdala_score': float,
+    'fusion_score': float
+}
+```
+
+### GraphFusionRetriever API
+
+**初始化**
+
+```python
+from workflow import GraphFusionRetriever
+
+fusion = GraphFusionRetriever(
+    amygdala_save_dir="./graph_fusion_amygdala_db",
+    hipporag_save_dir="./graph_fusion_hipporag_db",
+    llm_model_name="DeepSeek-V3.2",
+    embedding_model_name="GLM-Embedding-2"
+)
+```
+
+**融合检索**
+
+```python
+results = fusion.retrieve(
+    query="your query",
+    top_k=5,
+    emotion_weight=0.3,    # Amygdala 情绪权重
+    semantic_weight=0.5,   # HippoRAG 语义权重
+    fact_weight=0.2,       # HippoRAG fact 权重
+    linking_top_k=20,      # HippoRAG 链接 top_k
+    passage_node_weight=0.05  # passage 节点权重
+)
+```
+
+**检索流程**：
+1. 从 query 中抽取实体
+2. HippoRAG 语义扩展实体
+3. Amygdala 情绪扩展实体
+4. HippoRAG fact 提取实体
+5. 融合实体权重
+6. 运行 PPR 传播
+7. 返回排序后的 chunks
+
+---
+
+## Advanced Usage
+
+### 粒子创建 -> 存储 -> 查询完整流程
+
+如果你想深入理解底层机制，可以参考以下流程：
+
+#### Step 1: 创建粒子
+
+```python
+from particle import Particle
+
+particle = Particle()
+particles = particle.process(
+    text="I enjoy coding with Python",
+    text_id="doc1"
+)
+# particles: List[ParticleEntity]
+```
+
+#### Step 2: 存储到双曲空间
+
+```python
+from poincare import HyperAmyStorage
+
+storage = HyperAmyStorage(
+    persist_path="./db",
+    collection_name="particles"
+)
+
+# 批量存储
+storage.upsert_entities(entities=particles)
+```
+
+#### Step 3: 查询粒子
+
+```python
+from poincare import HyperAmyRetrieval, ParticleProjector
+
+projector = ParticleProjector(curvature=1.0, scaling_factor=2.0)
+retrieval = HyperAmyRetrieval(storage, projector)
+
+results = retrieval.search(
+    query_entity=query_particle,
+    top_k=10,
+    cone_width=50
+)
+```
+
+**检索流程**（四步混合检索）:
+1. **锥体锁定**: 使用向量相似度快速圈定方向一致的粒子
+2. **壳层筛选**: 计算真实的双曲距离进行精排
+3. **邻域激活**: 从 Top-K 点出发，扩展其邻居节点
+4. **汇总排序**: 混合直接检索点和邻居点，最终排序返回
+
+**推荐**：对于大多数使用场景，直接使用 workflow 模块的高级接口（Amygdala/HippoRAG/Fusion）即可，无需手动处理这些底层细节。
+
+---
+
+## Module Documentation
+
+### Workflow Modules
+
+#### workflow.amygdala
+
+**Amygdala** - 情感增强检索工作流
+
+```python
+from workflow import Amygdala
+
+# Initialize
+amygdala = Amygdala(save_dir="./db")
+
+# Add text
+result = amygdala.add("Your text here")
+
+# Retrieve
+results = amygdala.retrieval("Your query", retrieval_mode="chunk")
+```
+
+#### workflow.hipporag_wrapper
+
+**HippoRAGWrapper** - HippoRAG 简洁接口
+
+```python
+from workflow import HippoRAGWrapper
+
+# Initialize
+hipporag = HippoRAGWrapper(save_dir="./db")
+
+# Add documents
+result = hipporag.add(chunks)
+
+# Retrieve
+results = hipporag.retrieve("Your query", top_k=5)
+
+# QA
+qa_result = hipporag.qa("Your question", top_k=5)
+```
+
+#### workflow.fusion_retrieval
+
+**FusionRetriever** - 级联/并行融合检索
+
+```python
+from workflow import FusionRetriever
+
+# Initialize
+fusion = FusionRetriever(
+    amygdala_save_dir="./amygdala_db",
+    hipporag_save_dir="./hipporag_db"
+)
+
+# Add data
+result = fusion.add(chunks)
+
+# Retrieve (cascade mode)
+results = fusion.retrieve(
+    query="your query",
+    hipporag_top_k=20,
+    amygdala_top_k=5,
+    mode="cascade"
+)
+```
+
+#### workflow.graph_fusion_retrieval
+
+**GraphFusionRetriever** - 图谱级融合检索
+
+```python
+from workflow import GraphFusionRetriever
+
+# Initialize
+fusion = GraphFusionRetriever(
+    amygdala_save_dir="./amygdala_db",
+    hipporag_save_dir="./hipporag_db"
+)
+
+# Add data
+result = fusion.add(chunks)
+
+# Retrieve with custom weights
+results = fusion.retrieve(
+    query="your query",
+    top_k=5,
+    emotion_weight=0.3,
+    semantic_weight=0.5,
+    fact_weight=0.2
+)
+```
+
+### Core Modules
+
+#### particle
+
+**Particle** - 粒子处理和生成
+
+```python
+from particle import Particle
+
+particle = Particle()
+particles = particle.process(text="Your text", text_id="doc1")
+```
+
+- `emotion_v2.py`: EmotionV2 - 情感提取和情感描述
+- `speed.py`: 速度计算
+- `temperature.py`: 温度计算
+
+#### poincare
+
+**双曲空间** - Poincaré 球模型的存储和检索
+
+```python
+from poincare import HyperAmyStorage, HyperAmyRetrieval, ParticleProjector
+
+# Storage
+storage = HyperAmyStorage(persist_path="./db")
+storage.upsert_entities(entities=particles)
+
+# Retrieval
+projector = ParticleProjector()
+retrieval = HyperAmyRetrieval(storage, projector)
+results = retrieval.search(query_entity, top_k=10)
+```
+
+- `types.py`: Point, SearchResult 数据类型
+- `physics.py`: TimePhysics, ParticleProjector
+- `storage.py`: HyperAmyStorage
+- `retrieval.py`: HyperAmyRetrieval
+- `linking.py`: 链接构建
+
+#### llm
+
+**LLM Client** - 统一的 LLM 接口
 
 ```python
 from llm import create_client
 
 client = create_client(model_name="DeepSeek-V3.2")
-
-# Get token-level probabilities
-result = client.complete(
-    "Explain quantum computing",
-    mode="specific"
-)
-
-# Analyze token probabilities
-result.print_analysis()
+result = client.complete("Your question", mode="normal")
+print(result.get_answer_text())
 ```
+
+---
+
+## Tests
+
+### 测试文件说明
+
+```bash
+# Amygdala 工作流测试
+python test/test_amygdala.py
+
+# HippoRAG 工作流测试
+python test/test_hipporag_wrapper.py
+
+# FusionRetriever 测试
+python test/test_fusion_retrieval.py
+
+# GraphFusionRetriever 测试（简化版）
+python test/test_fusion_comparison_simple.py
+
+# GraphFusionRetriever 测试（详细版）
+python test/test_fusion_comparison_detailed.py
+
+# GraphFusionRetriever 测试（快速版）
+python test/test_fusion_comparison_quick.py
+```
+
+### 运行测试并保存日志
+
+```bash
+# 运行测试并保存日志
+python test/test_fusion_comparison_simple.py 2>&1 | tee log/test_fusion_simple.log
+```
+
+---
+
+---
 
 ## Dependencies
 
-### Required Dependencies
+### Required
 
-All required dependencies are listed in `requirements.txt`:
+- `requests>=2.32.0`
+- `python-dotenv>=1.1.0`
+- `numpy>=1.26.0`
+- `pandas>=2.0.0`
+- `openai>=1.91.0`
+- `httpx>=0.28.0`
+- `pyarrow>=14.0.0`
+- `chromadb>=0.5.0`
+- `tenacity>=8.5.0`
+- `tqdm>=4.66.0`
 
-- `requests>=2.32.0`: HTTP requests
-- `python-dotenv>=1.1.0`: Environment variable management
-- `numpy>=1.26.0`: Numerical computing
-- `pandas>=2.0.0`: Data processing
-- `openai>=1.91.0`: OpenAI API client
-- `httpx>=0.28.0`: Async HTTP client
-- `pyarrow>=14.0.0` or `fastparquet>=2025.12.0`: Parquet file support
-- `python-igraph>=0.11.0`: Graph processing
-- `tenacity>=8.5.0`: Retry mechanism
-- `tqdm>=4.66.0`: Progress bars
+### Optional
 
-### Optional Dependencies
+- `transformers>=4.45.0`
+- `sentence-transformers>=2.2.0`
+- `torch>=2.0.0`
 
-Install based on your use case:
+---
 
-- `transformers>=4.45.0`: Transformers model support
-- `sentence-transformers>=2.2.0`: Sentence Transformers embedding
-- `litellm>=1.73.0`: Bedrock support
-- `torch>=2.0.0`: PyTorch support
-- `vllm>=0.2.0`: VLLM offline inference
-- `gritlm>=1.0.0`: GritLM embedding
-- `outlines>=0.0.1`: Transformers offline mode
+## Key Concepts
 
-## Environment Alignment
+### 粒子记忆 (Particle Memory)
 
-To ensure consistent environments across collaborators:
+HyperAmy 使用"粒子"来表示文本中的关键实体和概念。每个粒子包含：
 
-1. **Use the same Python version**: Python 3.10.18
-2. **Use the same dependency versions**: Run `pip install -r requirements.txt`
-3. **Verify environment**: Run `python scripts/check_environment.py`
+```python
+class ParticleEntity:
+    entity_id: str           # 唯一标识
+    entity: str              # 实体名称
+    text_id: str             # 文本 ID
+    emotion_vector: np.ndarray # 情感向量（高维）
+    weight: float            # 权重
+    speed: float             # 速度/强度
+    temperature: float       # 温度/熵
+    born: float              # 生成时间
+```
 
-## Code Structure
+**情感向量**：基于情感计算模型，将文本的情感维度编码为高维向量，包含：
+- Valence（愉悦度）
+- Arousal（激活度）
+- Dominance（支配度）
+- 以及其他情感维度
 
-The project follows a modular structure:
+### 双曲空间 (Hyperbolic Space)
 
-- **`sentiment/`**: Emotion analysis functionality
-- **`llm/`**: LLM client and configuration
-- **`hipporag/`**: Core RAG framework (based on HippoRAG)
-- **`test/`**: Test suites for all modules
-- **`scripts/`**: Utility scripts
+HyperAmy 使用 Poincaré 球模型进行向量存储和检索：
 
-## Key Differences from HippoRAG
+**优势**：
+- 能够更好地表示层级关系
+- 相比欧几里得空间，相似概念的距离更近
+- 适合表示知识图谱和语义关系
 
-HyperAmy extends HippoRAG with:
+**双曲距离**：
+- 距离越小，粒子越相似
+- 粒子到自己的距离接近 0
+- 相似情绪和强度的粒子距离较小
 
-1. **Emotion Analysis**: 28-dimensional emotion vector extraction
-2. **Emotion-Enhanced Retrieval**: Combines semantic and emotional similarity
-3. **Emotion Storage**: Persistent storage of emotion vectors
-4. **Token Probability**: Support for token-level probability analysis
-5. **Enhanced API**: Improved error handling and robustness
+### 知识图谱检索 (HippoRAG)
 
-## Notes
+基于 HippoRAG 的知识图谱检索机制：
 
-1. **Test Execution**: Always run tests from the project root using `python -m test.xxx`
-2. **Configuration Management**: All configuration is accessed through `llm.config` module
-3. **Mode Selection**: Default is `normal` mode (chat), use `mode="specific"` for token probabilities
-4. **Model Names**: Model names are specified in code, not as environment variables
+**核心流程**：
+1. **OpenIE 提取**：从文本中提取实体和三元组（主语-谓语-宾语）
+2. **图谱构建**：构建包含实体节点、事实节点、文档节点的知识图谱
+3. **PPR 传播**：使用 Personalized PageRank 在图谱上传播相关性
+4. **结果排序**：返回最相关的文档块
 
-## Contributing
+**优势**：
+- 能够进行多跳推理
+- 利用实体关系提升检索质量
+- 适合事实性问答
 
-We welcome contributions! Please ensure:
+### 融合策略 (Fusion Strategies)
 
-1. Code follows Python 3.10+ standards
-2. All tests pass
-3. Environment alignment (use `requirements.txt`)
-4. Documentation is updated
+HyperAmy 提供多种融合策略：
 
-## Related Work
+#### 1. 级联检索 (Cascade)
+```
+Query → HippoRAG (Top-K 候选) → Amygdala (精排) → Final Results
+```
+- 速度快
+- HippoRAG 快速缩小范围
+- Amygdala 深度精排
 
-- [HippoRAG](https://github.com/OSU-NLP-Group/HippoRAG): The base RAG framework that HyperAmy extends
-- [HippoRAG Paper](https://arxiv.org/abs/2405.14831): Original HippoRAG paper
+#### 2. 并行检索 (Parallel)
+```
+Query → HippoRAG ─┐
+                 ├→ 分数融合 → Final Results
+Query → Amygdala ─┘
+```
+- 两个系统并行工作
+- 保留双方信号
+- 分数归一化后融合
+
+#### 3. 图谱融合 (Graph Fusion)
+```
+Query → 实体抽取
+         ├→ HippoRAG 语义扩展
+         ├→ Amygdala 情绪扩展
+         └→ Fact 扩展
+         ↓
+    融合实体权重 → PPR 传播 → Final Results
+```
+- 最深度的融合
+- 在图谱层面整合情感信号
+- 检索质量最高
+
+### 检索模式对比
+
+| 特性 | Amygdala | HippoRAG | FusionRetriever | GraphFusionRetriever |
+|------|----------|----------|-----------------|---------------------|
+| **情感感知** | ✓ | ✗ | ✓ | ✓ |
+| **知识推理** | ✗ | ✓ | ✓ | ✓ |
+| **检索速度** | 中 | 快 | 中-快 | 慢 |
+| **检索质量** | 中 | 高 | 高 | 最高 |
+| **存储开销** | 中 | 中 | 大 | 大 |
+| **实现复杂度** | 低 | 低 | 中 | 高 |
+| **推荐场景** | 对话检索 | 事实问答 | 通用检索 | 高质量要求 |
+
+---
 
 ## Citation
 
@@ -612,21 +887,18 @@ And the base HippoRAG framework:
 
 ```bibtex
 @inproceedings{gutiérrez2024hipporag,
-  title={HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models}, 
+  title={HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models},
   author={Bernal Jiménez Gutiérrez and Yiheng Shu and Yu Gu and Michihiro Yasunaga and Yu Su},
-  booktitle={The Thirty-eighth Annual Conference on Neural Information Processing Systems},
-  year={2024},
-  url={https://openreview.net/forum?id=hkujvAPVsg}
+  booktitle={NeurIPS},
+  year={2024}
 }
 ```
 
+---
+
 ## License
 
-MIT License - see LICENSE file for details
-
-## Contact
-
-Questions or issues? Please file an issue on [GitHub](https://github.com/sherkevin/HyperAmy/issues).
+MIT License
 
 ---
 

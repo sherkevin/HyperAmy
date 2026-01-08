@@ -3,7 +3,7 @@
 
 测试 chunk 惊讶值计算功能
 """
-from point_label.speed import Speed
+from particle.speed import Speed
 
 
 def test_basic_extraction():

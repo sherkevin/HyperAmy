@@ -1,10 +1,10 @@
 """
-测试 Labels 类
+测试 Particle 类
 
 测试情感向量、记忆深度和温度计算功能
 """
 import numpy as np
-from point_label.labels import Labels
+from particle.particle import Particle
 
 
 def test_basic_extraction():
@@ -13,7 +13,7 @@ def test_basic_extraction():
     print("测试 1: 基本提取（不使用 specific 模式）")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunk = "I'm very happy!"
     result = labels.extract(chunk, use_specific=False)
@@ -33,7 +33,7 @@ def test_with_specific_mode():
     print("测试 2: 使用 specific 模式（包含 temperature）")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunk = "I'm very happy!"
     result = labels.extract(chunk, use_specific=True)
@@ -53,7 +53,7 @@ def test_memory_depth_comparison():
     print("测试 3: 不同内容的记忆深度比较")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunks = [
         "The weather is great today.",
@@ -94,7 +94,7 @@ def test_temperature_comparison():
     print("测试 4: 不同内容的温度比较（使用 specific 模式）")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunks = [
         "I'm very happy!",
@@ -134,7 +134,7 @@ def test_emotion_vector_details():
     print("测试 5: 情感向量详细信息")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunk = "I love you deeply, and this feeling brings me immense happiness and contentment."
     result = labels.extract(chunk, use_specific=False)
@@ -153,7 +153,7 @@ def test_emotion_vector_details():
     print(f"{'Emotion':<20} | {'Value':<15} | {'Percentage':<15}")
     print("-" * 60)
     
-    from point_label.labels import EMOTIONS
+    from particle.particle import EMOTIONS
     total = np.sum(result.emotion_vector)
     for idx in top_indices:
         emotion_name = EMOTIONS[idx]
@@ -170,7 +170,7 @@ def test_purity_and_temperature_relationship():
     print("测试 6: 纯度和温度的关系")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunks = [
         "I'm very happy!",  # Single emotion, should have high purity and low temperature
@@ -211,7 +211,7 @@ def test_memory_depth_calculation():
     print("测试 7: Memory Depth 计算过程详解")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     chunk = "I'm very happy!"
     result = labels.extract(chunk, use_specific=False)
@@ -278,7 +278,7 @@ def test_edge_cases():
     print("测试 8: 边界情况")
     print("=" * 60)
     
-    labels = Labels()
+    labels = Particle()
     
     edge_chunks = [
         "",  # Empty string
@@ -307,7 +307,7 @@ def test_edge_cases():
 
 if __name__ == "__main__":
     print("\n" + "=" * 60)
-    print("Labels 类测试")
+    print("Particle 类测试")
     print("=" * 60 + "\n")
     
     try:
