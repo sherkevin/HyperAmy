@@ -3,3 +3,8 @@
 *.env
 outputs/
 log/
+
+# 但保留实验结果文件供合作者查看
+!outputs/two_methods_comparison/comparison_results.json
+!outputs/two_methods_comparison_v2/comparison_results.json
+!outputs/three_methods_comparison_monte_cristo/comparison_results.json

@@ -1,0 +1,74 @@
+[
+  {
+    "question": "当维尔福与梅塞苔丝初次相遇时，文本如何暗示他感知到了一种超越逻辑的威胁，即使他尚未完全理解其来源？",
+    "gold_chunk_id": "chunk_1",
+    "hipporag": {
+      "available": false
+    },
+    "fusion": {
+      "docs": [
+        "I\nwas expressing to my father my fears that he had wanted many things in\nmy absence, and to convince me he emptied his purse on the table",
+        "But Fernand, instead of responding to this amiable gesture,\nremained mute and trembling",
+        "“Why, you see, he did not expect to see Dantès\nreturn so suddenly—he thought he was dead, perhaps; or perchance\nfaithless",
+        "“I did not know, when I came with such haste to you, that I was to meet\nan enemy here.”\n\n“An enemy!” cried Mercédès, with an angry look at her cousin",
+        "“As soon as possible, M"
+      ],
+      "scores": [
+        0.45916328476458795,
+        0.4458355893993004,
+        0.37538117516433533,
+        0.3626670168674643,
+        0.3564266386224093
+      ],
+      "available": true
+    }
+  },
+  {
+    "question": "当维尔福夫人坚持要送儿子去寄宿学校时，是什么微妙线索暗示她正经历着超越普通担忧的、近乎本能的恐惧？",
+    "gold_chunk_id": "chunk_2",
+    "hipporag": {
+      "available": false
+    },
+    "fusion": {
+      "docs": [
+        "Are you ill?” inquired the young\nman, much alarmed",
+        "“What ails you, my dearest father",
+        "Do you\nunderstand, father",
+        "“As soon as possible, M",
+        "“And should any misfortune occur to\nyou, dear Edmond,” she continued with the same calmness which proved to\nFernand that the young girl had read the very innermost depths of his\nsinister thought, “if misfortune should occur to you, I would ascend\nthe highest point of the Cape de Morgiou and cast myself headlong from\nit.”\n\nFernand became deadly pale"
+      ],
+      "scores": [
+        0.9386777979803921,
+        0.8810735433617825,
+        0.8457817895157778,
+        0.7960287299743416,
+        0.7928218581888331
+      ],
+      "available": true
+    }
+  },
+  {
+    "question": "当梅尔塞苔丝看到费尔南时，文本中哪个细微的动作描写暗示了她内心本能的警惕，即使她还未明确意识到危险？",
+    "gold_chunk_id": "chunk_3",
+    "hipporag": {
+      "available": false
+    },
+    "fusion": {
+      "docs": [
+        "Edmond then cast his eyes scrutinizingly\nat the agitated and embarrassed Mercédès, and then again on the gloomy\nand menacing Fernand",
+        "Suddenly Edmond saw the gloomy, pale,\nand threatening countenance of Fernand, as it was defined in the\nshadow",
+        "But Fernand, instead of responding to this amiable gesture,\nremained mute and trembling",
+        "Unable to have me for your wife, you will content yourself\nwith having me for your friend and sister; and besides,” she added, her\neyes troubled and moistened with tears, “wait, wait, Fernand; you said\njust now that the sea was treacherous, and he has been gone four\nmonths, and during these four months there have been some terrible\nstorms.”\n\nFernand made no reply, nor did he attempt to check the tears which\nflowed down the cheeks of Mercédès, although for each of these tears he\nwould have shed his heart’s blood; but these tears flowed for another",
+        "At this\nFernand recollected her threat of dying if Edmond died, and dropped\nagain heavily on his seat"
+      ],
+      "scores": [
+        0.45784531350834706,
+        0.45131909761790884,
+        0.4199269596217907,
+        0.3885754391493214,
+        0.37493637046031086
+      ],
+      "available": true
+    }
+  }
+]
