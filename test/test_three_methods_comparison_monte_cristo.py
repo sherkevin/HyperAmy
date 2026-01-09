@@ -162,7 +162,7 @@ config_hipporag = BaseConfig(
     llm_name=llm_model_name,
     embedding_model_name=embedding_model_name,
     embedding_base_url=embedding_base_url,
-    force_index_from_scratch=True,
+    force_index_from_scratch=False,  # 如果索引已存在，复用索引以加速
     retrieval_top_k=5,
 )
 
@@ -172,8 +172,8 @@ try:
         llm_model_name=llm_model_name,
         llm_base_url=llm_base_url,
         embedding_model_name=embedding_model_name,
-        embedding_base_url=embedding_base_url,
-        openie_max_workers=20  # 增加并发数以加速三元组提取
+        embedding_base_url=embedding_base_url
+        # 注意：服务器上的HippoRAG版本不支持openie_max_workers参数
     )
     print("✅ HippoRAG 初始化成功")
     
@@ -210,7 +210,7 @@ config_fusion = BaseConfig(
     llm_name=llm_model_name,
     embedding_model_name=embedding_model_name,
     embedding_base_url=embedding_base_url,
-    force_index_from_scratch=True,
+    force_index_from_scratch=False,  # 如果索引已存在，复用索引以加速
     retrieval_top_k=5,
 )
 
@@ -310,52 +310,63 @@ try:
         
         # 提取情绪向量并存储点（并发优化）
         print("   提取情绪向量并存储点（并发处理）...")
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-    
-    def extract_emotion_for_chunk(chunk_data):
-        """提取单个chunk的情绪向量（用于并发调用）"""
-        chunk_idx, chunk = chunk_data
-        # 使用与docs加载相同的字段检查逻辑（input > text > content > chunk_text）
-        text = chunk.get('input') or chunk.get('text') or chunk.get('content') or chunk.get('chunk_text', '')
-        # 生成chunk_id（与docs加载逻辑完全一致，确保可以匹配QA数据中的chunk_id）
-        chunk_id = chunk.get('chunk_id') or chunk.get('id') or f'chunk_{chunk_idx}'
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         
-        # 确保text是字符串且有一定长度
-        if isinstance(text, str) and len(text.strip()) > 20:
-            try:
-                emotion_vector = emotion_extractor.extract(text)
-                # 确保emotion_vector是numpy array（ParticleEntity需要numpy array）
-                import torch
-                if isinstance(emotion_vector, torch.Tensor):
-                    emotion_vector = emotion_vector.cpu().numpy()
-                elif not isinstance(emotion_vector, np.ndarray):
-                    emotion_vector = np.array(emotion_vector, dtype=np.float32)
-                
-                # 计算weight（原始情绪向量的模长）
-                weight = float(np.linalg.norm(emotion_vector))
-                
-                # 归一化情绪向量（ParticleEntity期望归一化后的向量）
-                if weight > 1e-9:
-                    normalized_vector = emotion_vector / weight
-                else:
-                    normalized_vector = emotion_vector.copy()
-                    weight = 0.0
-                
-                # 使用chunk_id作为entity_id（确保与chunk_id_to_doc中的key一致）
-                entity_id = chunk_id  # chunk_id已经是格式化的（chunk_0, chunk_1, ...或chunk_3806等）
-                
-                return {
-                    'success': True,
-                    'chunk_idx': chunk_idx,
-                    'chunk_id': chunk_id,
-                    'entity_id': entity_id,
-                    'emotion_vector': normalized_vector,  # 归一化后的向量
-                    'weight': weight,  # 原始模长
-                    'text': text.strip(),
-                    'error': None
-                }
-            except Exception as e:
-                logger.warning(f"处理chunk失败 (索引={chunk_idx}, chunk_id={chunk_id}, text_len={len(text) if isinstance(text, str) else 0}): {e}")
+        def extract_emotion_for_chunk(chunk_data):
+            """提取单个chunk的情绪向量（用于并发调用）"""
+            chunk_idx, chunk = chunk_data
+            # 使用与docs加载相同的字段检查逻辑（input > text > content > chunk_text）
+            text = chunk.get('input') or chunk.get('text') or chunk.get('content') or chunk.get('chunk_text', '')
+            # 生成chunk_id（与docs加载逻辑完全一致，确保可以匹配QA数据中的chunk_id）
+            chunk_id = chunk.get('chunk_id') or chunk.get('id') or f'chunk_{chunk_idx}'
+            
+            # 确保text是字符串且有一定长度
+            if isinstance(text, str) and len(text.strip()) > 20:
+                try:
+                    emotion_vector = emotion_extractor.extract(text)
+                    # 确保emotion_vector是numpy array（ParticleEntity需要numpy array）
+                    import torch
+                    if isinstance(emotion_vector, torch.Tensor):
+                        emotion_vector = emotion_vector.cpu().numpy()
+                    elif not isinstance(emotion_vector, np.ndarray):
+                        emotion_vector = np.array(emotion_vector, dtype=np.float32)
+                    
+                    # 计算weight（原始情绪向量的模长）
+                    weight = float(np.linalg.norm(emotion_vector))
+                    
+                    # 归一化情绪向量（ParticleEntity期望归一化后的向量）
+                    if weight > 1e-9:
+                        normalized_vector = emotion_vector / weight
+                    else:
+                        normalized_vector = emotion_vector.copy()
+                        weight = 0.0
+                    
+                    # 使用chunk_id作为entity_id（确保与chunk_id_to_doc中的key一致）
+                    entity_id = chunk_id  # chunk_id已经是格式化的（chunk_0, chunk_1, ...或chunk_3806等）
+                    
+                    return {
+                        'success': True,
+                        'chunk_idx': chunk_idx,
+                        'chunk_id': chunk_id,
+                        'entity_id': entity_id,
+                        'emotion_vector': normalized_vector,  # 归一化后的向量
+                        'weight': weight,  # 原始模长
+                        'text': text.strip(),
+                        'error': None
+                    }
+                except Exception as e:
+                    logger.warning(f"处理chunk失败 (索引={chunk_idx}, chunk_id={chunk_id}, text_len={len(text) if isinstance(text, str) else 0}): {e}")
+                    return {
+                        'success': False,
+                        'chunk_idx': chunk_idx,
+                        'chunk_id': chunk_id,
+                        'entity_id': None,
+                        'emotion_vector': None,
+                        'weight': None,
+                        'text': None,
+                        'error': str(e)
+                    }
+            else:
                 return {
                     'success': False,
                     'chunk_idx': chunk_idx,
@@ -364,79 +375,68 @@ try:
                     'emotion_vector': None,
                     'weight': None,
                     'text': None,
-                    'error': str(e)
+                    'error': f"text长度不足或无效 (len={len(text) if isinstance(text, str) else 'N/A'})"
                 }
-        else:
-            return {
-                'success': False,
-                'chunk_idx': chunk_idx,
-                'chunk_id': chunk_id,
-                'entity_id': None,
-                'emotion_vector': None,
-                'weight': None,
-                'text': None,
-                'error': f"text长度不足或无效 (len={len(text) if isinstance(text, str) else 'N/A'})"
+        
+        # 使用ThreadPoolExecutor并发处理
+        max_workers = 10  # 并发线程数
+        stored_points = 0
+        skipped_count = 0
+        logger.info(f"使用并发处理，max_workers={max_workers}")
+        
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # 提交所有任务
+            future_to_chunk = {
+                executor.submit(extract_emotion_for_chunk, (chunk_idx, chunk)): chunk_idx
+                for chunk_idx, chunk in enumerate(chunks)
             }
-    
-    # 使用ThreadPoolExecutor并发处理
-    max_workers = 10  # 并发线程数
-    stored_points = 0
-    skipped_count = 0
-    logger.info(f"使用并发处理，max_workers={max_workers}")
-    
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # 提交所有任务
-        future_to_chunk = {
-            executor.submit(extract_emotion_for_chunk, (chunk_idx, chunk)): chunk_idx
-            for chunk_idx, chunk in enumerate(chunks)
-        }
+            
+            # 收集结果（带进度条）
+            results_list = []
+            for future in tqdm(as_completed(future_to_chunk), 
+                              total=len(chunks), 
+                              desc="提取情绪向量（并发）"):
+                try:
+                    result = future.result()
+                    results_list.append(result)
+                except Exception as e:
+                    chunk_idx = future_to_chunk[future]
+                    logger.error(f"并发处理异常 (索引={chunk_idx}): {e}")
+                    skipped_count += 1
         
-        # 收集结果（带进度条）
-        results_list = []
-        for future in tqdm(as_completed(future_to_chunk), 
-                          total=len(chunks), 
-                          desc="提取情绪向量（并发）"):
-            try:
-                result = future.result()
-                results_list.append(result)
-            except Exception as e:
-                chunk_idx = future_to_chunk[future]
-                logger.error(f"并发处理异常 (索引={chunk_idx}): {e}")
-                skipped_count += 1
-        
-        # 按照原始顺序整理结果并存储
-        results_list.sort(key=lambda x: x['chunk_idx'])
-        
-        for result in results_list:
-            if result['success']:
-                # 保存id->content映射
-                id_to_content[result['entity_id']] = result['text']
-                
-                # 创建ParticleEntity对象
-                entity = ParticleEntity(
-                    entity_id=result['entity_id'],
-                    entity=f"chunk_{result['chunk_idx']}",  # 实体名称
-                    text_id=result['chunk_id'],  # 文本ID
-                    emotion_vector=result['emotion_vector'],  # 归一化后的向量
-                    weight=result['weight'],  # 原始模长
-                    speed=0.0,  # 初始速度
-                    temperature=1.0,  # 初始温度
-                    born=0.0  # 创建时间
-                )
-                storage.upsert_entity(entity)
-                stored_points += 1
-            else:
-                skipped_count += 1
-                if result['chunk_idx'] < 5:  # 只记录前5个跳过的chunks作为示例
-                    logger.debug(f"跳过chunk (索引={result['chunk_idx']}): {result['error']}")
-        
-        # 保存id_to_content映射到文件（供后续使用）
-        id_to_content_file = output_dir / "hyperamy_id_to_content.json"
-        with open(id_to_content_file, 'w', encoding='utf-8') as f:
-            json.dump(id_to_content, f, ensure_ascii=False, indent=2)
-        logger.info(f"✅ 保存了id->content映射到: {id_to_content_file}")
-        
-        print(f"✅ HyperAmy 存储初始化完成（存储了 {stored_points} 个点，跳过了 {skipped_count} 个无效chunks）")
+            # 按照原始顺序整理结果并存储
+            results_list.sort(key=lambda x: x['chunk_idx'])
+            
+            for result in results_list:
+                if result['success']:
+                    # 保存id->content映射
+                    id_to_content[result['entity_id']] = result['text']
+                    
+                    # 创建ParticleEntity对象
+                    entity = ParticleEntity(
+                        entity_id=result['entity_id'],
+                        entity=f"chunk_{result['chunk_idx']}",  # 实体名称
+                        text_id=result['chunk_id'],  # 文本ID
+                        emotion_vector=result['emotion_vector'],  # 归一化后的向量
+                        weight=result['weight'],  # 原始模长
+                        speed=0.0,  # 初始速度
+                        temperature=1.0,  # 初始温度
+                        born=0.0  # 创建时间
+                    )
+                    storage.upsert_entity(entity)
+                    stored_points += 1
+                else:
+                    skipped_count += 1
+                    if result['chunk_idx'] < 5:  # 只记录前5个跳过的chunks作为示例
+                        logger.debug(f"跳过chunk (索引={result['chunk_idx']}): {result['error']}")
+            
+            # 保存id_to_content映射到文件（供后续使用）
+            id_to_content_file = output_dir / "hyperamy_id_to_content.json"
+            with open(id_to_content_file, 'w', encoding='utf-8') as f:
+                json.dump(id_to_content, f, ensure_ascii=False, indent=2)
+            logger.info(f"✅ 保存了id->content映射到: {id_to_content_file}")
+            
+            print(f"✅ HyperAmy 存储初始化完成（存储了 {stored_points} 个点，跳过了 {skipped_count} 个无效chunks）")
     else:
         # 使用并行索引时，已经加载了id_to_content，不需要重新提取
         storage = HyperAmyStorage(persist_path=str(storage_path))

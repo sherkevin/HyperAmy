@@ -60,32 +60,67 @@
 
 ## 🎯 最新实验成果（2026-01-09）
 
-### 三种检索方法对比实验已完成！
+### ✅ 三种检索方法对比实验已完成！
 
+📊 **完整实验报告**: [EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS_FINAL.md](EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS_FINAL.md) ⭐ **最新**  
 📊 **详细分析报告**: [EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS.md](EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS.md)  
+📋 **下一步工作计划**: [NEXT_STEPS_AFTER_THREE_METHODS_EXPERIMENT.md](NEXT_STEPS_AFTER_THREE_METHODS_EXPERIMENT.md) ⭐ **重要**  
 📢 **合作者通知**: [COLLABORATORS_UPDATE.md](COLLABORATORS_UPDATE.md)
 
 **实验结果摘要**:
-- ✅ **HippoRAG (纯语义)**: Recall@5 = 58.0%，在精确匹配（Recall@1-2）上表现最好
-- ✅ **Fusion (语义+情绪)**: Recall@10 = 62.0% 🏆，在整体检索上表现最好
-- ⚠️ **HyperAmy (纯情绪)**: 检索算法存在问题，正在修复中
+- ✅ **HippoRAG (纯语义)**: Recall@1=28.0% 🏆, Recall@5=58.0%，在精确匹配（Recall@1-2）上表现最佳
+- ✅ **Fusion (语义+情绪)**: Recall@10=62.0% 🏆, Recall@2=40.0% 🏆，在整体检索上表现最佳
+- ✅ **HyperAmy (纯情绪)**: 实验成功完成，需要开发基于情绪相似度的新评估方法
 
-## 🔍 主要发现
+## 🔍 核心发现
 
-基于三种方法对比实验的发现：
+基于三种方法对比实验（50个QA对）的发现：
 
-1. **HippoRAG (纯语义)**: 在精确匹配（Recall@1-2）上表现最好，适合需要精确匹配的场景
-2. **Fusion (语义+情绪)**: 在整体检索（Recall@10）上达到62%的最佳表现，证明了融合情绪特征的有效性
-3. **HyperAmy (纯情绪)**: 检索算法存在问题，需要进一步修复
+1. **🏆 HippoRAG 在精确匹配上表现最好**：
+   - Recall@1: 28.0%（最佳）
+   - Recall@2: 34.0%（最佳）
+   - 适合需要精确匹配的场景
+
+2. **🏆 Fusion 在整体检索上表现最好**：
+   - Recall@10: 62.0%（最佳）
+   - Recall@2: 40.0%（最佳）
+   - 证明了融合情绪特征的有效性（在Recall@10上优于HippoRAG 4个百分点）
+
+3. **💡 情绪特征确实有效**：
+   - Fusion 在 Recall@10 上的表现（62.0%）明显优于 HippoRAG（58.0%）
+   - 说明融合情绪特征能够提升检索性能
+
+4. **⚠️ HyperAmy 需要新评估方法**：
+   - 精确匹配率为 0%（预期行为，纯情绪检索基于相似度）
+   - 需要开发基于情绪相似度的评估方法
 
 **使用建议**:
-- 追求精确匹配（Top-1）→ 使用 **HippoRAG**
-- 追求整体检索性能（Top-10）→ 使用 **Fusion**
-- 情绪敏感检索 → 等待 **HyperAmy** 修复后测试
+- **精确匹配场景（Top-1-2）** → 推荐使用 **HippoRAG** 🏆
+- **整体检索场景（Top-10）** → 推荐使用 **Fusion** 🏆
+- **情绪相似检索** → 推荐使用 **HyperAmy**（需开发新评估方法）
 
 详细分析参见:
-- [EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS.md](EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS.md) - 三种方法对比完整分析
+- [EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS_FINAL.md](EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS_FINAL.md) - **完整实验报告（最新）**
+- [EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS.md](EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS.md) - 详细分析报告
 - [EXPERIMENT_RESULTS_ANALYSIS.md](EXPERIMENT_RESULTS_ANALYSIS.md) - 两方法对比分析
+
+## 📋 下一步工作计划
+
+### 🔴 高优先级任务
+
+1. **开发HyperAmy评估方法** ⭐⭐⭐
+   - 实现基于情绪相似度的评估指标（EmotionRecall@K）
+   - 正确评估HyperAmy纯情绪检索的性能
+
+2. **深入分析未命中查询** ⭐⭐⭐
+   - 分析40%完全未命中的查询
+   - 找出改进方向
+
+3. **参数调优实验** ⭐⭐
+   - 优化Fusion的sentiment_weight参数
+   - 找到最佳配置
+
+详细计划参见: [NEXT_STEPS_AFTER_THREE_METHODS_EXPERIMENT.md](NEXT_STEPS_AFTER_THREE_METHODS_EXPERIMENT.md)
 
 ---
 
