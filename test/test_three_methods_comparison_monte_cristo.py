@@ -35,7 +35,7 @@ from hipporag.HippoRAG import HippoRAG
 from hipporag.utils.config_utils import BaseConfig
 from poincare.storage import HyperAmyStorage
 from poincare.retrieval import HyperAmyRetrieval
-from poincare.types import Point
+from particle.particle import ParticleEntity
 from point_label.emotion import Emotion
 from sentence_transformers import SentenceTransformer
 
@@ -324,25 +324,33 @@ try:
         if isinstance(text, str) and len(text.strip()) > 20:
             try:
                 emotion_vector = emotion_extractor.extract(text)
-                # 确保emotion_vector是torch.Tensor，并在CPU上（ChromaDB存储需要CPU）
+                # 确保emotion_vector是numpy array（ParticleEntity需要numpy array）
                 import torch
-                if isinstance(emotion_vector, np.ndarray):
-                    emotion_vector = torch.tensor(emotion_vector, dtype=torch.float32)
-                elif not isinstance(emotion_vector, torch.Tensor):
-                    emotion_vector = torch.tensor(emotion_vector, dtype=torch.float32)
-                # 确保在CPU上（存储需要CPU）
-                if emotion_vector.is_cuda:
-                    emotion_vector = emotion_vector.cpu()
+                if isinstance(emotion_vector, torch.Tensor):
+                    emotion_vector = emotion_vector.cpu().numpy()
+                elif not isinstance(emotion_vector, np.ndarray):
+                    emotion_vector = np.array(emotion_vector, dtype=np.float32)
                 
-                # 使用chunk_id作为point_id（确保与chunk_id_to_doc中的key一致）
-                point_id = chunk_id  # chunk_id已经是格式化的（chunk_0, chunk_1, ...或chunk_3806等）
+                # 计算weight（原始情绪向量的模长）
+                weight = float(np.linalg.norm(emotion_vector))
+                
+                # 归一化情绪向量（ParticleEntity期望归一化后的向量）
+                if weight > 1e-9:
+                    normalized_vector = emotion_vector / weight
+                else:
+                    normalized_vector = emotion_vector.copy()
+                    weight = 0.0
+                
+                # 使用chunk_id作为entity_id（确保与chunk_id_to_doc中的key一致）
+                entity_id = chunk_id  # chunk_id已经是格式化的（chunk_0, chunk_1, ...或chunk_3806等）
                 
                 return {
                     'success': True,
                     'chunk_idx': chunk_idx,
                     'chunk_id': chunk_id,
-                    'point_id': point_id,
-                    'emotion_vector': emotion_vector,
+                    'entity_id': entity_id,
+                    'emotion_vector': normalized_vector,  # 归一化后的向量
+                    'weight': weight,  # 原始模长
                     'text': text.strip(),
                     'error': None
                 }
@@ -352,8 +360,9 @@ try:
                     'success': False,
                     'chunk_idx': chunk_idx,
                     'chunk_id': chunk_id,
-                    'point_id': None,
+                    'entity_id': None,
                     'emotion_vector': None,
+                    'weight': None,
                     'text': None,
                     'error': str(e)
                 }
@@ -362,8 +371,9 @@ try:
                 'success': False,
                 'chunk_idx': chunk_idx,
                 'chunk_id': chunk_id,
-                'point_id': None,
+                'entity_id': None,
                 'emotion_vector': None,
+                'weight': None,
                 'text': None,
                 'error': f"text长度不足或无效 (len={len(text) if isinstance(text, str) else 'N/A'})"
             }
@@ -400,16 +410,20 @@ try:
         for result in results_list:
             if result['success']:
                 # 保存id->content映射
-                id_to_content[result['point_id']] = result['text']
+                id_to_content[result['entity_id']] = result['text']
                 
-                point = Point(
-                    id=result['point_id'],
-                    emotion_vector=result['emotion_vector'],
-                    v=0.0,  # 初始速度
-                    T=1.0,  # 初始温度
+                # 创建ParticleEntity对象
+                entity = ParticleEntity(
+                    entity_id=result['entity_id'],
+                    entity=f"chunk_{result['chunk_idx']}",  # 实体名称
+                    text_id=result['chunk_id'],  # 文本ID
+                    emotion_vector=result['emotion_vector'],  # 归一化后的向量
+                    weight=result['weight'],  # 原始模长
+                    speed=0.0,  # 初始速度
+                    temperature=1.0,  # 初始温度
                     born=0.0  # 创建时间
                 )
-                storage.upsert_point(point)
+                storage.upsert_entity(entity)
                 stored_points += 1
             else:
                 skipped_count += 1
@@ -440,28 +454,39 @@ try:
         try:
             # 提取查询的情绪向量
             query_emotion = emotion_extractor.extract(query)
-            # 确保emotion_vector是torch.Tensor，并在CPU上（检索操作在CPU上进行）
+            # 确保emotion_vector是numpy array（ParticleEntity需要numpy array）
             import torch
-            if isinstance(query_emotion, np.ndarray):
-                query_emotion = torch.tensor(query_emotion, dtype=torch.float32)
-            elif not isinstance(query_emotion, torch.Tensor):
-                query_emotion = torch.tensor(query_emotion, dtype=torch.float32)
-            # 确保在CPU上（检索操作在CPU上进行）
-            if query_emotion.is_cuda:
-                query_emotion = query_emotion.cpu()
+            if isinstance(query_emotion, torch.Tensor):
+                query_emotion = query_emotion.cpu().numpy()
+            elif not isinstance(query_emotion, np.ndarray):
+                query_emotion = np.array(query_emotion, dtype=np.float32)
             
-            # 生成查询的point id
+            # 计算weight（原始情绪向量的模长）
+            weight = float(np.linalg.norm(query_emotion))
+            
+            # 归一化情绪向量（ParticleEntity期望归一化后的向量）
+            if weight > 1e-9:
+                normalized_vector = query_emotion / weight
+            else:
+                normalized_vector = query_emotion.copy()
+                weight = 0.0
+            
+            # 生成查询的entity id
             query_id = f"query_{i}_{hashlib.md5(query.encode('utf-8')).hexdigest()[:16]}"
             
-            query_point = Point(
-                id=query_id,
-                emotion_vector=query_emotion,
-                v=0.0,
-                T=1.0,
+            # 创建ParticleEntity对象用于检索
+            query_entity = ParticleEntity(
+                entity_id=query_id,
+                entity=query[:50],  # 实体名称（使用查询的前50个字符）
+                text_id=f"query_{i}",  # 文本ID
+                emotion_vector=normalized_vector,  # 归一化后的向量
+                weight=weight,  # 原始模长
+                speed=0.0,
+                temperature=1.0,
                 born=0.0
             )
             # 检索
-            search_results = hyperamy_retrieval.search(query_point, top_k=5)
+            search_results = hyperamy_retrieval.search(query_entity, top_k=5)
             # 转换为QuerySolution格式
             # SearchResult没有content字段，需要从id_to_content映射中获取
             from hipporag.utils.misc_utils import QuerySolution
