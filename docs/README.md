@@ -95,9 +95,13 @@
    - 需要开发基于情绪相似度的评估方法
 
 **使用建议**:
-- **精确匹配场景（Top-1-2）** → 推荐使用 **HippoRAG** 🏆
-- **整体检索场景（Top-10）** → 推荐使用 **Fusion** 🏆
-- **情绪相似检索** → 推荐使用 **HyperAmy**（需开发新评估方法）
+- **精确匹配场景（Top-1-2）** → 推荐使用 **HippoRAG** 🏆（Recall@1=28.0%）
+- **整体检索场景（Top-10）** → 推荐使用 **Fusion** 🏆（Recall@10=62.0%）
+- **情绪相似检索** → 推荐使用 **HyperAmy** 🏆（EmotionRecall@2=100.0%）
+
+**评估标准说明**:
+- HippoRAG/Fusion: 使用精确匹配（Exact Match）评估
+- HyperAmy: 使用情绪相似度（Emotion Similarity）评估
 
 详细分析参见:
 - [EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS_FINAL.md](EXPERIMENT_RESULTS_ANALYSIS_THREE_METHODS_FINAL.md) - **完整实验报告（最新）**
