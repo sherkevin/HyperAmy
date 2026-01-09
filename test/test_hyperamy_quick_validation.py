@@ -139,13 +139,58 @@ try:
     hyperamy_retrieval = HyperAmyRetrieval(storage, projector)
     
     print("\n【步骤3】执行HyperAmy检索（10个查询）...")
+    
+    # 优化：预先提取并缓存查询情绪向量（避免在检索循环中串行等待）
+    print("   预先提取查询情绪向量（可缓存复用）...")
+    query_emotions_cache_file = output_dir / "query_emotions_cache.json"
+    query_emotions_cache = {}
+    
+    if query_emotions_cache_file.exists():
+        # 使用缓存的情绪向量（后续运行）
+        logger.info(f"✅ 使用缓存的查询情绪向量: {query_emotions_cache_file}")
+        with open(query_emotions_cache_file, 'r', encoding='utf-8') as f:
+            cached_data = json.load(f)
+            query_emotions_cache = {q: np.array(v) for q, v in cached_data.items()}
+    else:
+        # 提取并缓存（第一次运行）
+        logger.info("   第一次运行，提取查询情绪向量并缓存...")
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = {executor.submit(emotion_extractor.extract, query): query 
+                      for query in queries}
+            for future in tqdm(as_completed(futures), total=len(queries), desc="提取查询情绪向量"):
+                query = futures[future]
+                try:
+                    emotion_vector = future.result()
+                    # 转换为可序列化的格式
+                    if isinstance(emotion_vector, np.ndarray):
+                        query_emotions_cache[query] = emotion_vector.tolist()
+                    else:
+                        query_emotions_cache[query] = emotion_vector
+                except Exception as e:
+                    logger.warning(f"提取查询情绪向量失败 (query={query[:50]}...): {e}")
+                    # 使用零向量作为fallback
+                    query_emotions_cache[query] = [0.0] * 30
+        
+        # 保存缓存
+        with open(query_emotions_cache_file, 'w', encoding='utf-8') as f:
+            json.dump(query_emotions_cache, f, ensure_ascii=False, indent=2)
+        logger.info(f"✅ 查询情绪向量已缓存到: {query_emotions_cache_file}")
+    
     results = []
     hits_at_k = {1: 0, 2: 0, 5: 0, 10: 0}
     
     for i, query in enumerate(tqdm(queries, desc="HyperAmy检索")):
         try:
-            # 提取查询的情绪向量
-            query_emotion = emotion_extractor.extract(query)
+            # 使用缓存的情绪向量（无需等待API）
+            query_emotion = query_emotions_cache.get(query)
+            if query_emotion is None:
+                # Fallback: 如果缓存中没有，临时提取
+                logger.warning(f"缓存中未找到查询情绪向量，临时提取: {query[:50]}...")
+                query_emotion = emotion_extractor.extract(query)
+            else:
+                # 转换为numpy array
+                query_emotion = np.array(query_emotion) if not isinstance(query_emotion, np.ndarray) else query_emotion
             
             # 确保emotion_vector是numpy array（ParticleEntity需要numpy array）
             if isinstance(query_emotion, torch.Tensor):
