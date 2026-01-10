@@ -6,7 +6,7 @@
 方法：
 1. hyperamy: 纯情绪检索（使用poincare双曲空间）
 2. hipporag: 纯语义检索（标准HippoRAG）
-3. fusion: 语义+情绪混合检索（HippoRAGEnhanced，sentiment_weight=0.5）
+3. fusion: 语义+情绪混合检索（HippoRAGEnhanced，最佳配置: harmonic_none_0.4）
 
 数据集：
 - 训练数据: data/training/monte_cristo_train_full.jsonl
@@ -31,6 +31,7 @@ sys.path.insert(0, str(project_root))
 
 from llm.config import API_KEY, BASE_URL, DEFAULT_MODEL, DEFAULT_EMBEDDING_MODEL, API_URL_EMBEDDINGS
 from sentiment.hipporag_enhanced import HippoRAGEnhanced
+from sentiment.fusion_strategies import FusionStrategy, NormalizationStrategy
 from hipporag.HippoRAG import HippoRAG
 from hipporag.utils.config_utils import BaseConfig
 from poincare.storage import HyperAmyStorage
@@ -67,7 +68,7 @@ print("=" * 80)
 print("方法说明：")
 print("  1. HyperAmy: 纯情绪检索（使用poincare双曲空间）")
 print("  2. HippoRAG: 纯语义检索（标准HippoRAG）")
-print("  3. Fusion: 语义+情绪混合检索（HippoRAGEnhanced，sentiment_weight=0.5）")
+print("  3. Fusion: 语义+情绪混合检索（HippoRAGEnhanced，最佳配置: harmonic_none_0.4）")
 print("=" * 80)
 print(f"开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print("=" * 80)
@@ -218,11 +219,13 @@ try:
     fusion = HippoRAGEnhanced(
         global_config=config_fusion,
         enable_sentiment=True,
-        sentiment_weight=0.5,  # 50% 情绪，50% 语义
+        sentiment_weight=0.4,  # 最佳权重（基于网格搜索结果）
         sentiment_model_name=llm_model_name,
         max_workers=10,  # 使用并发优化
+        fusion_strategy=FusionStrategy.HARMONIC,  # 最佳策略
+        normalization_strategy=NormalizationStrategy.NONE  # 最佳归一化
     )
-    print("✅ Fusion 初始化成功（sentiment_weight=0.5, max_workers=10）")
+    print("✅ Fusion 初始化成功（最佳配置: harmonic_none_0.4, max_workers=10）")
     
     print("\n【步骤6】索引文档（Fusion）- 使用并发优化...")
     fusion.index(docs=docs)

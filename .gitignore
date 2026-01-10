@@ -62,3 +62,11 @@ test_emotion_cache/
 emotion_cache/
 test_db/
 todo.md
+
+# 实体粒度数据集缓存和进度文件
+data/training/entity_granularity/.cache_emotion_entities/
+data/training/entity_granularity/*_progress.json
+
+# 其他缓存目录
+.cache/
+*.cache/
