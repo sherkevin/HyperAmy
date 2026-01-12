@@ -76,13 +76,22 @@ def build_hyperbolic_links(
     entity_states = {}
     for entity in entities:
         # ParticleEntity.emotion_vector 是归一化后的方向向量，compute_state 会自动转换
+        # 从 entity 中读取新字段（新数据必定有这些字段）
+        # 使用 getattr 提供防御性默认值
+        tau_v = getattr(entity, 'tau_v', 86400.0)
+        tau_T = getattr(entity, 'tau_T', 86400.0)
+        T_min = 0.1  # 最小温度
+
         state = projector.compute_state(
             vec=entity.emotion_vector,
             v=entity.speed,
             T=entity.temperature,
             born=entity.born,
             t_now=t_now,
-            weight=entity.weight
+            weight=entity.weight,
+            tau_v=tau_v,      # 新增：速度衰减时间常数
+            tau_T=tau_T,      # 新增：温度冷却时间常数
+            T_min=T_min       # 新增：最小温度
         )
         # 跳过已消失的粒子
         if state.get('is_expired', False):

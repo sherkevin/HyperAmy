@@ -1,26 +1,43 @@
 """
-Temperature 模块
+Temperature module: Compute temperature based on purity
 
-计算实体的温度/熵属性。
+Formula: T = T_min + (T_max - T_min) * (1 - purity)
+
+Physical meaning:
+- High purity → Low temperature (stable, ordered)
+- Low purity → High temperature (unstable, disordered)
 """
 from typing import List
 import numpy as np
 from hipporag.utils.logging_utils import get_logger
+from .purity import Purity
 
 logger = get_logger(__name__)
 
 
 class Temperature:
     """
-    温度计算类
-    
-    计算实体的温度/熵属性。
+    Temperature computation based on purity
+
+    Formula: T = T_min + (T_max - T_min) * (1 - purity)
     """
-    
-    def __init__(self):
-        """初始化 Temperature 类"""
-        logger.info("Temperature module initialized")
-    
+
+    def __init__(self, T_min: float = 0.1, T_max: float = 1.0):
+        """
+        Initialize Temperature calculator
+
+        Args:
+            T_min: Minimum temperature (ordered state)
+            T_max: Maximum temperature (disordered state)
+        """
+        self.T_min = T_min
+        self.T_max = T_max
+        self.purity_calculator = Purity()
+        logger.info(
+            f"Temperature module initialized "
+            f"(T_min={T_min}, T_max={T_max})"
+        )
+
     def compute(
         self,
         entity_ids: List[str],
@@ -28,26 +45,38 @@ class Temperature:
         text_id: str
     ) -> List[float]:
         """
-        计算实体的温度/熵
-        
-        Args:
-            entity_ids: 实体 ID 列表
-            emotion_vectors: 情绪向量列表
-            text_id: 文本 ID
-        
-        Returns:
-            List[float]: 温度值列表，与 entity_ids 一一对应
-                       暂时返回默认值 0.5
-        """
-        # TODO: 实现温度计算逻辑
-        # 暂时返回默认值
-        default_temperature = 0.5
-        
-        temperatures = [default_temperature] * len(entity_ids)
-        logger.debug(
-            f"Computed temperatures for {len(entity_ids)} entities "
-            f"(using default value {default_temperature})"
-        )
-        
-        return temperatures
+        Compute temperature for multiple emotion vectors
 
+        Formula: T = T_min + (T_max - T_min) * (1 - purity_normalized)
+
+        Args:
+            entity_ids: Entity IDs (for logging)
+            emotion_vectors: List of emotion vectors
+            text_id: Text ID (for logging)
+
+        Returns:
+            List of temperature values
+        """
+        temperatures = []
+
+        for i, (vec, eid) in enumerate(zip(emotion_vectors, entity_ids)):
+            # Compute normalized purity
+            purity_norm = self.purity_calculator.compute_normalized(vec)
+
+            # Temperature = inverse of purity
+            # High purity → Low T, Low purity → High T
+            temperature = self.T_min + (self.T_max - self.T_min) * (1.0 - purity_norm)
+
+            temperatures.append(temperature)
+
+            logger.debug(
+                f"Temperature computed: entity_id={eid}, "
+                f"purity={purity_norm:.4f}, temperature={temperature:.4f}"
+            )
+
+        logger.info(
+            f"Computed temperatures for {len(temperatures)} entities "
+            f"(text_id={text_id})"
+        )
+
+        return temperatures
