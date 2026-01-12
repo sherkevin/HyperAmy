@@ -15,38 +15,56 @@ from prompts.prompt_template_manager import PromptTemplateManager
 logger = get_logger(__name__)
 
 # 定义情绪列表（30种情绪）
-EMOTIONS = [
-    # 基本情绪（Plutchik的8种基本情绪）
-    "joy",           # 快乐
-    "sadness",       # 悲伤
-    "anger",         # 愤怒
-    "fear",          # 恐惧
-    "surprise",      # 惊讶
-    "disgust",       # 厌恶
-    "trust",         # 信任
-    "anticipation",  # 期待
+# EMOTIONS = [
+#     # 基本情绪（Plutchik的8种基本情绪）
+#     "joy",           # 快乐
+#     "sadness",       # 悲伤
+#     "anger",         # 愤怒
+#     "fear",          # 恐惧
+#     "surprise",      # 惊讶
+#     "disgust",       # 厌恶
+#     "trust",         # 信任
+#     "anticipation",  # 期待
     
-    # 扩展情绪
-    "love",          # 爱
-    "hate",          # 恨
-    "anxiety",       # 焦虑
-    "calm",          # 平静
-    "excitement",    # 兴奋
-    "disappointment", # 失望
-    "pride",         # 骄傲
-    "shame",         # 羞耻
-    "guilt",         # 愧疚
-    "relief",         # 解脱
-    "hope",          # 希望
-    "despair",       # 绝望
-    "contentment",   # 满足
-    "frustration",   # 沮丧
-    "gratitude",     # 感激
-    "resentment",    # 怨恨
-    "loneliness",    # 孤独
-    "nostalgia",     # 怀旧
-    "envy",          # 嫉妒
-    "contempt",      # 轻蔑
+#     # 扩展情绪
+#     "love",          # 爱
+#     "hate",          # 恨
+#     "anxiety",       # 焦虑
+#     "calm",          # 平静
+#     "excitement",    # 兴奋
+#     "disappointment", # 失望
+#     "pride",         # 骄傲
+#     "shame",         # 羞耻
+#     "guilt",         # 愧疚
+#     "relief",         # 解脱
+#     "hope",          # 希望
+#     "despair",       # 绝望
+#     "contentment",   # 满足
+#     "frustration",   # 沮丧
+#     "gratitude",     # 感激
+#     "resentment",    # 怨恨
+#     "loneliness",    # 孤独
+#     "nostalgia",     # 怀旧
+#     "envy",          # 嫉妒
+#     "contempt",      # 轻蔑
+# ]
+
+EMOTIONS = [
+    # Positive
+    "admiration", "amusement", "approval", "caring", "desire", 
+    "excitement", "gratitude", "joy", "love", "optimism", 
+    "pride", "relief",
+    
+    # Negative
+    "anger", "annoyance", "disappointment", "disapproval", "disgust", 
+    "embarrassment", "fear", "grief", "nervousness", "remorse", 
+    "sadness", 
+    
+    # Ambiguous / Cognitive
+    "confusion", "curiosity", "realization", "surprise",
+    
+    # Neutral
+    "neutral"
 ]
 
 

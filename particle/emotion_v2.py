@@ -25,18 +25,24 @@ logger = get_logger(__name__)
 @dataclass
 class EmotionNode:
     """
-    情绪节点结构体
-    
+    情绪节点结构体（解耦设计）
+
+    存储原始情绪向量（来自模型），不包含后续处理。
+
     包含：
     - entity_id: 实体 ID（唯一标识）
     - entity: 实体名称
-    - emotion_vector: 情绪嵌入向量（高维稠密向量）
+    - emotion_vector: 原始情绪向量（来自模型，64/128维，未归一化）
     - text_id: 原文本 ID（用于映射关系）
+    - intensity: 情绪强度 I_raw ∈ [0, 1]（从情感描述计算）
+    - raw_description: 原始情感描述（用于分类）
     """
     entity_id: str
     entity: str
-    emotion_vector: np.ndarray
+    emotion_vector: np.ndarray  # 原始情绪向量（来自模型，未处理）
     text_id: str
+    intensity: float = 0.0  # 情绪强度 I_raw ∈ [0, 1]
+    raw_description: str = ""  # 原始情感描述
 
 
 class EmotionV2:
@@ -71,6 +77,11 @@ class EmotionV2:
             enable_cache: 是否启用缓存（优化方案三）
             cache_dir: 缓存目录路径
             use_batch_prompt: 是否使用批量 Prompt（优化方案六A）
+
+        注意：
+        - emotion_vector 存储原始向量（来自模型），不进行归一化
+        - intensity 通过 emotion_classifier 从情感描述计算
+        - 方向和模长的计算由 EmotionVectorProcessor 完成（解耦）
         """
         from llm.config import DEFAULT_MODEL
 
@@ -95,6 +106,9 @@ class EmotionV2:
         # 批量 Prompt 配置（优化方案六A）
         self.use_batch_prompt = use_batch_prompt
 
+        # 延迟初始化情绪分类器
+        self._emotion_classifier = None
+
         # 创建 Sentence 处理器（如果需要，传入缓存实例）
         if sentence_processor is None:
             self.sentence_processor = Sentence(model_name=self.model_name, cache=self.cache)
@@ -109,6 +123,14 @@ class EmotionV2:
             f"embedding_model: {self.embedding_model_name}, "
             f"batch_prompt: {self.use_batch_prompt}"
         )
+
+    @property
+    def emotion_classifier(self):
+        """延迟初始化情绪分类器"""
+        if self._emotion_classifier is None:
+            from particle.emotion_classifier import get_global_classifier
+            self._emotion_classifier = get_global_classifier()
+        return self._emotion_classifier
     
     def _get_emotion_embedding(self, text: str) -> np.ndarray:
         """
@@ -422,14 +444,18 @@ class EmotionV2:
                 # 生成粒子唯一 ID（包含 text_id，避免不同文档中的同名实体冲突）
                 particle_entity_id = f"{text_id}_{standard_entity_id}"
 
-                # 创建 EmotionNode
-                # 注意：entity_id 使用标准格式（用于与 HippoRAG 匹配）
-                # 但实际上每个粒子有唯一的 particle_entity_id（在 ParticleEntity 中使用）
+                # 计算情绪强度 I_raw（Soft Label 最大值）
+                intensity = self.emotion_classifier.get_intensity(description, use_llm=False)
+
+                # 创建 EmotionNode（存储原始向量，不归一化）
+                # 方向和模长的计算由 Particle 模块中的 EmotionVectorProcessor 完成
                 node = EmotionNode(
-                    entity_id=standard_entity_id,  # 使用标准 entity_id
+                    entity_id=standard_entity_id,
                     entity=entity,
-                    emotion_vector=emotion_vector,
-                    text_id=text_id
+                    emotion_vector=emotion_vector,  # 原始向量，不归一化
+                    text_id=text_id,
+                    intensity=intensity,
+                    raw_description=description
                 )
 
                 nodes.append(node)
@@ -438,7 +464,8 @@ class EmotionV2:
                     f"[EmotionV2.process] 成功创建 EmotionNode: "
                     f"entity_id={standard_entity_id}, entity={entity}, "
                     f"vector_shape={emotion_vector.shape}, "
-                    f"vector_norm={np.linalg.norm(emotion_vector):.6f}"
+                    f"vector_norm={np.linalg.norm(emotion_vector):.6f}, "
+                    f"intensity={intensity:.4f}"
                 )
 
             except Exception as e:
