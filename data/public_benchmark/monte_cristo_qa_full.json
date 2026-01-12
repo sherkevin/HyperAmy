@@ -1,0 +1,502 @@
+[
+  {
+    "question": "文本如何暗示角色对'未知危险'的恐惧超越了理性认知，成为一种本能预警？",
+    "answer": "文本通过'不需要知道危险就能恐惧'的表述，揭示了恐惧先于理性认知的本能性，'未知危险常引发最大恐惧'则暗示了这种恐惧源于深层直觉而非具体威胁的评估。",
+    "key_evidence": "But there is no need to know danger in order to fear it; indeed, it may be observed, that it is usually unknown perils that inspire the greatest terror",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉文本中'恐惧先于认知'的微妙心理状态，这需要情感敏感性来理解角色未明确表达的直觉预警，而非仅分析字面信息。",
+    "chunk_id": "chunk_3806",
+    "chunk_text": "But there is no need to know danger in order to fear it;\nindeed, it may be observed, that it is usually unknown perils that\ninspire the greatest terror",
+    "mass": 0.8730910833904911
+  },
+  {
+    "question": "当狱卒发现爱德蒙'不能看也不能听'时，文本如何暗示他经历的不仅是普通病痛，而是一种可能危及他生存本能的、近乎意识丧失的状态？",
+    "answer": "文本通过'不能看也不能听'这一双重感官丧失的描述，暗示爱德蒙正经历一种超越普通疾病的深层崩溃。狱卒的'恐惧'反应表明这种状态的危险性已突破常规认知，在医学诊断之前就触发了本能的警觉。",
+    "key_evidence": "he could not see or hear; the jailer feared he was dangerously ill",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者不仅要识别事实（感官丧失），还要感知文本中情感信号的强度——狱卒的'恐惧'暗示着一种超越表面症状的、本能的危险认知，这种认知在逻辑解释（如具体疾病名称）出现之前就已通过情感反应显现。",
+    "chunk_id": "chunk_1639",
+    "chunk_text": "The next\nmorning he could not see or hear; the jailer feared he was dangerously\nill",
+    "mass": 0.7899999999999999
+  },
+  {
+    "question": "当邓蒂斯发出'惊喜的叫声'时，文本如何暗示这不仅是成功的喜悦，而是一种近乎本能的、可能改变命运的危险预感？",
+    "answer": "文本通过'从未有过的完美成功'这一绝对化表述，暗示邓蒂斯在惊喜中本能地感知到某种超越常理的、可能蕴含未知代价的转折点，预示命运的剧烈变化即将到来。",
+    "key_evidence": "never had a first attempt been crowned with more perfect success",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉文本中'完美成功'背后隐含的异常感——过于顺利的初次尝试往往暗示着命运的陷阱或剧变，需要从情感层面体会角色潜意识中的警觉与不安。",
+    "chunk_id": "chunk_2967",
+    "chunk_text": "Dantès uttered a cry of joy and surprise; never had a first attempt\nbeen crowned with more perfect success",
+    "mass": 0.7899999999999999
+  },
+  {
+    "question": "当丹特斯看到光线逐渐消失时，他‘担心被发现在洞穴里’的恐惧暗示了什么更深层的本能预感，即使他当时可能还无法完全理解？",
+    "answer": "这暗示丹特斯潜意识里意识到自己正处在一个可能被监视或追踪的危险处境中。光线消失不仅是物理现象，更触发了他对暴露和危险的原始恐惧，这种恐惧先于任何具体威胁的逻辑分析。",
+    "key_evidence": "Dantès saw the light gradually disappear, and fearing to be surprised in the cavern, left it",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为问题要求读者捕捉丹特斯在光线变化中感受到的、超越逻辑解释的直觉恐惧——这种恐惧不是基于明确威胁，而是基于环境细微变化触发的生存本能，需要读者通过文本的‘恐惧’（fearing）和‘担心被发现’（surprised）等情感词汇，理解角色未言明的心理状态。",
+    "chunk_id": "chunk_3052",
+    "chunk_text": "Dantès saw the light gradually disappear, and fearing to be surprised\nin the cavern, left it, his gun in his hand",
+    "mass": 0.7899999999999999
+  },
+  {
+    "question": "当维尔福夫人说'我聚集了所有力量和勇气来支撑自己'时，什么微妙的文本线索暗示她感受到的不仅是紧张，而是一种近乎本能的恐惧预感？",
+    "answer": "关键词'希望我的恐惧是徒劳的'显示，在见到阿尔贝后，她本已放松，但见到弗朗兹的瞬间，她的恐惧立即被证实，这种从'希望'到'需要聚集全部力量'的急剧转变，暗示了一种超越逻辑的直觉预警，即她预感到了某种身份揭示或危险即将发生。",
+    "key_evidence": "我聚集了所有力量和勇气来支撑自己。",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为问题要求读者捕捉维尔福夫人在逻辑解释（即认出弗朗兹是维尔福私生子）之前的本能情感反应——从'希望恐惧是徒劳的'到突然需要'聚集所有力量'的剧烈心理转折，这需要理解情感强度和潜意识预警，而不仅仅是识别后续的情节事实。",
+    "chunk_id": "chunk_9830",
+    "chunk_text": "The door at last\nopened; Albert de Morcerf entered first, and I began to hope my fears\nwere vain, when, after him, another young man advanced, and the count\nexclaimed: ‘Ah, here is the Baron Franz d’É...",
+    "mass": 0.7899999999999999
+  },
+  {
+    "question": "文本如何通过'utterly overpowered'暗示叙述者正在经历一种超越普通恐惧的本能崩溃，即使他自己可能还未完全理解处境？",
+    "answer": "'utterly overpowered'（完全被压倒）表明恐惧已超越理性控制，是一种本能的、全身心的崩溃反应。这种用词暗示危险不仅是外部的，更是对主体存在感的摧毁，在逻辑解释前已通过生理/心理的全面失能被感知。",
+    "key_evidence": "I was utterly overpowered by surprise and terror",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉'utterly overpowered'中蕴含的强度与被动性——不是简单的害怕，而是被彻底击垮的、近乎瘫痪的本能反应。这需要情感敏感度去区分'恐惧的程度'与'自我意志的丧失'之间的微妙差异。",
+    "chunk_id": "chunk_6532",
+    "chunk_text": "I was utterly overpowered\nby surprise and terror; and without a word I suffered myself to be\nhandcuffed and tied to a horse’s tail, and thus they took me to Nîmes",
+    "mass": 0.7479707368279482
+  },
+  {
+    "question": "文本如何通过描述陌生人的行为暗示弗朗兹感受到一种潜在威胁，即使逻辑上这还只是普通游客？",
+    "answer": "作者将陌生人与弗朗兹直接类比（'像弗朗兹一样'），暗示两者具有相似的深层心理特质。这种突然的等同化在未提供任何具体证据的情况下，触发了读者对身份重叠或隐藏联系的直觉警觉，预示着陌生人的出现可能并非偶然，而是与弗朗兹的命运产生了某种隐秘的交集。",
+    "key_evidence": "The stranger thus presenting himself was probably a person who, like Franz, preferred the enjoyment of solitude",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者感知文本中未明说的情感暗示——通过‘like Franz’这一简单类比，在缺乏事实依据的情况下，制造了一种身份共鸣或命运镜像的微妙不安感，这是逻辑推理前的直觉预警。",
+    "chunk_id": "chunk_4633",
+    "chunk_text": "The stranger thus presenting himself was probably a person who, like\nFranz, preferred the enjoyment of solitude and his own thoughts to the\nfrivolous gabble of the guides",
+    "mass": 0.746329544048429
+  },
+  {
+    "question": "当读者看到基督山伯爵'活人的眼睛与尸体般的面容'时，是什么线索暗示这不仅是外貌描写，而是一种预示危险的直觉信号？",
+    "answer": "文本通过'活人的眼睛在僵硬如大理石的面容上突然闪现愤怒或喜悦'的对比，暗示伯爵内在的强烈情感与外在的绝对控制之间存在着危险的不协调。这种不协调在逻辑解释前就触发了读者对隐藏威胁的本能警觉。",
+    "key_evidence": "观察愤怒或喜悦突然在这些器官中闪现，而其余僵硬如大理石的特征完全丧失了参与的能力",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "该问题要求读者捕捉文本中情感与生理描述的微妙矛盾（活眼/死面），这种矛盾在逻辑分析前就传递了一种不安与潜伏危险的直觉，而非仅理解字面事实。",
+    "chunk_id": "chunk_8174",
+    "chunk_text": "In short, his\nwhole appearance produced on the mind the impression of a corpse with\nliving eyes, and nothing could be more startling than to observe the\nexpression of anger or joy suddenly lighting up...",
+    "mass": 0.7428024041142616
+  },
+  {
+    "question": "文本片段如何暗示人类在犯错前会经历一种近乎‘本能’的认知失调，即使逻辑上还未完全理解危险？",
+    "answer": "片段通过‘伪装成必然性的错误’和‘兴奋、狂乱或恐惧时刻’的描述，暗示错误发生前存在一种被情感驱动的潜意识认知——人们能模糊感知到选择的风险，却被情绪遮蔽，直到事后才清醒识别。",
+    "key_evidence": "错误以‘必然性的伪装形式’出现；犯错发生在‘兴奋、狂乱或恐惧的时刻’",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "答案需要读者捕捉‘伪装’、‘兴奋’、‘狂乱’等情感词汇中隐含的心理状态——这些不是逻辑分析，而是对角色（或人类普遍）在理性失效前那种朦胧而强烈的本能警觉的共情理解。",
+    "chunk_id": "chunk_9184",
+    "chunk_text": "Thus, the greater number of a\nman’s errors come before him disguised under the specious form of\nnecessity; then, after error has been committed in a moment of\nexcitement, of delirium, or of fear, we s...",
+    "mass": 0.72863751579112
+  },
+  {
+    "question": "当基督山伯爵拒绝维尔福夫人的报酬时，他‘恳求’的语气暗示了什么更深层的心理状态？",
+    "answer": "基督山伯爵用‘恳求’的语气拒绝报酬，表面上是谦虚，实则暗示他对复仇计划的绝对控制欲——他不允许任何人（包括仆人阿里）干扰他对维尔福家族精心设计的复仇节奏。这种过度的谦逊背后隐藏着操控者的本能警惕。",
+    "key_evidence": "‘我恳求您，夫人，’基督山答道，‘不要用过多的赞扬或奖赏宠坏了阿里。’",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需要感知到：1）‘恳求’在贵族对话中异常谦卑的语调反差；2）对仆人‘宠坏’的担忧超越了正常主仆关系；3）这种过度防御性反应暗示伯爵正在本能地维护某个不可见的计划边界。",
+    "chunk_id": "chunk_6895",
+    "chunk_text": "Most certainly, but for the prompt assistance of\nyour intrepid servant, this dear child and myself must both have\nperished.”\n\n“Indeed, I still shudder at the fearful danger you were placed in.”\n\n“I tr...",
+    "mass": 0.7238156446154775
+  },
+  {
+    "question": "当叙述者强调'这不仅仅是善行'时，什么微妙线索暗示莫雷尔面临的危险比表面更紧迫？",
+    "answer": "短语'这不仅仅是善行'暗示莫雷尔的行为超越了常规道德范畴，而'需要勇气'和'被视为罪行'则直接点明政治环境的极端危险性。这种表述在逻辑解释前就通过情感强度传递了本能恐惧——帮助一个波拿巴主义者的父亲本身已成为一种政治反抗行为。",
+    "key_evidence": "这不仅仅是善行；这需要勇气。南方已是一片火海，帮助像唐泰斯这样危险的波拿巴主义者的父亲，即使他临终在床，也会被污蔑为罪行。",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者感知文本中未明说的政治恐怖氛围——不是通过直接描述暴力，而是通过'勇气'、'罪行'等情感负载词，以及'南方已是一片火海'的隐喻，这些线索在逻辑分析前就触发了对危险的本能识别。",
+    "chunk_id": "chunk_1466",
+    "chunk_text": "There was more than benevolence in this action; there was courage; the\nsouth was aflame, and to assist, even on his death-bed, the father of\nso dangerous a Bonapartist as Dantès, was stigmatized as a ...",
+    "mass": 0.7233107917592583
+  },
+  {
+    "question": "当朱莉离开时投来的恳求目光得到微笑回应时，是什么微妙的文本线索暗示这个陌生人正经历着超越表面克制的强烈情感波动？",
+    "answer": "文本通过对比手法暗示深层情感：陌生人‘严厉的面容’与‘微笑’形成强烈反差，这种‘令冷漠旁观者惊讶’的表情变化揭示了他内心被压抑的情感涌动，表明这个微笑并非普通礼貌，而是对朱莉目光中未言明恳求的情感共鸣与承诺。",
+    "key_evidence": "他回以微笑，那种微笑若是冷漠的旁观者看到，定会惊讶于它竟出现在他严厉的面容上",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉文本中矛盾的情感信号——严厉面容与温柔微笑的并置，以及‘令旁观者惊讶’的叙述视角。这些线索需要读者超越字面描述，感知到陌生人表情中蕴含的情感深度与反常性，这种感知依赖于对非语言暗示和情感对比的敏感度，而非单纯的事实识别。",
+    "chunk_id": "chunk_3666",
+    "chunk_text": "The two women looked at\nthis person whose presence they had entirely forgotten, and retired;\nbut, as she left the apartment, Julie gave the stranger a supplicating\nglance, to which he replied by a smi...",
+    "mass": 0.7194967971944208
+  },
+  {
+    "question": "维尔福在听到马车声和仆人哭声时，为何会产生超出逻辑解释的恐惧，即使他正努力安抚自己？",
+    "answer": "维尔福的本能恐惧源于文本中仆人哭声被描述为“故作悲伤”的表演性——这种刻意表现暗示来者身份特殊且危险，唤醒了他长期压抑的罪恶感，预示了复仇者的到来。",
+    "key_evidence": "“仆人们总是会发出这样的哭泣和哀叹，当他们想表现出对主人悲伤的关心时”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉文本中情感信号的微妙性——仆人哭声的“表演性”暗示了非自然的悲伤氛围，这种细节需要情感敏感性才能察觉其背后隐藏的威胁预兆，而非仅仅理解表面情节。",
+    "chunk_id": "chunk_9670",
+    "chunk_text": "While he\nwas endeavoring to calm his fears,—and instead of dwelling upon the\npolitical future that had so often been the subject of his ambitious\ndreams, was imagining a future limited to the enjoymen...",
+    "mass": 0.7173360762886596
+  },
+  {
+    "question": "文本中'已经经历过两三次'这个细节如何暗示伯爵此刻的恐惧具有超越普通危险的预言性？",
+    "answer": "这个数字表明类似经历已成为模式化的重复，暗示这是一种超越偶然的宿命感——伯爵本能地意识到这不是普通危机，而是与过去重大转折点同等级的命运节点，预示着即将发生的将是改变人生轨迹的极端事件。",
+    "key_evidence": "such as this man of stupendous emotions had already experienced twice or thrice in his lifetime",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者从'两三次'这个看似客观的数字中感知到情感模式——不是简单的计数，而是暗示人物对这种极端情感状态已形成身体记忆，能本能识别其重复出现的宿命意味，这需要捕捉文本中数字背后隐藏的情感重量。",
+    "chunk_id": "chunk_3054",
+    "chunk_text": "It was a night of joy and terror, such as this man of stupendous\nemotions had already experienced twice or thrice in his lifetime",
+    "mass": 0.7145297770356135
+  },
+  {
+    "question": "当马克西米利安在陌生人面前笑时，这暗示了他可能比表面上更早地直觉到了什么？",
+    "answer": "他的笑声可能暗示了一种本能的放松或认出，即使理性上他还不认识这位陌生人（基督山伯爵），但潜意识里已经感知到对方并非真正的威胁，甚至可能是期待或熟悉的人。",
+    "key_evidence": "She uttered a cry of surprise at the sight of a stranger, and Maximilian began to laugh",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为问题要求读者捕捉马克西米利安笑声背后微妙的情感信号——在惊讶的尖叫后立即发笑，这种反差暗示了直觉层面的认知，而非逻辑推理。",
+    "chunk_id": "chunk_7127",
+    "chunk_text": "She uttered a cry of surprise at\nthe sight of a stranger, and Maximilian began to laugh",
+    "mass": 0.7143644788333734
+  },
+  {
+    "question": "当角色说‘他通过自己的行为解除了政府的担忧’时，什么微妙的线索暗示他描述的不仅是事实，更是一种潜在的、令人不安的真相？",
+    "answer": "短语‘通过自己的行为’暗示了角色可能以死亡或自我毁灭的方式‘解决’了问题，这透露出叙述者对危险人物的冷漠评价，以及事件背后可能存在的暴力或悲剧结局，引发读者对‘行为’具体性质的警觉与不安。",
+    "key_evidence": "‘他通过自己的行为解除了政府的担忧’",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉叙述语调中隐含的冷漠与轻描淡写，从‘通过自己的行为’这一模糊表述中直觉感知到未明说的暴力或死亡意味，而非仅仅理解字面信息。",
+    "chunk_id": "chunk_3492",
+    "chunk_text": "“As I have already told you, sir, he was a very dangerous man; and,\nfortunately, by his own act disembarrassed the government of the fears\nit had on his account.”\n\n“How was that?”\n\n“How",
+    "mass": 0.7091564396173088
+  },
+  {
+    "question": "当爱德蒙·唐泰斯反思自己的行为时，哪些细微线索暗示他感受到的不仅是谨慎，而是对自身秘密暴露的、近乎直觉的恐惧？",
+    "answer": "文本通过唐泰斯的“不安”“持续提问”“细致观察”和“明显的心不在焉”等行为描述，暗示他正经历一种超越理性警惕的、近乎本能的恐惧——他害怕自己无意识的肢体语言和情绪流露已经引起了他人怀疑，尽管逻辑上他并未真正泄露秘密。",
+    "key_evidence": "他几乎害怕自己已经说得太多，并因自己的不安和持续提问、细致观察和明显的心不在焉，引起了怀疑。",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为问题要求读者捕捉唐泰斯“几乎害怕”这种未完全成形的预感，以及“不安”“心不在焉”等非语言情绪信号，这些并非事实信息，而是角色潜意识恐惧的流露，需要读者对文本的情感潜流和人物的心理状态具有敏感性。",
+    "chunk_id": "chunk_2855",
+    "chunk_text": "Dantès reflected, as he worked, on the shout of\njoy which, with a single word, he could evoke from all these men, if he\ngave utterance to the one unchanging thought that pervaded his heart;\nbut, far f...",
+    "mass": 0.7081341440364232
+  },
+  {
+    "question": "当伯爵说孩子‘只是吓晕了’时，什么微妙线索暗示他正在本能地识别一种超越普通意外的危险？",
+    "answer": "伯爵‘仔细检查孩子’的动作，以及他反复强调‘丝毫不用担忧’、‘只是惊吓效果’的过度保证，暗示他可能本能地察觉到某种异常或潜在威胁，即使他表面上试图安抚对方。",
+    "key_evidence": "“said the count, carefully examining the child... his insensibility is merely the effects of terror”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉文本中非字面的情感信号——伯爵看似专业的安慰背后，可能隐藏着对异常状况的本能警觉，这种警觉通过他细致的检查动作和重复的安抚语言间接传达，需要读者对角色潜意识的恐惧和文本的微妙暗示有敏感性。",
+    "chunk_id": "chunk_6882",
+    "chunk_text": "“I understand the nature of your alarms, madame,”\nsaid the count, carefully examining the child, “but I assure you there\nis not the slightest occasion for uneasiness; your little charge has\nnot receiv...",
+    "mass": 0.7065178210226319
+  },
+  {
+    "question": "当瓦朗蒂娜听到马克西米利安的表白时，她'混杂着快乐和惊讶的微弱叫声'暗示了什么更深层的恐惧，即使她自己可能还没有完全意识到？",
+    "answer": "瓦朗蒂娜的反应暗示她本能地意识到这段爱情的危险性。她的快乐源于爱情，但惊讶和瞬间转悲的语调表明她潜意识里已感知到社会阶级差异、家庭阻碍等现实威胁，这些威胁在她逻辑思考之前就通过情感反应显露出来。",
+    "key_evidence": "A faint cry of mingled pleasure and surprise escaped from the lips of Valentine, who almost instantly said, in a saddened tone, as though some envious cloud darkened the joy which illumined her heart",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉瓦朗蒂娜情感反应的微妙层次——快乐与惊讶的混合、瞬间的情绪转变、以及'嫉妒的云朵'这一隐喻所暗示的潜意识恐惧。这些都不是明显的事实信息，而是需要通过情感敏感度解读的文本暗示。",
+    "chunk_id": "chunk_7248",
+    "chunk_text": "I may also enjoy the precious privilege of assuring you of\nmy fond, faithful, and unalterable affection, whenever you visit your\nfavorite bower, unless, indeed, it offends your pride to listen to\nprof...",
+    "mass": 0.6989631092090858
+  },
+  {
+    "question": "当维尔福夫人说'你这样说不会让我高兴得死掉'时，什么细微的措辞暗示她已本能地预感到对话的危险性？",
+    "answer": "'不会让我高兴得死掉'表面是反问，实则暴露了她潜意识的恐惧——她意识到对方掌握的信息可能带来致命威胁，而非单纯的喜讯。这种过度防御反应暗示了她对真相的直觉警觉。",
+    "key_evidence": "“And you can tell me so without fearing to make me die of joy”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉维尔福夫人话语中隐含的焦虑与自我防御机制，而非字面逻辑。她刻意强调'不会死'，恰恰暴露了对'可能死'的潜意识恐惧，这是情感直觉先于理性分析的典型表现。",
+    "chunk_id": "chunk_9299",
+    "chunk_text": "Thank God, my\nchild was not then dead!”\n\n“No, it was not dead.”\n\n“And you can tell me so without fearing to make me die of joy",
+    "mass": 0.6986014945601193
+  },
+  {
+    "question": "当瓦朗蒂娜描述继母的微笑时，什么微妙的文本线索暗示她感知到的是一种伪装下的威胁，而不仅仅是家庭矛盾？",
+    "answer": "瓦朗蒂娜将继母的仇恨描述为“隐藏在持续微笑之下的”，这种表象与本质的强烈反差暗示了一种精心伪装的恶意。她本能地识别出这不是普通的厌恶，而是带有表演性质的、更危险的敌意，这超出了简单的家庭纠纷范畴。",
+    "key_evidence": "“我的继母以如此可怕的仇恨憎恨着我，因为这种仇恨隐藏在一贯的微笑之下。”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者不只听表面陈述，而要捕捉情感矛盾：瓦朗蒂娜在逻辑分析（继母因财产嫉妒她）之前，已经本能地感受到微笑背后的危险本质。这需要敏感地解读“微笑”作为情感伪装而非真诚表达的文本暗示。",
+    "chunk_id": "chunk_7284",
+    "chunk_text": "What though she has lost her own mother at a tender\nage, she has had the happiness to find a second mother in Madame de\nVillefort.’ The world, however, is mistaken; my father abandons me from\nutter in...",
+    "mass": 0.6879784475575432
+  },
+  {
+    "question": "当维尔福伯爵说'我本可以带您去议院'时，是什么微妙线索暗示基督山伯爵的回应背后潜藏着对即将见到维尔福夫人的本能警觉？",
+    "answer": "基督山伯爵立即拒绝并强调'但我一直奢望能被引见给伯爵夫人'，这种急切转向与维尔福夫人会面的回应，暗示他潜意识中已感知到这是复仇计划的关键节点——即将面对仇人之妻，情感上的准备超越了逻辑上的社交礼仪。",
+    "key_evidence": "'但我一直奢望能被引见给伯爵夫人，我愿为此等候'",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉基督山伯爵回应中超越表面礼貌的细微情感信号——他迅速转移话题到维尔福夫人，并非出于社交兴趣，而是复仇者面对关键目标时本能的情感聚焦，这种警觉在逻辑解释（复仇计划）之前就已通过对话节奏和重点转移体现出来。",
+    "chunk_id": "chunk_5970",
+    "chunk_text": "“If I did not fear to fatigue you,” said the general, evidently charmed\nwith the count’s manners, “I would have taken you to the Chamber; there\nis a debate very curious to those who are strangers to o...",
+    "mass": 0.6806497152892325
+  },
+  {
+    "question": "当老唐泰斯说'我感觉我快要死了'时，是什么微妙线索暗示他的'惊喜'已超出正常范畴，而是一种近乎本能的危险预感？",
+    "answer": "老唐泰斯将'喜悦'与'死亡预感'并置，表明极度情绪冲击已触发生理性恐惧反应。他未说完的破折号'Ah—'和身体化的'feel as if'暗示这是一种超越理性控制的直觉警报，预示后续悲剧。",
+    "key_evidence": "and joy, the surprise of seeing you so suddenly—Ah, I feel as if I were going to die.",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "需要读者捕捉到'喜悦'与'死亡预感'的矛盾并置，理解破折号暗示的生理停顿，以及'as if'背后潜藏的原始恐惧——这些都不是通过字面信息而是通过情感信号传递的。",
+    "chunk_id": "chunk_218",
+    "chunk_text": "“No, no, my dear Edmond—my boy—my son!—no; but I did not expect you;\nand joy, the surprise of seeing you so suddenly—Ah, I feel as if I were\ngoing to die.”\n\n“Come, come, cheer up, my dear father",
+    "mass": 0.6770098318733112
+  },
+  {
+    "question": "当瓦朗蒂娜描述阅读报纸时的‘幸福又紧张’，是什么微妙的文本线索暗示她感受到的不仅是婚礼喜悦，而是一种近乎预兆的本能恐惧？",
+    "answer": "瓦朗蒂娜的‘幸福又紧张’并非单纯兴奋，而是潜意识识别到公开念出基督山名字将暴露秘密关联。‘我真觉得自己会跳过它’揭示了她本能回避危险的本能反应，即使逻辑上还未完全理解威胁所在。",
+    "key_evidence": "我感觉到如此幸福，却又如此紧张……我真觉得自己会跳过它，只是担心这样做会引起对我沉默原因的怀疑。",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉瓦朗蒂娜情感矛盾中的潜意识信号——她的‘紧张’超越了普通社交焦虑，暗示了对未知危险的直觉感知，这种感知先于理性认知出现。",
+    "chunk_id": "chunk_7302",
+    "chunk_text": "While the rest of the company were discussing the approaching\nmarriage of Mademoiselle Danglars, I was reading the paper to my\ngrandfather; but when I came to the paragraph about you, although I had\nd...",
+    "mass": 0.6729958798466675
+  },
+  {
+    "question": "当维尔福声称为了报告阴谋而‘离开新娘和朋友’时，什么微妙线索暗示他的恐惧可能超越了职责，包含某种更私人的本能警觉？",
+    "answer": "维尔福强调自己中断订婚仪式这一极端行为，暗示他本能地意识到此事与自身关联极深——不仅涉及政治忠诚，更可能危及他的婚姻与前途。这种过度反应暴露了他潜意识里感知到的个人威胁，而不仅仅是公事公办的警觉。",
+    "key_evidence": "“我离开我的新娘和朋友，推迟了一切，以便赶紧来向陛下呈报我的担忧”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉维尔福话语中情感强度的异常——他过分强调个人牺牲（中断订婚）来证明忠诚，这暗示了一种超越理性职责的、近乎恐慌的本能反应，需要从情感语调而非单纯事实中解读其潜在的恐惧。",
+    "chunk_id": "chunk_1185",
+    "chunk_text": "There he saw the grand-marshal, who charged him with an oral\nmessage to a Bonapartist in Paris, whose name I could not extract from\nhim; but this mission was to prepare men’s minds for a return (it is...",
+    "mass": 0.6543923908227479
+  },
+  {
+    "question": "当角色说出'喜悦从不伤人'时，是什么微妙的文本线索暗示这并非单纯的喜悦宣告，而是一种可能掩盖危险信号的自我欺骗？",
+    "answer": "这句话使用'他们说'（They say）这一间接引语，暗示说话者在引用外部观点而非表达真实感受。'喜悦从不伤人'的绝对化表述与主动'毫无预警地前来'的行为形成矛盾，透露出说话者试图用理性化的语言压制内心可能感知到的潜在风险或不安。",
+    "key_evidence": "They say joy never hurts, and so I came to you without any warning",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需要捕捉'They say'与个人行为之间的情感断裂，识别出角色用普遍化谚语掩饰潜在焦虑的微妙心理状态，这种本能识别依赖于对语言疏离感和行为矛盾的情感解读，而非表面的事实信息。",
+    "chunk_id": "chunk_220",
+    "chunk_text": "They say joy\nnever hurts, and so I came to you without any warning",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当阿尔贝向父亲表达担忧时，父亲清空钱包的行为暗示了何种更深层的危险，即使阿尔贝可能尚未完全意识到？",
+    "answer": "父亲清空钱包的行为表面上是为了证明自己什么都不缺，但这一夸张举动暗示了他可能正在掩饰经济窘迫或某种危机，阿尔贝的本能担忧实际上是对家庭潜在危机的直觉感知。",
+    "key_evidence": "I was expressing to my father my fears that he had wanted many things in my absence, and to convince me he emptied his purse on the table",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需要从阿尔贝的“担忧”和父亲“清空钱包”这一过度反应中，感知到隐藏在平静表面下的紧张和危机，而非仅仅理解字面意思。",
+    "chunk_id": "chunk_272",
+    "chunk_text": "I\nwas expressing to my father my fears that he had wanted many things in\nmy absence, and to convince me he emptied his purse on the table",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当梅尔塞苔丝指责费尔南'你利用嫉妒和上帝的愤怒是邪恶的'时，文本如何暗示她已本能感知到某种超越个人情感的危险？",
+    "answer": "梅尔塞苔丝将'嫉妒'与'上帝的愤怒'并列，暗示她已本能察觉到费尔南的动机不仅是个人情感，而是涉及神圣秩序的深层威胁，这种威胁可能引发超越人际冲突的灾难性后果。",
+    "key_evidence": "Fernand, you are wicked to call to your aid jealousy and the anger of God",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需从'上帝的愤怒'这一宗教意象中感知到梅尔塞苔丝潜意识里对神圣惩罚的恐惧，这种恐惧先于她对具体阴谋的理性认知，体现了角色在逻辑完全解释前的本能警觉。",
+    "chunk_id": "chunk_330",
+    "chunk_text": "Fernand, you are wicked to call to your aid jealousy and the\nanger of God",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当角色看到'这个眼神'时，是什么文本线索暗示他感受到的愤怒超越了简单的情绪反应，而是一种对潜在威胁的本能识别？",
+    "answer": "文本通过'告诉了他一切'（told him all）这一表述暗示，角色并非通过理性分析，而是瞬间、直觉地理解了眼神背后完整的、可能危险的意图或真相，这激发了'愤怒骤燃'（waxed hot）这种剧烈且本能的情绪反应。",
+    "key_evidence": "This look told him all, and his anger waxed hot.",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为问题要求读者捕捉并解释一个瞬间的、非言语的交流如何引发了强烈的情绪爆发。读者需要理解'告诉了他一切'并非字面信息的传递，而是一种直觉的、整体的认知；'愤怒骤燃'则是一种身体化、本能的情绪反应。这依赖于对文本情感暗示和角色心理状态的敏感性，而非单纯的事实信息。",
+    "chunk_id": "chunk_349",
+    "chunk_text": "This look told him all, and his anger waxed hot",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当费尔南说'梅尔塞苔丝不需要对任何人负责'时，文本通过他的哪些细微行为暗示他正在经历一种对失去控制的深层恐惧？",
+    "answer": "费尔南通过'抬起头'和'像找人发泄怒气一样看着卡德鲁斯'的行为，透露出他并非在理性争论，而是在经历一种被威胁感和无力感——他本能地感知到梅尔塞苔丝正在脱离他的掌控，这种恐惧先于逻辑思考而爆发。",
+    "key_evidence": "lifting up his head, and looking at Caderousse like a man who looks for someone on whom to vent his anger",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为问题要求读者捕捉到费尔南动作中隐含的情绪信号（'像找人发泄怒气一样'），这并非直接陈述的情感，而是通过比喻和肢体细节暗示的深层心理状态——一种尚未被角色完全承认的、对失去爱情控制权的本能恐惧。",
+    "chunk_id": "chunk_379",
+    "chunk_text": "“Well, and what then?” said Fernand, lifting up his head, and looking\nat Caderousse like a man who looks for someone on whom to vent his\nanger; “Mercédès is not accountable to any person, is she",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当维尔福说出‘你害怕即将来临的恶’时，什么细微的措辞暗示他感知到的危险已超越理性分析，而是一种直觉性的恐惧？",
+    "answer": "‘即将来临的恶’这一模糊而抽象的表述，暗示维尔福并非基于具体事实，而是通过某种本能的预感察觉到危险。这种非理性的恐惧先于逻辑解释，预示了他潜意识中对命运报复的警觉。",
+    "key_evidence": "‘Do you fear any approaching evil’（你害怕即将来临的恶）",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉‘恶’这一抽象词汇所承载的情感重量，而非字面信息。这需要敏感于角色在未明确威胁时的直觉恐惧，以及文本如何通过模糊表述暗示潜意识的危机感。",
+    "chunk_id": "chunk_543",
+    "chunk_text": "“Do you fear any approaching\nevil",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当角色描述幸福如同'由凶猛的喷火龙守卫入口'时，什么文本线索暗示这不仅是比喻，而是一种对即将到来的危险的潜意识感知？",
+    "answer": "角色将幸福比喻为'需要被征服的怪物守卫的宫殿'，这种黑暗、战斗导向的意象暗示了一种深层的认知：真正的幸福必须通过克服某种实质性的危险或障碍才能获得，这预示了情节中即将出现的真实威胁与磨难。",
+    "key_evidence": "happiness is like the enchanted palaces... where fierce, fiery dragons defend the entrance... monsters of all shapes and kinds, requiring to be overcome ere victory is ours",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "要理解这个问题，读者必须超越字面比喻，感知到'凶龙'、'怪物'、'征服'等词汇所承载的情感重量——它们不只是童话元素，而是角色潜意识中对未来磨难、斗争与危险的一种本能预感，这种预感先于任何具体情节展开而存在。",
+    "chunk_id": "chunk_545",
+    "chunk_text": "“Man does\nnot appear to me to be intended to enjoy felicity so unmixed; happiness\nis like the enchanted palaces we read of in our childhood, where\nfierce, fiery dragons defend the entrance and approac...",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当角色说“泄露我的担忧会伤害埃德蒙和你自己”时，什么微妙线索暗示这不仅是谨慎，而是对未明说危险的直觉恐惧？",
+    "answer": "“泄露我的担忧会伤害”暗示说话者已直觉感知到某种潜在威胁，这种威胁尚未具体化，但已强烈到让她认为即使表达担忧本身都会引发伤害——这是一种在逻辑分析前的本能危险识别。",
+    "key_evidence": "“I should have feared to injure both Edmond and yourself, had I divulged my own apprehensions to a soul”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉“担忧”与“伤害”之间的非逻辑关联——担忧通常不会直接导致伤害，但角色本能地将两者等同，这需要情感敏感性来理解她未言明的恐惧强度与直觉判断。",
+    "chunk_id": "chunk_650",
+    "chunk_text": "I should have feared to injure\nboth Edmond and yourself, had I divulged my own apprehensions to a\nsoul",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当角色说“唯一担心的是丹特斯被释放的机会”时，是什么微妙的文本线索暗示这种担忧已超出普通焦虑，成为一种近乎本能的恐惧？",
+    "answer": "这句话通过“唯一担心”和“机会”这两个词的组合，暗示说话者潜意识里已将丹特斯的释放视为一种既真实又无法完全控制的威胁，这种恐惧在逻辑推理前就已通过语言强度显现出来。",
+    "key_evidence": "My only fear is the chance of Dantès being released",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉到“only fear”与“chance”之间微妙的情感张力——不是担心多种可能性，而是将全部恐惧聚焦于一个尚未发生但已被视为必然威胁的“机会”，这种语言选择反映了角色潜意识里已提前感知到危险，而不仅仅是理性评估。",
+    "chunk_id": "chunk_679",
+    "chunk_text": "My only fear is the chance of Dantès being\nreleased",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "维尔福声称需要'被告眼中的憎恨'来激发自己时，什么文本线索暗示他正在陷入一种危险的道德状态？",
+    "answer": "'需要被告眼中的憎恨'这一表述暴露了维尔福对他人痛苦的病态依赖——他必须通过制造敌意来确认自己的权力，暗示他已将正义扭曲为施虐快感，这种情感需求预示着他将为了自我满足而滥用司法权力。",
+    "key_evidence": "requires the excitement of being hateful in the eyes of the accused, in order to lash one’s self into a state of sufficient vehemence and power",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者感知'兴奋'与'憎恨'之间的反常联系——正常检察官应追求公正，而维尔福却需要情感刺激来执行职责。这种细微的情感错位暗示角色正在经历道德滑坡，这种认知不是通过明确陈述，而是通过情感逻辑的扭曲传递的。",
+    "chunk_id": "chunk_743",
+    "chunk_text": "Besides, one\nrequires the excitement of being hateful in the eyes of the accused, in\norder to lash one’s self into a state of sufficient vehemence and\npower",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当邓蒂斯喊出'那么，先生，我是自由的吗？'时，'joyfully'这个描述暗示了他正经历怎样的心理状态，这种状态可能掩盖了即将到来的危险？",
+    "answer": "'joyfully'暗示邓蒂斯沉浸在狂喜中，这种情绪让他失去警惕，本能地相信了表面的自由宣告，却没有察觉这句话背后可能隐藏的欺骗或陷阱。狂喜使他无法理性分析情境。",
+    "key_evidence": "I am free, then, sir? cried Dantès joyfully",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者不只听对话内容，还要感知'joyfully'这个副词传递的情感强度。这种狂喜情绪是一种本能反应，它先于逻辑分析出现，可能使角色（和读者）忽略潜在的危险信号。测试的是对情感线索而非事实信息的敏感性。",
+    "chunk_id": "chunk_875",
+    "chunk_text": "“I am free, then, sir?” cried Dantès joyfully",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当囚犯经过拉雷塞尔夫时，文本如何通过'叹息'与'欢笑'的对比暗示他正经历一种本能的认知转变，即使他自己尚未完全理解？",
+    "answer": "文本通过囚犯的'叹息'与窗内'欢笑'的对比，暗示他本能地意识到自己已从'早晨的幸福'坠入'囚徒身份'的永恒隔阂——这种认知并非理性分析，而是通过情感反差瞬间触发的身份觉醒。",
+    "key_evidence": "他很快叹息，因为他经过拉雷塞尔夫，那天早晨他曾如此幸福，而现在敞开的窗户里传来舞会的欢笑与喧闹。",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "回答此问题需捕捉'叹息'中隐含的未言明痛苦，并理解'早晨的幸福'与'囚徒身份'在笑声映衬下形成的心理撕裂——这种识别依赖对情感反差、时间感知和身份丧失的直觉性共情。",
+    "chunk_id": "chunk_945",
+    "chunk_text": "The prisoner’s first feeling was of joy at again breathing the pure\nair—for air is freedom; but he soon sighed, for he passed before La\nRéserve, where he had that morning been so happy, and now throug...",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "文本如何通过'fell back cursing with rage'暗示角色正经历一种本能的危机预感，这种预感在逻辑解释前已通过生理反应被感知？",
+    "answer": "'向后倒下'（fell back）是一个本能的防御性撤退动作，配合'愤怒地咒骂'（cursing with rage），暗示角色在理性分析之前，身体已先感知到威胁或挫败，表现出一种原始、突然的恐惧或失控感，超越了单纯的情绪反应。",
+    "key_evidence": "He fell back cursing with rage",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需捕捉'fell back'这一非自愿的生理撤退与'rage'（暴怒）结合时产生的矛盾张力——暴怒通常伴随进攻，但这里却与退缩同时发生，暗示角色内心在意识层面尚未理清的深层恐惧或突然的认知冲击。",
+    "chunk_id": "chunk_985",
+    "chunk_text": "He\nfell back cursing with rage",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当爱德蒙说'好水手到处都受欢迎'时，是什么微妙的文本线索暗示他正经历一种对未来的非理性自信，这种自信可能隐藏着对命运转折的本能忽略？",
+    "answer": "这句话表面是对水手技能的自信，但'到处都受欢迎'的绝对化表达和'没有恐惧'的强调，暗示爱德蒙在情感上过早关闭了对未知危险的警觉，这种过度乐观反而成为悲剧的伏笔——他本能地忽略了社会复杂性，只依赖单一技能生存的幻想。",
+    "key_evidence": "He had no fears as to how he should live—good seamen are welcome everywhere",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "因为读者需要捕捉'没有恐惧'与'到处受欢迎'之间的情感张力：这不是事实陈述，而是一种情感防御机制。爱德蒙用职业自信掩盖了对未来不确定性的本能回避，这种微妙的情感状态需要读者越过字面逻辑，感知角色尚未意识到的心理盲点。",
+    "chunk_id": "chunk_1029",
+    "chunk_text": "He had no fears as to how he should live—good seamen\nare welcome everywhere",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当丹格拉尔独自感到'满足和喜悦'时，文本通过什么微妙对比暗示他的情绪已超越正常竞争，带有某种危险的预兆？",
+    "answer": "丹格拉尔在陷害邓蒂斯后的'满足和喜悦'是孤立的，与其他角色的缺席形成对比。这种独特性暗示他的满足建立在他人的痛苦之上，已超越职场竞争，预示他将成为道德沦丧的恶人，为后续复仇埋下伏笔。",
+    "key_evidence": "Danglars alone was content and joyous—he had got rid of an enemy and made his own situation on the _Pharaon_ secure",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需要感知'alone'（独自）一词的孤立感、'content and joyous'（满足和喜悦）在悲剧背景下的不协调，以及破折号后自我合理化的冷酷逻辑，才能识别这种喜悦并非普通胜利，而是道德盲点的危险信号。",
+    "chunk_id": "chunk_1110",
+    "chunk_text": "Danglars alone was content and joyous—he had got rid of an enemy and\nmade his own situation on the _Pharaon_ secure",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当说话者说'鼓起勇气'时，是什么微妙的文本线索暗示这安慰背后可能隐藏着危险而非真正的安抚？",
+    "answer": "'鼓起勇气'通常用于安慰身处困境的人，但结合'同时依靠我们皇家的感激'，这种公式化、居高临下的官方口吻，暗示承诺可能空洞，危险依然存在，安抚本身成了不祥的预兆。",
+    "key_evidence": "Take courage, sir; but at the same time rely on our royal gratitude.",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者感知语言中微妙的情感矛盾——表面安慰与隐含的距离感、权力不对等，这需要超越字面意思，体会官方辞令下可能隐藏的冷漠或潜在威胁。",
+    "chunk_id": "chunk_1189",
+    "chunk_text": "Take courage, sir; but at the same time rely on our\nroyal gratitude.”\n\n“Ah, here is M",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "维尔福称‘七支联军’推翻拿破仑时，文本如何通过‘面色苍白’暗示他正经历超越政治评论的本能恐惧？",
+    "answer": "‘面色苍白’是身体对潜在危险的生理反应，暗示维尔福意识到‘七支联军’的讨论可能触及他参与拿破仑政变的秘密往事。这种恐惧出现在逻辑推理之前，是身份可能暴露的本能预警。",
+    "key_evidence": "“he exclaimed, turning pale with anger”",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需从‘愤怒导致的苍白’中辨识出恐惧的生理信号，理解这不仅是政治立场的表达，更是角色潜意识对身份暴露危险的本能反应，需要超越字面意义的情绪解读能力。",
+    "chunk_id": "chunk_1231",
+    "chunk_text": "0141m\n\n\n\n“So then,” he exclaimed, turning pale with anger, “seven conjoined and\nallied armies overthrew that man",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "维尔福亲吻十字架时充满喜悦与骄傲的泪水，暗示了什么他尚未完全意识到的深层认知？",
+    "answer": "这一姿态暗示维尔福在潜意识中已将自己视为正义的化身甚至神意的代理人，这种自我神圣化的认知预示了他未来将滥用司法权力、制造冤案的悲剧，而此刻他正被权力带来的道德错觉所蒙蔽。",
+    "key_evidence": "维尔福的眼中充满喜悦与骄傲的泪水；他拿起十字架亲吻它。",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者超越表面的“喜悦”情感，捕捉“骄傲泪水”与“亲吻十字架”这一宗教象征结合时产生的微妙违和感——这种情感混合暗示角色正在经历一种自我认知的升华，而这种升华在逻辑上（他作为检察官的职责限制）尚未被完全解释，却已通过情感信号预示了道德盲点的形成。",
+    "chunk_id": "chunk_1286",
+    "chunk_text": "de Villefort.” Villefort’s\neyes were filled with tears of joy and pride; he took the cross and\nkissed it",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当维尔福声称'真的，维尔福，你让我吃惊'时，是什么微妙的文本线索暗示他正在经历的不仅仅是普通的惊讶，而是一种可能危及他司法权威的、近乎恐慌的警觉状态？",
+    "answer": "这句话中的重复自称'维尔福'暗示了说话者的自我抽离和内心慌乱。在正常对话中，人们不会用第三人称称呼自己，这种异常的语言结构暴露了维尔福潜意识中对当前情境的失控感，以及对自己身份或立场的动摇，预示着他即将面临的道德和职业危机。",
+    "key_evidence": "really, Villefort, you surprise me",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题需要读者捕捉到语言结构中的情感异常——维尔福用第三人称自称暗示了心理分裂和潜意识的预警，这种微妙线索需要情感敏感性才能察觉其背后的恐惧暗示，而非仅仅理解字面意义。",
+    "chunk_id": "chunk_1340",
+    "chunk_text": "really, Villefort, you surprise me",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当莫雷尔发现未能激发恐惧时，文本如何通过'屈尊俯就'暗示他感知到了远超表面危险的本能威胁？",
+    "answer": "'屈尊俯就'揭示了莫雷尔潜意识中识别到对方并非普通敌人，而是一个拥有绝对优势的操控者——这种认知先于逻辑分析，源于对权力失衡的本能恐惧。",
+    "key_evidence": "失望于未能激发恐惧，只意识到对方的屈尊俯就",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉'屈尊俯就'这一姿态背后隐含的权力压迫感——这不是事实信息，而是情感信号，暗示莫雷尔在理性理解前已本能感知到对方居高临下的危险本质。",
+    "chunk_id": "chunk_1406",
+    "chunk_text": "But Morrel, disappointed in\nhis expectations of exciting fear, was conscious only of the other’s\ncondescension",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "维尔福为何保存能毁灭唐泰斯的请愿书，这暗示了他内心何种尚未完全意识到的危险本能？",
+    "answer": "维尔福保存请愿书的举动并非出于理性政治考量，而是源于一种本能的自我保护意识——他潜意识中预感到未来可能需要这份文件来掩盖自己的罪行或应对可能的危机，这种近乎动物性的警觉超越了他表面的政治算计。",
+    "key_evidence": "他仔细保存了那份可怕地连累唐泰斯的请愿书，希望于那个看来并非不可能发生的事件——即第二次复辟",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "这个问题要求读者捕捉维尔福行为中隐含的非理性恐惧和自我保护本能，而非表面的政治动机。需要感知到'仔细保存'这一动作背后潜藏的焦虑，以及'希望于...第二次复辟'这一表述中暗含的道德危机感，这些情感线索比事实陈述更能揭示角色的深层心理状态。",
+    "chunk_id": "chunk_1435",
+    "chunk_text": "As for Villefort, instead of sending to Paris, he carefully preserved\nthe petition that so fearfully compromised Dantès, in the hopes of an\nevent that seemed not unlikely,—that is, a second restoratio...",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当丹格拉尔听到拿破仑返回巴黎时，文本如何通过'心脏衰竭'暗示他正在经历一种超越理性恐惧的、近乎本能的身体反应？",
+    "answer": "'心脏衰竭'不仅是比喻性描述，更暗示丹格拉尔的身体在逻辑判断之前已本能地感知到危险——这种生理反应揭示了他潜意识里对邓蒂斯复仇的原始恐惧，远超过理性层面的担忧。",
+    "key_evidence": "Danglars’ heart failed him, and he lived in constant fear",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需要捕捉'heart failed him'中蕴含的生理-情感联动：这不是简单的害怕，而是身体对潜在威胁的本能预警，暗示角色在意识层面尚未完全理解的深层恐惧已通过躯体反应显现。",
+    "chunk_id": "chunk_1443",
+    "chunk_text": "But when Napoleon returned to Paris, Danglars’ heart\nfailed him, and he lived in constant fear of Dantès’ return on a\nmission of vengeance",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当角色因宗教感而未执行决心时，文本如何暗示她正经历超越普通犹豫的、近乎本能的危险预感？",
+    "answer": "文本通过'宗教感前来相助'这一表述，暗示角色并非单纯犹豫，而是潜意识中感知到执行决心会带来不可预知的危险，宗教感成为阻止危险行动的本能保护机制。",
+    "key_evidence": "不是缺乏勇气阻止她执行决心；而是她的宗教感前来相助并拯救了她",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "读者需要捕捉'宗教感前来相助'中隐含的微妙情感信号——这不是理性选择，而是角色在逻辑解释前通过本能感知危险，情感直觉先于认知理解。",
+    "chunk_id": "chunk_1461",
+    "chunk_text": "It was\nnot want of courage that prevented her putting this resolution into\nexecution; but her religious feelings came to her aid and saved her",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当文本将现代君主描述为'被纯粹可能性的界限所限制'时，是什么暗示了他们正面临一种超越政治现实的、近乎存在性的脆弱？",
+    "answer": "短语'被纯粹可能性的界限所限制'暗示了一种深刻的无力感。它不仅仅指政治权力的局限，更暗示了一种内在的、近乎形而上学的束缚——君主们被'可能性'（即理性与现实的逻辑）本身所禁锢，失去了传统君主的超验权威与行动魄力，从而暴露了其统治根基的脆弱。这种脆弱在逻辑论证之前，已通过'界限'与'限制'的重复意象被本能感知。",
+    "key_evidence": "被纯粹可能性的界限所限制，既无勇气也无欲望",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉'界限'与'限制'等词语所承载的情感重量与压抑感，而非仅理解其字面政治含义。这种识别依赖于对文本语气、重复意象及'可能性'一词所隐含的'收缩感'的敏感性，从而在逻辑分析之前，本能地察觉到角色（或叙事者）对现代权威衰微的深层不安与认知。",
+    "chunk_id": "chunk_1562",
+    "chunk_text": "But the kings of modern\ntimes, restrained by the limits of mere probability, have neither\ncourage nor desire",
+    "mass": 0.6499999999999999
+  },
+  {
+    "question": "当叙述者说'他们害怕听到命令的耳朵和审视行动的眼睛'时，是什么暗示这种恐惧超出了对上级的服从，而是一种近乎动物本能的、对无形威胁的感知？",
+    "answer": "这句话将恐惧对象拟人化（'耳朵'、'眼睛'），暗示他们害怕的并非具体人物，而是无处不在的监视本身。这种恐惧已内化为本能反应，在逻辑识别监视者身份前就已通过感官被感知，预示了权力结构的无形压迫。",
+    "key_evidence": "They fear the ear that hears their orders, and the eye that scrutinizes their actions",
+    "requires_emotional_sensitivity": true,
+    "reasoning": "问题要求读者捕捉文本中'耳朵'和'眼睛'作为独立感知器官的拟人化处理所传递的情感信号——这种表达暗示恐惧已脱离具体对象，转化为对抽象监视体系的本能警觉，需要情感联想而非字面理解。",
+    "chunk_id": "chunk_1563",
+    "chunk_text": "They fear the ear that hears their orders, and the\neye that scrutinizes their actions",
+    "mass": 0.6499999999999999
+  }
+]
