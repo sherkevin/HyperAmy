@@ -226,7 +226,8 @@ try:
             # 检索
             search_results = hyperamy_retrieval.search(query_entity, top_k=5)
             
-            # 转换为文档内容
+            # 转换为文档内容，并记录检索到的ID
+            retrieved_ids = [r.id for r in search_results]
             docs_retrieved = [id_to_content.get(r.id, '') for r in search_results]
             scores = [r.score for r in search_results]
             
@@ -234,14 +235,17 @@ try:
             gold_chunk_id = gold_chunk_ids[i]
             gold_text = gold_texts[i]
             
+            # 首先检查gold_chunk_id是否在检索到的ID中（精确匹配）
             hit_at_k = {}
             for k in [1, 2, 5, 10]:
-                if k <= len(docs_retrieved):
-                    # 检查gold_text是否在前k个结果中
-                    found = any(gold_text.strip() in doc.strip() or doc.strip() in gold_text.strip() 
-                               for doc in docs_retrieved[:k])
-                    hit_at_k[k] = found
-                    if found:
+                if k <= len(retrieved_ids):
+                    # 方法1: 检查gold_chunk_id是否在检索到的ID中（更准确）
+                    found_by_id = gold_chunk_id in retrieved_ids[:k]
+                    # 方法2: 检查gold_text是否在前k个结果中（文本匹配，可能不准确）
+                    found_by_text = any(gold_text.strip() in doc.strip() or doc.strip() in gold_text.strip() 
+                                       for doc in docs_retrieved[:k] if doc)
+                    hit_at_k[k] = found_by_id or found_by_text
+                    if hit_at_k[k]:
                         hits_at_k[k] += 1
                 else:
                     hit_at_k[k] = False
@@ -250,6 +254,7 @@ try:
                 'query': query,
                 'gold_chunk_id': gold_chunk_id,
                 'gold_text': gold_text[:100] + '...' if len(gold_text) > 100 else gold_text,
+                'retrieved_ids': retrieved_ids,  # 添加检索到的ID列表
                 'docs_retrieved': [doc[:100] + '...' if len(doc) > 100 else doc for doc in docs_retrieved],
                 'scores': scores,
                 'hit_at_k': hit_at_k

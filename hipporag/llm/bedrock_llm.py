@@ -6,7 +6,11 @@ import json
 import time
 import hashlib
 
-import litellm
+try:
+    import litellm
+except ImportError:
+    litellm = None
+
 from filelock import FileLock
 
 from .base import BaseLLM, LLMConfig
@@ -94,6 +98,8 @@ class BedrockLLM(BaseLLM):
         logger.info(f"[BedrockLLM] Config: {self.llm_config}")
 
     def __llm_call(self, params):
+        if litellm is None:
+            raise ImportError("litellm is required for BedrockLLM. Install it with: pip install litellm")
         num, wait_s = 0, 0.5
         while True:
             try:

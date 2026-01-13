@@ -122,15 +122,21 @@ def extract_emotion_soft_label(text: str, max_retries: int = 3) -> Dict[str, Any
     
     for attempt in range(max_retries):
         try:
-            response = client.complete_chat(
-                messages=[{"role": "user", "content": prompt}],
-                model=DEFAULT_MODEL,
-                temperature=0.3,  # 较低温度以保持一致性
-                max_tokens=200
+            # 使用complete方法，mode="normal"使用chat API
+            result = client.complete(
+                query=prompt,
+                mode="normal",  # 使用chat API
+                max_tokens=200,
+                temperature=0.3  # 较低温度以保持一致性
             )
             
-            # 解析响应
-            response_text = response.strip()
+            # 获取响应文本（ChatResult对象有get_answer_text方法）
+            if hasattr(result, 'get_answer_text'):
+                response_text = result.get_answer_text().strip()
+            elif hasattr(result, 'answer_text'):
+                response_text = result.answer_text.strip()
+            else:
+                response_text = str(result).strip()
             
             # 尝试提取JSON
             if response_text.startswith('```json'):

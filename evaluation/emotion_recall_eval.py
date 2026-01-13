@@ -65,9 +65,18 @@ class EmotionRecallEvaluator:
         """
         计算双曲距离（Poincaré球模型）
         
-        注意：这是一个简化版本，实际的双曲距离计算可能更复杂。
-        这里使用 acosh(1 + 2 * ||u-v||^2 / ((1-||u||^2) * (1-||v||^2))) 的近似。
+        使用标准的Poincaré距离公式:
+        d(u,v) = arccosh(1 + 2 * ||u-v||^2 / ((1-||u||^2) * (1-||v||^2)))
+        
+        Args:
+            vec1: 第一个向量（已归一化的情绪向量）
+            vec2: 第二个向量（已归一化的情绪向量）
+            
+        Returns:
+            双曲距离值
         """
+        import math
+        
         # 确保向量在单位圆盘内（模长 < 1）
         vec1_norm = np.linalg.norm(vec1)
         vec2_norm = np.linalg.norm(vec2)
@@ -75,8 +84,10 @@ class EmotionRecallEvaluator:
         # 归一化到单位圆盘
         if vec1_norm >= 1.0:
             vec1 = vec1 / (vec1_norm + 1e-8) * 0.99
+            vec1_norm = 0.99
         if vec2_norm >= 1.0:
             vec2 = vec2 / (vec2_norm + 1e-8) * 0.99
+            vec2_norm = 0.99
         
         diff = vec1 - vec2
         diff_norm_sq = np.dot(diff, diff)
@@ -84,14 +95,24 @@ class EmotionRecallEvaluator:
         norm1_sq = np.dot(vec1, vec1)
         norm2_sq = np.dot(vec2, vec2)
         
-        # 避免除零
+        # 避免除零和负数
         denominator = (1 - norm1_sq + 1e-8) * (1 - norm2_sq + 1e-8)
         if denominator <= 0:
             return float('inf')
         
-        # 简化版本：使用欧氏距离在双曲空间中的映射
-        # 实际应该使用 acosh，但这里使用简化版本
-        distance = np.sqrt(diff_norm_sq / denominator + 1e-8)
+        # 计算Poincaré距离
+        # d(u,v) = arccosh(1 + 2 * ||u-v||^2 / ((1-||u||^2) * (1-||v||^2)))
+        inner = 1.0 + 2.0 * diff_norm_sq / denominator
+        
+        # 确保arccosh的参数 >= 1
+        if inner < 1.0:
+            inner = 1.0
+        
+        try:
+            distance = math.acosh(inner)
+        except ValueError:
+            # 如果数值问题导致无法计算arccosh，使用近似值
+            distance = np.sqrt(diff_norm_sq)
         
         return float(distance)
     
@@ -170,30 +191,17 @@ class EmotionRecallEvaluator:
         for query_idx, (gold_vec, retrieved_vecs) in enumerate(
             zip(gold_emotion_vectors, retrieved_emotion_vectors_list)
         ):
-            # 计算Top-K的相似度分数
+            # 计算Top-K的相似度分数（只计算一次，避免重复计算）
+            max_k = k_list[-1] if k_list else len(retrieved_vecs)
             query_similarities = []
-            for retrieved_vec in retrieved_vecs[:k_list[-1]]:  # 取最大K值
-                is_sim, similarity = self.is_similar(gold_vec, retrieved_vec)
-                query_similarities.append(similarity)
-                
-                # 检查是否在某个K值上首次命中
-                for k in k_list:
-                    if len(query_similarities) <= k:
-                        if is_sim and hits_at_k[k] == query_idx:  # 首次命中
-                            hits_at_k[k] += 1
-                    elif len(query_similarities) == k:
-                        if any(self.is_similar(gold_vec, retrieved_vecs[i])[0] 
-                               for i in range(min(k, len(retrieved_vecs)))):
-                            if query_idx not in [i for i in range(total_queries) if hits_at_k[k] > i]:
-                                hits_at_k[k] += 1
             
-            # 修正：重新计算每个K值的命中情况
-            query_similarities = []
-            for retrieved_vec in retrieved_vecs[:k_list[-1]]:
+            # 对每个检索结果计算相似度
+            for retrieved_vec in retrieved_vecs[:max_k]:
                 _, similarity = self.is_similar(gold_vec, retrieved_vec)
                 query_similarities.append(similarity)
             
-            emotion_similarity_scores.append(query_similarities[:k_list[-1]])
+            # 保存相似度分数
+            emotion_similarity_scores.append(query_similarities)
             
             # 对每个K值检查是否有相似的结果
             for k in k_list:

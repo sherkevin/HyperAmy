@@ -24,17 +24,22 @@ def convert_text_chat_messages_to_input_ids(messages: List[TextChatMessage], tok
     )
     encoded = tokenizer(prompt, add_special_tokens=False)
     return encoded['input_ids']
-from vllm import SamplingParams, LLM
+try:
+    from vllm import SamplingParams, LLM
+except ImportError:
+    SamplingParams = None
+    LLM = None
 class VLLMOffline:
 
     def _init_llm_config(self) -> None:
         self.llm_config = LLMConfig()
 
     def __init__(self, global_config, cache_dir=None, cache_filename=None, max_model_len=4096, **kwargs):
+        if LLM is None:
+            raise ImportError("vllm is required for VLLMOffline. Install it with: pip install vllm")
         model_name = kwargs.get('model_name', global_config.llm_name)
         if model_name is None:
             model_name = 'meta-llama/Llama-3.3-70B-Instruct'
-        from vllm import LLM
         pipeline_parallel_size = 1
         tensor_parallel_size = kwargs.get('num_gpus', torch.cuda.device_count())
         if '8B' in model_name:

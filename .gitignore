@@ -70,3 +70,10 @@ data/training/entity_granularity/*_progress.json
 # 其他缓存目录
 .cache/
 *.cache/
+
+# Stage 2 training outputs
+outputs/stage2_training_remote/checkpoints/*.pt
+outputs/stage2_training_remote/*.pt
+# Large model files
+*.pt
+!scripts/**/*.pt

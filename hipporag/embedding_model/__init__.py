@@ -1,9 +1,15 @@
 from .Contriever import ContrieverModel
 from .base import EmbeddingConfig, BaseEmbeddingModel
-from .GritLM import GritLMEmbeddingModel
+try:
+    from .GritLM import GritLMEmbeddingModel
+except ImportError:
+    GritLMEmbeddingModel = None
 from .NVEmbedV2 import NVEmbedV2EmbeddingModel
 from .OpenAI import OpenAIEmbeddingModel
-from .Cohere import CohereEmbeddingModel
+try:
+    from .Cohere import CohereEmbeddingModel
+except ImportError:
+    CohereEmbeddingModel = None
 from .Transformers import TransformersEmbeddingModel
 from .VLLM import VLLMEmbeddingModel
 
@@ -14,6 +20,8 @@ logger = get_logger(__name__)
 
 def _get_embedding_model_class(embedding_model_name: str = "nvidia/NV-Embed-v2"):
     if "GritLM" in embedding_model_name:
+        if GritLMEmbeddingModel is None:
+            raise ImportError("GritLMEmbeddingModel requires gritlm. Install it with: pip install gritlm")
         return GritLMEmbeddingModel
     elif "NV-Embed-v2" in embedding_model_name:
         return NVEmbedV2EmbeddingModel
@@ -22,6 +30,8 @@ def _get_embedding_model_class(embedding_model_name: str = "nvidia/NV-Embed-v2")
     elif "text-embedding" in embedding_model_name:
         return OpenAIEmbeddingModel
     elif "cohere" in embedding_model_name:
+        if CohereEmbeddingModel is None:
+            raise ImportError("CohereEmbeddingModel requires boto3. Install it with: pip install boto3")
         return CohereEmbeddingModel
     elif embedding_model_name.startswith("Transformers/"):
         return TransformersEmbeddingModel
