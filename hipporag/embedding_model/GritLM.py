@@ -5,7 +5,10 @@ from typing import (
 import torch
 import numpy as np
 from copy import deepcopy
-from gritlm import GritLM
+try:
+    from gritlm import GritLM
+except ImportError:
+    GritLM = None
 
 from ..utils.config_utils import BaseConfig
 from ..utils.logging_utils import get_logger
@@ -20,6 +23,8 @@ logger = get_logger(__name__)
 class GritLMEmbeddingModel(BaseEmbeddingModel):
 
     def __init__(self, global_config: Optional[BaseConfig] = None, embedding_model_name: Optional[str] = None) -> None:
+        if GritLM is None:
+            raise ImportError("GritLM is required for GritLMEmbeddingModel. Install it with: pip install gritlm")
         super().__init__(global_config=global_config)
         
         if embedding_model_name is not None:

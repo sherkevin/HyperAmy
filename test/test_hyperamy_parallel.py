@@ -14,6 +14,7 @@ from typing import List
 from pathlib import Path
 from tqdm import tqdm
 from datetime import datetime
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 添加项目根目录到路径
@@ -116,15 +117,18 @@ try:
                 if emotion_vector.is_cuda:
                     emotion_vector = emotion_vector.cpu()
                 
-                # 使用chunk_id作为point_id
-                point_id = chunk_id
+                # 使用chunk_id作为entity_id
+                entity_id = chunk_id
+                # 计算weight（原始情绪向量的模长）
+                weight = float(torch.norm(emotion_vector))
                 
                 return {
                     'success': True,
                     'chunk_idx': chunk_idx,
                     'chunk_id': chunk_id,
-                    'point_id': point_id,
+                    'entity_id': entity_id,  # 修复：使用entity_id而不是point_id
                     'emotion_vector': emotion_vector,
+                    'weight': weight,  # 添加weight字段
                     'text': text.strip(),
                     'error': None
                 }

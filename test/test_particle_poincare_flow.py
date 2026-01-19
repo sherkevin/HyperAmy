@@ -62,6 +62,9 @@ def create_test_particle(entity_id: str, emotion_vector: np.ndarray,
         weight=weight,  # 存储原始模长作为质量
         speed=speed,
         temperature=temperature,
+        purity=0.5,  # 测试用默认值
+        tau_v=86400.0,  # 测试用默认值（1天）
+        tau_T=86400.0,  # 测试用默认值（1天）
         born=time.time()
     )
 

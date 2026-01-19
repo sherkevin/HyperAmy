@@ -41,6 +41,12 @@
 - [THREE_METHODS_EXPERIMENT_PLAN.md](THREE_METHODS_EXPERIMENT_PLAN.md) - 三种方法对比实验计划
 - [BATCH_EXPERIMENTS_PLAN.md](BATCH_EXPERIMENTS_PLAN.md) - 分批实验计划
 
+### 使用和开发文档
+
+- [快速开始指南](QUICKSTART.md) ⭐ - 安装、基础使用和常见问题
+- [方法对比指南](METHODS_COMPARISON.md) ⭐ - 三种检索方法的详细对比和使用建议
+- [开发指南](DEVELOPMENT_GUIDE.md) - 代码结构、开发环境设置和贡献指南
+
 ### 其他文档
 
 - [PUBLIC_DATASET_GUIDE.md](PUBLIC_DATASET_GUIDE.md) - 公开数据集构建指南
@@ -129,6 +135,31 @@
    - 找到最佳配置
 
 详细计划参见: [NEXT_STEPS_AFTER_THREE_METHODS_EXPERIMENT.md](NEXT_STEPS_AFTER_THREE_METHODS_EXPERIMENT.md)
+
+---
+
+## 🔧 最新功能更新（2026-01-09）
+
+### 评估体系完善
+- ✅ 新增扩展评估指标：MRR, NDCG@K, Precision@K, F1@K, MAP
+- ✅ 统一评估接口：支持精确匹配和情绪相似度评估
+- ✅ HTML报告生成：可视化评估结果对比
+
+### 融合策略优化
+- ✅ 多种融合策略：线性加权、调和平均、几何平均、基于排名融合（RRF）
+- ✅ 灵活的归一化策略：Min-Max, Z-score, L2归一化
+- ✅ 可配置参数：sentiment_weight, fusion_strategy, normalization_strategy
+
+### 代码质量提升
+- ✅ 完善的错误处理和输入验证
+- ✅ 统一的日志配置和性能日志
+- ✅ 缓存机制：情绪向量提取结果缓存
+
+### 情绪提取优化
+- ✅ 支持缓存：避免重复API调用
+- ✅ 质量验证：自动检测提取质量
+- ✅ 批量提取：并发处理提升速度
+- ✅ 情绪分析工具：可视化分布和质量统计
 
 ---
 

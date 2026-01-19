@@ -21,7 +21,10 @@ from .llm import _get_llm_class, BaseLLM
 from .embedding_model import _get_embedding_model_class, BaseEmbeddingModel
 from .embedding_store import EmbeddingStore
 from .information_extraction import OpenIE
-from .information_extraction.openie_vllm_offline import VLLMOfflineOpenIE
+try:
+    from .information_extraction.openie_vllm_offline import VLLMOfflineOpenIE
+except ImportError:
+    VLLMOfflineOpenIE = None
 from .information_extraction.openie_transformers_offline import TransformersOfflineOpenIE
 from .evaluation.retrieval_eval import RetrievalRecall
 from .evaluation.qa_eval import QAExactMatch, QAF1Score
@@ -128,6 +131,8 @@ class HippoRAG:
         if self.global_config.openie_mode == 'online':
             self.openie = OpenIE(llm_model=self.llm_model, max_workers=openie_max_workers)
         elif self.global_config.openie_mode == 'offline':
+            if VLLMOfflineOpenIE is None:
+                raise ImportError("VLLMOfflineOpenIE requires vllm. Install it with: pip install vllm")
             self.openie = VLLMOfflineOpenIE(self.global_config)
         elif self.global_config.openie_mode ==  'Transformers-offline':
             self.openie = TransformersOfflineOpenIE(self.global_config)

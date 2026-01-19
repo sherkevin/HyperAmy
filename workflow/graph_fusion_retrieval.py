@@ -2,7 +2,7 @@
 图谱融合检索 - HippoRAG + Amygdala 实体级融合
 
 融合策略：
-1. 统一的实体抽取
+1. 统一的实体抽取（只调用一次 LLM）- 使用 UnifiedEntityExtractor
 2. HippoRAG: 语义相似度扩展实体
 3. Amygdala: 情绪相似度扩展实体
 4. 将扩展的实体映射到 HippoRAG 实体空间
@@ -14,6 +14,10 @@
 - 利用了 Amygdala 的情绪感知能力
 - 在统一的 HippoRAG 图谱中进行 PPR 传播
 - 保留了两个系统的信号
+
+性能优化（V2）：
+- 统一实体抽取，避免重复 LLM 调用
+- 并行执行语义扩展、情绪扩展、fact 提取
 
 使用示例：
     >>> from workflow.graph_fusion_retrieval import GraphFusionRetriever
@@ -41,6 +45,7 @@ import time
 from typing import List, Dict, Any, Optional, Set, Tuple
 from pathlib import Path
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np
 
 from llm.config import API_KEY, BASE_URL, DEFAULT_EMBEDDING_MODEL, API_URL_EMBEDDINGS
@@ -48,6 +53,7 @@ os.environ["OPENAI_API_KEY"] = API_KEY
 
 from workflow.amygdala import Amygdala
 from workflow.hipporag_wrapper import HippoRAGWrapper
+from workflow.unified_entity_extractor import get_global_extractor
 from hipporag.utils.misc_utils import compute_mdhash_id
 from hipporag.utils.embed_utils import retrieve_knn
 
@@ -76,7 +82,8 @@ class GraphFusionRetriever:
         hipporag_save_dir: str = "./graph_fusion_hipporag_db",
         llm_model_name: str = "DeepSeek-V3.2",
         embedding_model_name: str = DEFAULT_EMBEDDING_MODEL,
-        auto_link_particles: bool = False
+        auto_link_particles: bool = False,
+        enable_parallel: bool = True
     ):
         """
         初始化融合检索器
@@ -87,11 +94,13 @@ class GraphFusionRetriever:
             llm_model_name: LLM 模型名称
             embedding_model_name: 嵌入模型名称
             auto_link_particles: 是否自动链接粒子
+            enable_parallel: 是否启用并行化优化（默认 True）
         """
         self.amygda_save_dir = amygdala_save_dir
         self.hipporag_save_dir = hipporag_save_dir
         self.llm_model_name = llm_model_name
         self.embedding_model_name = embedding_model_name
+        self.enable_parallel = enable_parallel
 
         # 初始化 Amygdala
         logger.info("初始化 Amygdala...")
@@ -117,7 +126,12 @@ class GraphFusionRetriever:
         # 获取 HippoRAG 核心对象（用于内部访问）
         self._hipporag_core = self.hipporag.hipporag
 
-        logger.info("✓ 图谱融合检索器初始化完成")
+        # 初始化统一实体抽取器（全局单例，避免重复 LLM 调用）
+        logger.info("初始化统一实体抽取器...")
+        self.entity_extractor = get_global_extractor()
+        logger.info("✓ 统一实体抽取器初始化完成")
+
+        logger.info(f"✓ 图谱融合检索器初始化完成 (并行化: {'启用' if enable_parallel else '禁用'})")
 
     def add(self, chunks: List[str]) -> Dict[str, Any]:
         """
@@ -186,6 +200,7 @@ class GraphFusionRetriever:
         logger.info(f"[GraphFusionRetriever.retrieve] 开始融合检索")
         logger.info(f"  Query: {query[:200]}{'...' if len(query) > 200 else ''}")
         logger.info(f"  权重配置: emotion={emotion_weight}, semantic={semantic_weight}, fact={fact_weight}")
+        logger.info(f"  并行模式: {'启用' if self.enable_parallel else '禁用'}")
 
         start_time = time.time()
 
@@ -193,49 +208,33 @@ class GraphFusionRetriever:
         if not self._hipporag_core.ready_to_retrieve:
             self._hipporag_core.prepare_retrieval_objects()
 
-        # Step 1: 从 query 中抽取实体（使用 Amygdala）
-        logger.info(f"[GraphFusionRetriever.retrieve] Step 1: 从 query 抽取实体")
-        query_particles = self.amygda.particle.process(
+        # Step 1: 统一实体抽取（只调用一次 LLM）
+        logger.info(f"[GraphFusionRetriever.retrieve] Step 1: 统一实体抽取（UnifiedEntityExtractor）")
+        query_entities = self.entity_extractor.extract_entities(
             text=query,
-            text_id=f"query_{int(time.time())}"
+            text_id=f"query_{int(time.time())}",
+            use_llm=True
         )
 
-        if not query_particles:
-            logger.warning(f"[GraphFusionRetriever.retrieve] Query 未生成任何粒子，使用 HippoRAG 直接检索")
+        if not query_entities:
+            logger.warning(f"[GraphFusionRetriever.retrieve] Query 未抽取到任何实体，使用 HippoRAG 直接检索")
             return self._fallback_to_hipporag(query, top_k)
 
-        query_entities = [p.entity for p in query_particles]
-        logger.info(f"  ✓ 抽取到 {len(query_entities)} 个实体: {query_entities}")
+        logger.info(f"  ✓ 统一抽取到 {len(query_entities)} 个实体: {query_entities}")
 
-        # Step 2: 获取 query embedding
-        logger.info(f"[GraphFusionRetriever.retrieve] Step 2: 获取 query embedding")
-        self._hipporag_core.get_query_embeddings([query])
-        query_embedding = self._hipporag_core.query_to_embedding['triple'].get(query)
-        logger.info(f"  ✓ Query embedding 准备完成")
-
-        # Step 3: HippoRAG 语义扩展
-        logger.info(f"[GraphFusionRetriever.retrieve] Step 3: HippoRAG 语义扩展")
-        semantic_entities = self._semantic_expansion(
-            query_entities=query_entities,
-            top_k=linking_top_k
-        )
-        logger.info(f"  ✓ 语义扩展找到 {len(semantic_entities)} 个相似实体")
-
-        # Step 4: Amygdala 情绪扩展
-        logger.info(f"[GraphFusionRetriever.retrieve] Step 4: Amygdala 情绪扩展")
-        emotion_entities = self._emotion_expansion(
-            query_particle=query_particles[0],
-            top_k=linking_top_k
-        )
-        logger.info(f"  ✓ 情绪扩展找到 {len(emotion_entities)} 个实体")
-
-        # Step 5: HippoRAG fact 实体
-        logger.info(f"[GraphFusionRetriever.retrieve] Step 5: 提取 HippoRAG fact 实体")
-        fact_entities = self._extract_fact_entities(
-            query=query,
-            top_k=linking_top_k
-        )
-        logger.info(f"  ✓ Fact 扩展找到 {len(fact_entities)} 个实体")
+        # 根据并行模式执行 Steps 2-5
+        if self.enable_parallel:
+            semantic_entities, emotion_entities, fact_entities = self._parallel_expansion_steps(
+                query=query,
+                query_entities=query_entities,
+                linking_top_k=linking_top_k
+            )
+        else:
+            semantic_entities, emotion_entities, fact_entities = self._serial_expansion_steps(
+                query=query,
+                query_entities=query_entities,
+                linking_top_k=linking_top_k
+            )
 
         # Step 6: 融合实体权重
         logger.info(f"[GraphFusionRetriever.retrieve] Step 6: 融合实体权重")
@@ -270,6 +269,125 @@ class GraphFusionRetriever:
         logger.info("=" * 80)
 
         return results
+
+    def _serial_expansion_steps(
+        self,
+        query: str,
+        query_entities: List[str],
+        linking_top_k: int
+    ) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
+        """
+        串行执行扩展步骤
+
+        Args:
+            query: 查询文本
+            query_entities: 统一抽取的实体列表
+            linking_top_k: 链接 top-k
+
+        Returns:
+            (semantic_entities, emotion_entities, fact_entities)
+        """
+        # Step 2: 获取 query embedding
+        logger.info(f"[GraphFusionRetriever.retrieve] Step 2: 获取 query embedding")
+        self._hipporag_core.get_query_embeddings([query])
+        query_embedding = self._hipporag_core.query_to_embedding['triple'].get(query)
+        logger.info(f"  ✓ Query embedding 准备完成")
+
+        # Step 3: HippoRAG 语义扩展（使用统一抽取的实体）
+        logger.info(f"[GraphFusionRetriever.retrieve] Step 3: HippoRAG 语义扩展")
+        semantic_entities = self._semantic_expansion(
+            query_entities=query_entities,
+            top_k=linking_top_k
+        )
+        logger.info(f"  ✓ 语义扩展找到 {len(semantic_entities)} 个相似实体")
+
+        # Step 4: Amygdala 情绪扩展（需要 emotion 向量，单独处理）
+        logger.info(f"[GraphFusionRetriever.retrieve] Step 4: Amygdala 情绪扩展")
+        emotion_entities = self._emotion_expansion_from_entities(
+            query=query,
+            query_entities=query_entities,
+            top_k=linking_top_k
+        )
+        logger.info(f"  ✓ 情绪扩展找到 {len(emotion_entities)} 个实体")
+
+        # Step 5: HippoRAG fact 实体
+        logger.info(f"[GraphFusionRetriever.retrieve] Step 5: 提取 HippoRAG fact 实体")
+        fact_entities = self._extract_fact_entities(
+            query=query,
+            top_k=linking_top_k
+        )
+        logger.info(f"  ✓ Fact 扩展找到 {len(fact_entities)} 个实体")
+
+        return semantic_entities, emotion_entities, fact_entities
+
+    def _parallel_expansion_steps(
+        self,
+        query: str,
+        query_entities: List[str],
+        linking_top_k: int
+    ) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
+        """
+        并行执行扩展步骤（性能优化）
+
+        Steps 2-5 可以并行执行：
+        - Step 2: query embedding
+        - Step 3: 语义扩展（使用统一抽取的实体）
+        - Step 4: 情绪扩展（需要 emotion 向量，单独处理）
+        - Step 5: fact 提取
+
+        Returns:
+            (semantic_entities, emotion_entities, fact_entities)
+        """
+        logger.info(f"[GraphFusionRetriever.retrieve] Steps 2-5: 并行执行扩展任务")
+
+        # 提交所有并行任务
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            # Task 1: 获取 query embedding
+            future_embedding = executor.submit(
+                self._get_query_embedding_task, query
+            )
+
+            # Task 2: 语义扩展（使用统一抽取的实体，不依赖 embedding）
+            future_semantic = executor.submit(
+                self._semantic_expansion,
+                query_entities=query_entities,
+                top_k=linking_top_k
+            )
+
+            # Task 3: 情绪扩展（需要 emotion 向量，从 entities 生成）
+            future_emotion = executor.submit(
+                self._emotion_expansion_from_entities,
+                query=query,
+                query_entities=query_entities,
+                top_k=linking_top_k
+            )
+
+            # Task 4: fact 提取（依赖 query，独立）
+            future_fact = executor.submit(
+                self._extract_fact_entities,
+                query=query,
+                top_k=linking_top_k
+            )
+
+            # 收集结果
+            query_embedding = future_embedding.result()
+            logger.info(f"  ✓ [并行] Query embedding 完成")
+
+            semantic_entities = future_semantic.result()
+            logger.info(f"  ✓ [并行] 语义扩展找到 {len(semantic_entities)} 个相似实体")
+
+            emotion_entities = future_emotion.result()
+            logger.info(f"  ✓ [并行] 情绪扩展找到 {len(emotion_entities)} 个实体")
+
+            fact_entities = future_fact.result()
+            logger.info(f"  ✓ [并行] Fact 扩展找到 {len(fact_entities)} 个实体")
+
+        return semantic_entities, emotion_entities, fact_entities
+
+    def _get_query_embedding_task(self, query: str):
+        """获取 query embedding 的任务包装器"""
+        self._hipporag_core.get_query_embeddings([query])
+        return self._hipporag_core.query_to_embedding['triple'].get(query)
 
     def _semantic_expansion(
         self,
@@ -382,6 +500,103 @@ class GraphFusionRetriever:
 
         return emotion_entities
 
+    def _emotion_expansion_from_entities(
+        self,
+        query: str,
+        query_entities: List[str],
+        top_k: int = 20
+    ) -> Dict[str, float]:
+        """
+        从预抽取的实体进行情绪扩展
+
+        使用统一抽取的实体，生成查询粒子进行情绪相似度搜索。
+
+        Args:
+            query: 查询文本
+            query_entities: 统一抽取的实体列表
+            top_k: 返回 top-k 相似粒子
+
+        Returns:
+            {entity_text: emotion_score}
+        """
+        from poincare.retrieval import HyperAmyRetrieval
+        from particle.particle import Particle
+        from particle.emotion_v2 import EmotionV2
+
+        emotion_entities = defaultdict(float)
+
+        if not query_entities:
+            return emotion_entities
+
+        try:
+            # 使用 Amygdala 的 EmotionV2 为查询实体生成 emotion 向量
+            # 注意：这里需要调用 LLM 生成情感描述和 embedding
+            # 这是情绪扩展的必要步骤，无法省略
+            emotion_v2 = EmotionV2(
+                model_name=self.llm_model_name,
+                embedding_model_name=self.embedding_model_name
+            )
+
+            # 为查询文本生成 emotion nodes
+            emotion_nodes = emotion_v2.process(
+                text=query,
+                text_id=f"query_emotion_{int(time.time())}",
+                entities=query_entities  # 使用预抽取的实体
+            )
+
+            if not emotion_nodes:
+                logger.info(f"[GraphFusion._emotion_expansion_from_entities] 未生成 emotion nodes")
+                return emotion_entities
+
+            # 使用第一个 emotion node 作为查询粒子
+            query_emotion = emotion_nodes[0]
+
+            # 创建临时查询粒子（只包含 emotion 向量）
+            class QueryParticle:
+                def __init__(self, entity, emotion_vector):
+                    self.entity = entity
+                    self.emotion_vector = emotion_vector
+                    self.entity_id = compute_mdhash_id(content=entity, prefix="entity-")
+
+            query_particle = QueryParticle(
+                entity=query_entities[0],  # 使用第一个实体
+                emotion_vector=query_emotion.emotion_vector
+            )
+
+            # 使用 HyperAmyRetrieval 进行情绪相似度搜索
+            retriever = HyperAmyRetrieval(
+                storage=self.amygda.particle_storage,
+                projector=self.amygda.particle_projector
+            )
+
+            search_results = retriever.search(
+                query_entity=query_particle,
+                top_k=top_k,
+                cone_width=50
+            )
+
+            # 提取粒子的 entity 文本
+            for result in search_results:
+                similarity = 1.0 / (1.0 + result.score)
+                entity_text = result.metadata.get("entity", "")
+
+                if entity_text:
+                    emotion_entities[entity_text] += similarity
+
+            # 归一化
+            if emotion_entities:
+                max_score = max(emotion_entities.values())
+                emotion_entities = {k: v / max_score for k, v in emotion_entities.items()}
+
+            logger.info(f"[GraphFusion._emotion_expansion_from_entities] 找到 {len(emotion_entities)} 个情绪实体")
+
+        except Exception as e:
+            logger.warning(f"[GraphFusion._emotion_expansion_from_entities] 情绪扩展失败: {e}")
+            import traceback
+            traceback.print_exc()
+
+        return emotion_entities
+
     def _extract_fact_entities(
         self,
         query: str,
@@ -405,17 +620,33 @@ class GraphFusionRetriever:
         if len(query_fact_scores) == 0:
             return fact_entities
 
-        # 获取 top-k facts
+        # 确保 scores 是 1D numpy array
+        query_fact_scores = np.asarray(query_fact_scores).flatten()
+
+        # 获取 top-k facts 的索引
         link_top_k = min(top_k, len(query_fact_scores))
-        top_k_indices = np.argsort(query_fact_scores)[-link_top_k:][::-1]
+        # 使用 argsort 获取排序后的索引
+        sorted_indices = np.argsort(query_fact_scores)
+        # 获取 top-k 个最高分数的索引（倒序）
+        top_k_indices = sorted_indices[-link_top_k:][::-1]
 
         # 提取实体
-        for rank in top_k_indices:
-            fact_id = self._hipporag_core.fact_node_keys[rank]
+        for idx in top_k_indices:
+            # 确保 idx 是标量
+            if hasattr(idx, 'item'):
+                idx_int = int(idx.item())
+            else:
+                idx_int = int(idx)
+
+            # 边界检查
+            if idx_int < 0 or idx_int >= len(self._hipporag_core.fact_node_keys):
+                continue
+
+            fact_id = self._hipporag_core.fact_node_keys[idx_int]
             fact_row = self._hipporag_core.fact_embedding_store.get_row(fact_id)
             fact = eval(fact_row['content'])  # (subject, predicate, object)
 
-            fact_score = query_fact_scores[rank]
+            fact_score = float(query_fact_scores[idx_int])
 
             # 提取 subject 和 object
             for entity in [fact[0], fact[2]]:

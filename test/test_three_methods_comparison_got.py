@@ -564,6 +564,5 @@ print("\n" + "=" * 80)
 print("✅ 实验完成！")
 print("=" * 80)
 print(f"结果文件: {result_file}")
-print(f"报告文件: {report_file}")
 print("=" * 80)
 

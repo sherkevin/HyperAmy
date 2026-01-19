@@ -1,0 +1,36 @@
+{
+  "model_name": "emos (Probabilistic G-BERT V4)",
+  "base_model": "roberta-base",
+  "embedding_dim": 64,
+  "num_emotions": 28,
+  "max_length": 128,
+  "training": {
+    "train_samples": 1317,
+    "val_samples": 147,
+    "train_entities": 1800,
+    "val_entities": 192,
+    "batch_size": 16,
+    "effective_batch_size": 64,
+    "epochs": 10,
+    "learning_rate_backbone": 2e-05,
+    "learning_rate_heads": 0.0001,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "patience": 3
+  },
+  "results": {
+    "best_val_loss": 11.21,
+    "final_train_loss": 41.88,
+    "final_val_loss": 11.33,
+    "best_epoch": 8,
+    "avg_kappa": 3.69,
+    "top1_accuracy": 82.81,
+    "top3_accuracy": 83.85,
+    "top5_accuracy": 83.85
+  },
+  "model_files": {
+    "checkpoint": "/public/jiangh/emos/checkpoints/best_model.pt",
+    "size_mb": 477,
+    "training_log": "/public/jiangh/emos/logs/train_full_*.log"
+  }
+}

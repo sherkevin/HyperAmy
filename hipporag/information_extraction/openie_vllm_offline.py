@@ -6,14 +6,18 @@ from .openie_openai import ChunkInfo
 from ..utils.misc_utils import NerRawOutput, TripleRawOutput
 from ..utils.logging_utils import get_logger
 from ..prompts import PromptTemplateManager
-from ..llm.vllm_offline import VLLMOffline
+try:
+    from ..llm.vllm_offline import VLLMOffline
+except ImportError:
+    VLLMOffline = None
 
 logger = get_logger(__name__)
 
 
 class VLLMOfflineOpenIE(OpenIE):
     def __init__(self, global_config):
-
+        if VLLMOffline is None:
+            raise ImportError("VLLMOffline is required for VLLMOfflineOpenIE. Install vllm with: pip install vllm")
         self.prompt_template_manager = PromptTemplateManager(role_mapping={"system": "system", "user": "user", "assistant": "assistant"})
         self.llm_model = VLLMOffline(global_config)
 

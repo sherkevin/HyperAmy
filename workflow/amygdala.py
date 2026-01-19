@@ -263,22 +263,25 @@ class Amygdala:
     def add(
         self,
         conversation: str,
-        conversation_id: Optional[str] = None
+        conversation_id: Optional[str] = None,
+        entities: Optional[List[str]] = None
     ) -> Dict[str, Any]:
         """
         添加对话并处理
-        
+
         流程：
         1. 生成或使用提供的 conversation_id
         2. 调用 Particle.process() 生成粒子列表
+           - 如果提供了 entities，则使用预抽取的实体（避免重复LLM调用）
         3. 存储粒子到数据库
         4. 存储对话到数据库
         5. 记录粒子与对话的对应关系
-        
+
         Args:
             conversation: 对话文本
             conversation_id: 对话 ID（可选，如果不提供则自动生成）
-        
+            entities: 预抽取的实体列表（可选，用于复用已抽取的结果）
+
         Returns:
             包含以下字段的字典：
             - conversation_id: 对话 ID
@@ -293,20 +296,22 @@ class Amygdala:
                     conversation,
                     prefix=f"{self.conversation_namespace}-"
                 )
-            
+
             # 记录输入信息
             logger.info("=" * 80)
             logger.info(f"[Amygdala.add] 开始处理对话")
             logger.info(f"  输入 - conversation_id: {conversation_id}")
             logger.info(f"  输入 - conversation_text: {conversation[:200]}{'...' if len(conversation) > 200 else ''}")
             logger.info(f"  输入 - conversation_length: {len(conversation)} 字符")
-            
+            logger.info(f"  输入 - entities: {entities if entities else 'None (将自动抽取)'}")
+
             # Step 2: 调用 Particle.process() 生成粒子列表
+            # 如果提供了预抽取的实体，直接使用；否则自动抽取
             try:
                 particles = self.particle.process(
                     text=conversation,
                     text_id=conversation_id,
-                    entities=None
+                    entities=entities  # 传入预抽取的实体
                 )
                 logger.info(f"[Amygdala.add] 粒子生成完成: {len(particles)} 个粒子")
                 
