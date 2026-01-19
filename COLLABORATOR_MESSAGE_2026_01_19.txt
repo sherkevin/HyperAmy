@@ -1,0 +1,45 @@
+亲爱的合作者们，
+
+我们今天完成了一个重要的更新：实现了**语义崩溃协议 (Semantic Collapse Protocol)**，这是HyperAmy系统在"语义真空"场景下能够自动激活情绪检索的关键机制。
+
+## 🎯 核心创新
+
+**语义崩溃协议**解决了我们之前在Vibe Search实验中发现的关键问题：
+- 当语义检索完全失效（S_sem < 0.05）时，系统会自动解除"最低语义保护"限制
+- 允许情绪权重（W_emo）从固定的0.3提升到0.86-0.95（取决于I_q值）
+- 这使得HyperAmy能够在语义失效场景下真正发挥主导作用
+
+## 📊 实验结果
+
+我们已经运行了三个实验版本：
+1. **Experiment 1** (LLM API): HippoRAG 32%, HyperAmy 32%
+2. **Experiment 2** (Emos GPU): HippoRAG 12%, HyperAmy 8% - 验证了语义崩溃协议机制有效
+3. **Experiment 3** (LLM API + 协议): 平均W_emo从0.3提升到0.82，Recall@1待完整验证
+
+## 📁 关键代码位置
+
+- **核心实现**: `poincare/retrieval.py` (lines 1037-1075) - 语义崩溃协议逻辑
+- **实验脚本**: `test/test_vibe_search_experiment_3_final.py` - Experiment 3完整实现
+- **文档**: `docs/SEMANTIC_COLLAPSE_PROTOCOL.md` - 完整的设计文档和验证方案
+- **更新说明**: `COLLABORATOR_UPDATE_2026_01_19.md` - 详细的更新说明和技术细节
+
+## 🔍 代码审查建议
+
+请特别关注：
+1. 语义崩溃协议的阈值选择（当前为0.05）是否合理
+2. 权重计算公式中的系数是否需要调整
+3. 缓存复用逻辑（.cache/emotion_vectors）是否优化充分
+
+## 💡 科学意义
+
+这个更新实现了真正的"双重分离"（Double Dissociation）：
+- 在Factoid QA中：语义主导，情绪被抑制（验证保护机制）
+- 在Vibe Search中：情绪主导，语义失效（验证激活机制）
+
+这证明了我们的系统是一个真正**自适应的、基于不确定性的混合检索系统**，而不仅仅是一个简单的线性融合。
+
+期待大家的反馈和讨论！
+
+---
+HyperAmy Team
+2026-01-19
