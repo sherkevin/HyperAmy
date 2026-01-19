@@ -29,7 +29,7 @@ logger = get_logger(__name__)
 
 # 默认参数
 DEFAULT_CURVATURE = 1.0       # 庞加莱球曲率 c
-DEFAULT_GAMMA = 1.0           # 宇宙衰变常数
+DEFAULT_GAMMA = 0.001         # 宇宙衰变常数（减小以减缓衰减，适应较长的时间差）
 FORGETTING_THRESHOLD = 1e-3  # 遗忘阈值
 
 
@@ -253,9 +253,24 @@ class FastPositionUpdate:
         """
         # 时间差
         delta_t = max(0.0, t_now - created_at)
+        
+        # 调试日志：如果delta_t异常或参数异常，记录详细信息
+        if delta_t < 0 or delta_t > 1000 or initial_radius < 0.1 or mass < 0.1:
+            logger.warning(
+                f"异常参数: delta_t={delta_t:.2f}, mass={mass:.4f}, "
+                f"initial_radius={initial_radius:.4f}, created_at={created_at:.2f}, t_now={t_now:.2f}, gamma={gamma:.6f}"
+            )
 
         # 计算双曲半径
         R_t = TimeDynamics.hyperbolic_radius(initial_radius, mass, delta_t, gamma)
+        
+        # 调试日志：如果粒子被遗忘，记录详细信息（仅在DEBUG级别输出）
+        if R_t < forgetting_threshold:
+            logger.debug(
+                f"粒子被遗忘: R_t={R_t:.6f} < threshold={forgetting_threshold}, "
+                f"delta_t={delta_t:.2f}, mass={mass:.4f}, initial_radius={initial_radius:.4f}, "
+                f"created_at={created_at:.2f}, t_now={t_now:.2f}, gamma={gamma:.6f}"
+            )
 
         # 计算庞加莱坐标
         z_t = FastPositionUpdate.poincare_coord(direction, R_t, curvature)

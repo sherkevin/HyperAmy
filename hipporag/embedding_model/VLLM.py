@@ -19,7 +19,7 @@ class VLLMEmbeddingModel(BaseEmbeddingModel):
 
         self.model_id = embedding_model_name[len("VLLM/"):]
         self.embedding_type = 'float'
-        self.batch_size = 32
+        self.batch_size = 16  # 减小batch size避免"Request Entity Too Large"错误
 
         self.url = global_config.embedding_base_url
         self.base_url = global_config.embedding_base_url
@@ -32,6 +32,21 @@ class VLLMEmbeddingModel(BaseEmbeddingModel):
     def call_model(self, input_text) -> List[np.ndarray]:
         if isinstance(input_text, str):
             input_text = [input_text]
+        
+        original_count = len(input_text)
+        
+        # 过滤空字符串和None，但记录原始索引
+        filtered_texts = []
+        original_indices = []
+        for idx, text in enumerate(input_text):
+            if text and isinstance(text, str) and text.strip():
+                filtered_texts.append(text)
+                original_indices.append(idx)
+        
+        if not filtered_texts:
+            # 如果所有文本都为空，返回对应数量的零向量（保持长度一致）
+            return np.zeros((original_count, 2048))  # GLM-Embedding-3的维度是2048
+        
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY', '')}"
@@ -39,13 +54,38 @@ class VLLMEmbeddingModel(BaseEmbeddingModel):
         
         payload = {
             "model": self.model_id,
-            "input": input_text,
+            "input": filtered_texts,  # 使用过滤后的文本
         }
 
-        response = requests.post(self.base_url, headers=headers, json=payload)
-        response.raise_for_status()
-        result = response.json()
-        return np.array([result["data"][i]["embedding"] for i in range(len(result["data"]))])
+        try:
+            response = requests.post(self.base_url, headers=headers, json=payload, timeout=60)
+            response.raise_for_status()
+            result = response.json()
+            
+            # 获取embeddings
+            embeddings_list = [result["data"][i]["embedding"] for i in range(len(result["data"]))]
+            filtered_embeddings = np.array(embeddings_list)
+            
+            # 如果过滤掉了某些文本，需要在对应位置插入零向量
+            if len(filtered_embeddings) < original_count:
+                # 创建完整的结果数组
+                embed_dim = filtered_embeddings.shape[1] if len(filtered_embeddings.shape) > 1 else 2048
+                full_embeddings = np.zeros((original_count, embed_dim))
+                for i, orig_idx in enumerate(original_indices):
+                    full_embeddings[orig_idx] = filtered_embeddings[i]
+                return full_embeddings
+            
+            return filtered_embeddings
+        except requests.exceptions.HTTPError as e:
+            # 添加更详细的错误信息
+            if hasattr(e.response, 'text'):
+                error_detail = e.response.text[:500]
+                print(f"API Error: {e}")
+                print(f"Request URL: {self.base_url}")
+                print(f"Request payload keys: {list(payload.keys())}")
+                print(f"Input count: {len(input_text)}")
+                print(f"Error response: {error_detail}")
+            raise
 
     def encode(self, texts: List[str]) -> np.array:
         response = self.call_model(texts)

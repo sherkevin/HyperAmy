@@ -77,3 +77,7 @@ outputs/stage2_training_remote/*.pt
 # Large model files
 *.pt
 !scripts/**/*.pt
+
+# Output directories (experimental results, indices, etc.)
+outputs/
+.cache/

@@ -101,8 +101,8 @@ class ParticleProjector:
         if t_now is None:
             t_now = time.time()
 
-        # 计算初始半径（使用 scaling_factor）
-        initial_radius = self.scaling_factor * weight
+        # 计算初始半径（使用 scaling_factor，设置最小值避免小质量粒子立即被遗忘）
+        initial_radius = max(self.scaling_factor * weight, 0.5)  # 最小初始半径为0.5
 
         # 归一化方向向量
         direction = emotion_vector / np.linalg.norm(emotion_vector)

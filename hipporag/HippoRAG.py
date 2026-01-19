@@ -369,7 +369,7 @@ class HippoRAG:
     def retrieve(self,
                  queries: List[str],
                  num_to_retrieve: int = None,
-                 gold_docs: List[List[str]] = None) -> List[QuerySolution] | Tuple[List[QuerySolution], Dict]:
+                 gold_docs: List[List[str]] = None) -> Union[List[QuerySolution], Tuple[List[QuerySolution], Dict]]:
         """
         Performs retrieval using the HippoRAG 2 framework, which consists of several steps:
         - Fact Retrieval
@@ -455,9 +455,9 @@ class HippoRAG:
             return retrieval_results
 
     def rag_qa(self,
-               queries: List[str|QuerySolution],
+               queries: List[Union[str, QuerySolution]],
                gold_docs: List[List[str]] = None,
-               gold_answers: List[List[str]] = None) -> Tuple[List[QuerySolution], List[str], List[Dict]] | Tuple[List[QuerySolution], List[str], List[Dict], Dict, Dict]:
+               gold_answers: List[List[str]] = None) -> Union[Tuple[List[QuerySolution], List[str], List[Dict]], Tuple[List[QuerySolution], List[str], List[Dict], Dict, Dict]]:
         """
         Performs retrieval-augmented generation enhanced QA using the HippoRAG 2 framework.
 
@@ -531,7 +531,7 @@ class HippoRAG:
     def retrieve_dpr(self,
                      queries: List[str],
                      num_to_retrieve: int = None,
-                     gold_docs: List[List[str]] = None) -> List[QuerySolution] | Tuple[List[QuerySolution], Dict]:
+                     gold_docs: List[List[str]] = None) -> Union[List[QuerySolution], Tuple[List[QuerySolution], Dict]]:
         """
         Performs retrieval using a DPR framework, which consists of several steps:
         - Dense passage scoring
@@ -600,9 +600,9 @@ class HippoRAG:
             return retrieval_results
 
     def rag_qa_dpr(self,
-               queries: List[str|QuerySolution],
+               queries: List[Union[str, QuerySolution]],
                gold_docs: List[List[str]] = None,
-               gold_answers: List[List[str]] = None) -> Tuple[List[QuerySolution], List[str], List[Dict]] | Tuple[List[QuerySolution], List[str], List[Dict], Dict, Dict]:
+               gold_answers: List[List[str]] = None) -> Union[Tuple[List[QuerySolution], List[str], List[Dict]], Tuple[List[QuerySolution], List[str], List[Dict], Dict, Dict]]:
         """
         Performs retrieval-augmented generation enhanced QA using a standard DPR framework.
 
@@ -1257,7 +1257,7 @@ class HippoRAG:
 
         self.ready_to_retrieve = True
 
-    def get_query_embeddings(self, queries: List[str] | List[QuerySolution]):
+    def get_query_embeddings(self, queries: Union[List[str], List[QuerySolution]]):
         """
         Retrieves embeddings for given queries and updates the internal query-to-embedding mapping. The method determines whether each query
         is already present in the `self.query_to_embedding` dictionary under the keys 'triple' and 'passage'. If a query is not present in

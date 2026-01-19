@@ -13,13 +13,30 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 BASE_URL_RAW = os.getenv("BASE_URL", "https://llmapi.paratera.com/v1").strip().strip('"').strip("'").rstrip('/')
 
-# 处理 BASE_URL：如果以 /chat/ 结尾，则提取基础 URL
-if BASE_URL_RAW.endswith("/chat"):
+# 处理 BASE_URL：提取基础 URL（去除所有端点路径）
+# 如果包含 /chat/completions，提取基础部分
+if "/chat/completions" in BASE_URL_RAW:
+    BASE_URL = BASE_URL_RAW.split("/chat/completions")[0].rstrip('/')
+elif BASE_URL_RAW.endswith("/chat"):
     BASE_URL = BASE_URL_RAW[:-5]  # 移除 /chat
 elif BASE_URL_RAW.endswith("/chat/"):
     BASE_URL = BASE_URL_RAW[:-6]  # 移除 /chat/
+elif "/chat/" in BASE_URL_RAW:
+    BASE_URL = BASE_URL_RAW.split("/chat/")[0].rstrip('/')
 else:
     BASE_URL = BASE_URL_RAW
+
+# 确保BASE_URL是基础URL（不包含v1后面的路径）
+if BASE_URL.endswith("/v1"):
+    pass  # 正确
+elif "/v1/" in BASE_URL or BASE_URL.endswith("/v1"):
+    # 已经是正确的格式
+    pass
+else:
+    # 如果不是以/v1结尾，添加/v1
+    if not BASE_URL.endswith("/v1"):
+        if "/v1" not in BASE_URL:
+            BASE_URL = f"{BASE_URL}/v1"
 
 # 构建完整的 API URL
 API_URL_COMPLETIONS = os.getenv("API_URL_COMPLETIONS", f"{BASE_URL}/completions")

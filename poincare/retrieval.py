@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from poincare.math import poincare_dist, PoincareBall
-from poincare.physics import PhysicsEngine, ParticleState, compute_particle_state
+from poincare.physics import PhysicsEngine, ParticleState, compute_particle_state, DEFAULT_GAMMA as PHYSICS_DEFAULT_GAMMA
 from poincare.types import SearchResult
 from hipporag.utils.logging_utils import get_logger
 
@@ -32,7 +32,10 @@ logger = get_logger(__name__)
 DEFAULT_SEMANTIC_THRESHOLD = 0.5  # 语义相似度阈值
 DEFAULT_RETRIEVAL_BETA = 1.0       # 检索评分系数
 DEFAULT_CURVATURE = 1.0            # 空间曲率
-DEFAULT_GAMMA = 1.0                # 衰变常数
+# ========== 方案二：显式使用physics.py中的DEFAULT_GAMMA ==========
+# 确保使用physics.py中修改后的DEFAULT_GAMMA=0.001，而不是旧的1.0
+DEFAULT_GAMMA = PHYSICS_DEFAULT_GAMMA  # 从physics模块导入最新的gamma值
+# ========== 配置注入链修复结束 ==========
 
 
 @dataclass
@@ -154,13 +157,42 @@ class HMemRetrieval:
         Returns:
             过滤后的候选粒子列表
         """
+        # ========== 暴力验证模式：如果threshold < 0，则跳过Pruning ==========
+        if self.config.semantic_threshold < 0:
+            logger.warning(
+                f"⚠️  暴力验证模式：Pruning已禁用（threshold={self.config.semantic_threshold}），"
+                f"所有 {len(candidates)} 个候选粒子进入Thermodynamic Scoring阶段"
+            )
+            # 只做维度检查，不进行相似度过滤
+            filtered = []
+            for cand in candidates:
+                if len(cand.direction) != len(query_direction):
+                    logger.warning(
+                        f"维度不匹配：候选向量维度={len(cand.direction)}，查询向量维度={len(query_direction)}，跳过该候选"
+                    )
+                    continue
+                filtered.append(cand)
+            return filtered
+        # ========== 暴力验证模式结束 ==========
+        
         filtered = []
         similarities = []  # 记录所有相似度用于调试
 
         for cand in candidates:
+            # 维度检查：确保候选粒子向量与查询向量维度一致
+            if len(cand.direction) != len(query_direction):
+                logger.warning(
+                    f"维度不匹配：候选向量维度={len(cand.direction)}，查询向量维度={len(query_direction)}，跳过该候选"
+                )
+                continue
+            
             # 计算余弦相似度（即方向向量的点积，因为已归一化）
-            similarity = float(np.dot(cand.direction, query_direction))
-            similarities.append(similarity)
+            try:
+                similarity = float(np.dot(cand.direction, query_direction))
+                similarities.append(similarity)
+            except ValueError as e:
+                logger.warning(f"计算相似度失败（维度不匹配？）：{e}，跳过该候选")
+                continue
 
             # 只保留相似度高于阈值的
             if similarity >= self.config.semantic_threshold:
@@ -614,13 +646,25 @@ class HyperAmyRetrieval:
         self.projector = projector
 
         # 使用 V3 InMemoryRetrieval
+        # ========== 方案二：显式传递gamma值，确保使用0.001 ==========
+        # ========== 暴力验证模式：将semantic_threshold设为-1.0以禁用Pruning ==========
         config = RetrievalConfig(
-            semantic_threshold=0.5,
+            semantic_threshold=-1.0,  # 暴力验证：设为-1.0禁用Pruning，让所有粒子进入Thermodynamic Scoring
             retrieval_beta=1.0,
             curvature=1.0,
-            gamma=1.0
+            gamma=0.001  # 显式传递，确保使用修改后的gamma值
         )
+        # ========== 暴力验证模式：Pruning已禁用 ==========
+        # ========== 显式传递gamma修复结束 ==========
         self._retrieval = InMemoryRetrieval(config=config)
+        
+        # 保存physics引擎引用，供search_hybrid使用
+        self.physics = self._retrieval.physics
+        self.config = self._retrieval.config
+
+        # 记录存储粒子的最早born时间，用于相对时间基准
+        # 初始化为None，会在_load_particles_from_storage中设置
+        self._storage_base_time = None
 
         # 如果提供了存储，自动加载粒子
         if storage is not None:
@@ -635,7 +679,47 @@ class HyperAmyRetrieval:
             ids = all_data.get("ids", [])
             embeddings = all_data.get("embeddings", [])
             metadatas = all_data.get("metadatas", [])
-
+            
+            # 第一遍：收集所有born时间戳，找到最早的有效时间作为基准
+            born_times = []
+            load_time = time.time()  # 记录加载时间，用于替换无效的born时间
+            
+            for i in range(len(ids)):
+                if i >= len(metadatas) or metadatas[i] is None:
+                    continue
+                meta = metadatas[i]
+                born_raw = meta.get("born", None)
+                
+                # 处理born时间戳：如果是None、0、负数或无效值，使用加载时间
+                if born_raw is None or born_raw == 0 or born_raw == "0" or float(born_raw) <= 0:
+                    born = load_time  # 使用加载时间
+                    logger.debug(f"粒子 {ids[i]} 的born时间戳无效({born_raw})，使用加载时间: {born}")
+                else:
+                    try:
+                        born = float(born_raw)
+                        # 检查born时间戳是否合理（不能是未来的时间，也不能太早）
+                        if born > load_time:
+                            born = load_time  # 如果是未来时间，使用加载时间
+                            logger.debug(f"粒子 {ids[i]} 的born时间戳是未来时间，使用加载时间")
+                        elif born < load_time - 86400 * 365:  # 如果超过1年，可能无效
+                            born = load_time  # 使用加载时间
+                            logger.debug(f"粒子 {ids[i]} 的born时间戳太早，使用加载时间")
+                        else:
+                            born_times.append(born)
+                    except (ValueError, TypeError):
+                        born = load_time  # 转换失败，使用加载时间
+                        logger.debug(f"粒子 {ids[i]} 的born时间戳转换失败，使用加载时间")
+            
+            # 设置存储基准时间：使用最早的born时间，如果没有有效的born时间，使用加载时间
+            if born_times:
+                self._storage_base_time = min(born_times)
+                logger.info(f"存储基准时间已设置: {self._storage_base_time} (最早粒子时间, {len(born_times)}个有效粒子)")
+            else:
+                # 如果没有有效的born时间戳，使用加载时间作为基准
+                self._storage_base_time = load_time
+                logger.warning(f"未找到有效的born时间戳，使用加载时间作为基准: {load_time}")
+            
+            # 第二遍：加载粒子，将born时间调整为相对于基准时间的偏移
             for i, pid in enumerate(ids):
                 if i >= len(embeddings) or embeddings[i] is None:
                     continue
@@ -646,14 +730,29 @@ class HyperAmyRetrieval:
                     direction = direction / norm
 
                 meta = metadatas[i] if i < len(metadatas) else {}
-                mass = float(meta.get("weight", 1.0))
+                mass_raw = float(meta.get("weight", 1.0))
+                # 设置最小质量，避免质量太小导致快速衰减
+                mass = max(mass_raw, 0.5)  # 最小质量为0.5
                 temperature = float(meta.get("T", 1.0))
-                born = float(meta.get("born", time.time()))
+                
+                # 处理born时间戳：如果无效，使用基准时间
+                born_raw = meta.get("born", None)
+                if born_raw is None or born_raw == 0 or born_raw == "0" or float(born_raw) <= 0:
+                    # 如果born时间戳无效，使用基准时间（偏移为0）
+                    born = 0.0
+                else:
+                    try:
+                        born_absolute = float(born_raw)
+                        # 将born时间调整为相对于基准时间的偏移（秒），最小为0
+                        born = max(0.0, born_absolute - self._storage_base_time)
+                    except (ValueError, TypeError):
+                        # 转换失败，使用0（相对于基准时间）
+                        born = 0.0
 
-                # 计算初始半径
-                from poincare.physics import PhysicsEngine
-                physics = PhysicsEngine(curvature=1.0, gamma=1.0)
-                initial_radius = 2.0 * mass  # 使用 scaling_factor=2.0
+                # 计算初始半径（设置最小值避免小质量粒子立即被遗忘）
+                from poincare.physics import PhysicsEngine, DEFAULT_GAMMA
+                physics = PhysicsEngine(curvature=1.0, gamma=DEFAULT_GAMMA)  # 使用较小的gamma减缓衰减
+                initial_radius = max(2.0 * mass, 0.5)  # 最小初始半径为0.5，避免快速衰减
 
                 candidate = create_candidate(
                     particle_id=pid,
@@ -671,6 +770,7 @@ class HyperAmyRetrieval:
 
         except Exception as e:
             logger.warning(f"Failed to load particles from storage: {e}")
+            self._storage_base_time = time.time()
 
     def search(
         self,
@@ -691,19 +791,56 @@ class HyperAmyRetrieval:
         Returns:
             SearchResult 列表
         """
-        if t_now is None:
-            t_now = time.time()
+        # 注意：t_now的设置逻辑在后面，这里不提前设置
 
         # 从 query_entity 提取信息
         query_direction = query_entity.emotion_vector
+        
+        # 确保query_direction是numpy数组
+        if not isinstance(query_direction, np.ndarray):
+            query_direction = np.array(query_direction, dtype=np.float32)
+        else:
+            query_direction = query_direction.astype(np.float32)
+        
+        # 维度验证：确保查询向量维度与存储的粒子向量维度一致
+        if hasattr(self._retrieval, '_particles') and len(self._retrieval._particles) > 0:
+            # 获取存储的粒子向量维度
+            stored_dim = len(self._retrieval._particles[0].direction)
+            query_dim = len(query_direction)
+            
+            if query_dim != stored_dim:
+                logger.error(
+                    f"维度不匹配！查询向量维度={query_dim}，存储向量维度={stored_dim}。"
+                    f"请确保存储和检索使用相同的情绪提取器。"
+                )
+                # 返回空结果而不是崩溃
+                return []
+        
         norm = np.linalg.norm(query_direction)
         if norm > 0:
             query_direction = query_direction / norm
+        else:
+            logger.warning(f"查询向量全为0，返回空结果")
+            return []
 
-        query_mass = getattr(query_entity, 'weight', 1.0)
+        query_mass_raw = getattr(query_entity, 'weight', 1.0)
+        # 设置最小质量，避免质量太小导致快速衰减
+        query_mass = max(query_mass_raw, 0.5)  # 最小质量为0.5
         query_temperature = getattr(query_entity, 'temperature', 1.0)
-        query_initial_radius = 2.0 * query_mass
+        query_initial_radius = max(2.0 * query_mass, 0.5)  # 最小初始半径为0.5
 
+        # 使用相对时间基准：如果存储基准时间已设置，使用固定的小偏移作为t_now
+        # 这样所有粒子的born时间都是相对于基准时间的偏移，delta_t会很小且可控
+        if t_now is None:
+            if hasattr(self, '_storage_base_time') and self._storage_base_time is not None:
+                # 这是一个基于相对时间的系统，强制使用相对时间
+                t_now = 300.0  # 固定使用300秒（5分钟）作为相对时间
+                logger.debug(f"使用相对时间基准: t_now=300.0秒 (存储基准时间已应用)")
+            else:
+                # 这是一个实时流式系统（还没遇到过），使用挂钟时间
+                t_now = time.time()
+                logger.warning(f"未检测到存储基准时间，使用系统时间 t_now = {t_now}（可能导致delta_t过大）")
+        
         # 使用 V3 检索
         v3_results = self._retrieval.search(
             query_direction=query_direction,
@@ -735,12 +872,14 @@ class HyperAmyRetrieval:
         if norm > 0:
             direction = direction / norm
 
-        initial_radius = 2.0 * particle.weight
+        # 设置最小质量，避免质量太小导致快速衰减
+        mass = max(particle.weight, 0.5)  # 最小质量为0.5
+        initial_radius = max(2.0 * mass, 0.5)  # 最小初始半径为0.5，避免快速衰减
 
         candidate = create_candidate(
             particle_id=particle.entity_id,
             direction=direction,
-            mass=particle.weight,
+            mass=mass,
             temperature=particle.temperature,
             initial_radius=initial_radius,
             created_at=particle.born,
@@ -748,6 +887,293 @@ class HyperAmyRetrieval:
             entity=getattr(particle, 'entity', '')
         )
         self._retrieval.add_particle(candidate)
+
+    def search_hybrid(
+        self,
+        query_text: str,
+        query_entity,
+        semantic_docs: List[str],
+        semantic_scores: np.ndarray,
+        id_to_content: Dict[str, str],
+        top_k: int = 10,
+        alpha: float = 0.8,  # 已弃用，现在使用动态权重
+        t_now: Optional[float] = None
+    ) -> List[SearchResult]:
+        """
+        全域平滑动态权重混合检索 (Continuous Dynamic Weighting Hybrid Search)
+        
+        根据Query情绪强度和语义置信度的博弈，动态决定情绪检索的权重，
+        并使用Weighted RRF进行公平融合。
+        
+        Args:
+            query_text: 查询文本
+            query_entity: 查询粒子对象（ParticleEntity）
+            semantic_docs: 语义检索得到的文档列表（Top-N，例如Top-100）
+            semantic_scores: 语义分数（与semantic_docs对应）
+            id_to_content: 映射（particle_id -> text_content）
+            top_k: 最终返回结果数量
+            alpha: 已弃用（保留以兼容旧代码）
+            t_now: 当前时间
+        
+        Returns:
+            重排序后的SearchResult列表
+        """
+        import math
+        
+        if not semantic_docs or len(semantic_docs) == 0:
+            logger.warning("search_hybrid: 没有语义候选，返回空结果")
+            return []
+        
+        # 构建content -> particle_id的逆映射
+        content_to_id = {content: pid for pid, content in id_to_content.items()}
+        
+        # ========== 步骤A: 获取双路候选 (Dual Retrieval) ==========
+        # 语义路：获取Top-50候选（从传入的Top-100中截取）
+        semantic_candidates = []
+        for doc, sem_score in zip(semantic_docs[:50], semantic_scores[:50]):
+            particle_id = content_to_id.get(doc, None)
+            if particle_id is None:
+                continue
+            candidate = self._retrieval._candidates.get(particle_id, None)
+            if candidate is None:
+                continue
+            semantic_candidates.append((candidate, float(sem_score)))
+        
+        if not semantic_candidates:
+            logger.warning(f"search_hybrid: 无法匹配语义候选到粒子，返回空结果")
+            return []
+        
+        # 情绪路：获取Top-50候选（使用纯情绪检索）
+        query_direction = query_entity.emotion_vector
+        if not isinstance(query_direction, np.ndarray):
+            query_direction = np.array(query_direction, dtype=np.float32)
+        else:
+            query_direction = query_direction.astype(np.float32)
+        
+        # 归一化查询向量
+        norm = np.linalg.norm(query_direction)
+        if norm > 0:
+            query_direction = query_direction / norm
+        
+        query_mass = max(getattr(query_entity, 'weight', 1.0), 0.5)
+        query_temperature = getattr(query_entity, 'temperature', 1.0)
+        query_initial_radius = max(2.0 * query_mass, 0.5)
+        
+        # 设置时间
+        if t_now is None:
+            if hasattr(self, '_storage_base_time') and self._storage_base_time is not None:
+                t_now = 300.0
+            else:
+                t_now = time.time()
+        
+        query_created_at = t_now
+        
+        # 计算查询状态
+        query_state = self.physics.compute_state(
+            direction=query_direction,
+            mass=query_mass,
+            temperature=query_temperature,
+            initial_radius=query_initial_radius,
+            created_at=query_created_at,
+            t_now=t_now
+        )
+        
+        # 对所有粒子计算情绪分数并排序，获取Top-50
+        all_candidates = list(self._retrieval._candidates.values())
+        emotion_scores_all = []
+        for candidate in all_candidates:
+            try:
+                candidate_state = self.physics.compute_state(
+                    direction=candidate.direction,
+                    mass=candidate.mass,
+                    temperature=candidate.temperature,
+                    initial_radius=candidate.initial_radius,
+                    created_at=candidate.created_at,
+                    t_now=t_now
+                )
+                hyperbolic_dist = poincare_dist(
+                    candidate_state.poincare_coord,
+                    query_state.poincare_coord,
+                    c=self.config.curvature
+                )
+                if hyperbolic_dist < 1e-9:
+                    score = 1e6
+                else:
+                    temp_modulation = 1.0 + self.config.retrieval_beta / candidate_state.temperature
+                    score = 1.0 / (hyperbolic_dist * temp_modulation)
+                emotion_scores_all.append((candidate, score))
+            except Exception as e:
+                logger.debug(f"search_hybrid: 计算情绪分数失败（particle_id={candidate.id}）: {e}")
+                emotion_scores_all.append((candidate, 0.0))
+        
+        # 按情绪分数降序排序，获取Top-50
+        emotion_candidates = sorted(emotion_scores_all, key=lambda x: x[1], reverse=True)[:50]
+        
+        # ========== 步骤B: 计算关键指标 ==========
+        # I_q (Query Emotion Intensity): Query情绪向量的L2范数
+        query_emotion_raw = query_entity.emotion_vector
+        if isinstance(query_emotion_raw, np.ndarray):
+            I_q = float(np.linalg.norm(query_emotion_raw))
+        else:
+            I_q = float(np.linalg.norm(np.array(query_emotion_raw)))
+        
+        # 归一化到[0.0, 1.0]范围（如果向量未归一化）
+        # 通常情绪向量已经归一化，但这里取最大值作为强度指标更稳健
+        if isinstance(query_emotion_raw, np.ndarray):
+            I_q = float(np.max(np.abs(query_emotion_raw)))
+        else:
+            I_q = float(np.max(np.abs(np.array(query_emotion_raw))))
+        I_q = min(1.0, max(0.0, I_q))  # 确保在[0.0, 1.0]范围内
+        
+        # S_sem (Semantic Confidence): Top-1的语义分数
+        if semantic_candidates:
+            top1_score = semantic_candidates[0][1]
+            # 确保分数在[0.0, 1.0]范围内（如果是余弦相似度通常已经是；如果是距离需转换）
+            # 假设传入的分数已经是归一化的相似度分数
+            S_sem = min(1.0, max(0.0, float(top1_score)))
+        else:
+            S_sem = 0.0
+        
+        # ========== 步骤C: 全域平滑动态定权 + 语义崩溃协议 ==========
+        # 超参数
+        k = 10.0       # Sigmoid 陡峭度
+        bias = 0.15    # 语义主场优势
+        min_sem_weight = 0.7  # 最低语义保护权重（仅在语义未崩溃时生效）
+        SEMANTIC_COLLAPSE_THRESHOLD = 0.05  # 语义崩溃阈值：S_sem < 0.05 视为彻底失效
+        
+        # ========== 语义崩溃协议 (Semantic Collapse Protocol) ==========
+        if S_sem < SEMANTIC_COLLAPSE_THRESHOLD:
+            # 语义崩溃，解除安全锁！
+            # 权重完全由情绪强度决定，最高可达 0.95（仍保留5%语义作为兜底）
+            logger.warning(
+                f"⚠️ Semantic Collapse Detected (S_sem={S_sem:.4f} < {SEMANTIC_COLLAPSE_THRESHOLD})! "
+                f"Releasing Safety Lock (I_q={I_q:.4f})."
+            )
+            # 情绪权重：基础0.5 + 根据I_q调整（最高0.95）
+            w_emo = 0.5 + (I_q * 0.45)  # I_q=1.0时，w_emo=0.95
+            w_sem = 1.0 - w_emo  # 剩余权重给语义（最低5%兜底）
+        else:
+            # ========== 正常情况：保持原有的保护逻辑 ==========
+            # 基础博弈：Sigmoid函数
+            delta = I_q - (S_sem + bias)
+            base_weight = 1.0 / (1.0 + math.exp(-k * delta))
+            
+            # 连续语义抑制
+            suppression = 1.0 - (S_sem ** 2)
+            
+            # 计算原始情绪权重
+            w_emo_raw = base_weight * suppression
+            
+            # 最低语义保护：确保语义权重不低于min_sem_weight
+            # 这样即使语义置信度很低，也不会完全依赖情绪检索（因为情绪检索在QA任务中无效）
+            w_sem_protected = max(min_sem_weight, 1.0 - w_emo_raw)
+            w_emo = 1.0 - w_sem_protected
+            w_sem = w_sem_protected
+        
+        # 确保权重在[0.0, 1.0]范围内
+        w_emo = min(1.0, max(0.0, w_emo))
+        w_sem = min(1.0, max(0.0, w_sem))
+        
+        # ========== 步骤E: 详细日志 ==========
+        # 记录是否触发了语义崩溃协议
+        if S_sem < SEMANTIC_COLLAPSE_THRESHOLD:
+            logger.info(
+                f"Dynamic Weighting: Iq={I_q:.4f}, S_sem={S_sem:.4f} -> "
+                f"[COLLAPSE PROTOCOL] -> "
+                f"Final W_emo={w_emo:.4f}, W_sem={w_sem:.4f}"
+            )
+        else:
+            logger.info(
+                f"Dynamic Weighting: Iq={I_q:.4f}, S_sem={S_sem:.4f} -> "
+                f"Base={base_weight:.4f}, Supp={suppression:.4f} -> "
+                f"Final W_emo={w_emo:.4f}, W_sem={w_sem:.4f}"
+            )
+        
+        # ========== 步骤D: 加权RRF融合 (Weighted RRF) ==========
+        final_scores = {}
+        
+        # 处理语义结果
+        for rank, (candidate, sem_score) in enumerate(semantic_candidates, start=1):
+            particle_id = candidate.id
+            if particle_id not in final_scores:
+                final_scores[particle_id] = {
+                    'particle': candidate,
+                    'semantic_score': sem_score,
+                    'emotion_score': 0.0,
+                    'semantic_rank': rank,
+                    'emotion_rank': None
+                }
+            final_scores[particle_id]['score'] = final_scores[particle_id].get('score', 0.0) + w_sem / (60.0 + rank)
+        
+        # 处理情绪结果
+        for rank, (candidate, emo_score) in enumerate(emotion_candidates, start=1):
+            particle_id = candidate.id
+            if particle_id not in final_scores:
+                final_scores[particle_id] = {
+                    'particle': candidate,
+                    'semantic_score': 0.0,
+                    'emotion_score': emo_score,
+                    'semantic_rank': None,
+                    'emotion_rank': rank
+                }
+            else:
+                final_scores[particle_id]['emotion_score'] = emo_score
+                final_scores[particle_id]['emotion_rank'] = rank
+            final_scores[particle_id]['score'] = final_scores[particle_id].get('score', 0.0) + w_emo / (60.0 + rank)
+        
+        # 排序输出：按加权RRF分数降序排列
+        sorted_results = sorted(
+            final_scores.items(),
+            key=lambda x: x[1]['score'],
+            reverse=True
+        )[:top_k]
+        
+        # 构建返回结果
+        results = []
+        for particle_id, data in sorted_results:
+            candidate = data['particle']
+            
+            # 计算双曲距离（用于SearchResult）
+            candidate_state = self.physics.compute_state(
+                direction=candidate.direction,
+                mass=candidate.mass,
+                temperature=candidate.temperature,
+                initial_radius=candidate.initial_radius,
+                created_at=candidate.created_at,
+                t_now=t_now
+            )
+            hyperbolic_dist = poincare_dist(
+                candidate_state.poincare_coord,
+                query_state.poincare_coord,
+                c=self.config.curvature
+            )
+            
+            results.append(SearchResult(
+                id=particle_id,
+                score=data['score'],  # 使用加权RRF分数
+                hyperbolic_distance=hyperbolic_dist,
+                poincare_coord=candidate_state.poincare_coord,
+                metadata={
+                    **candidate.metadata,
+                    'semantic_score': float(data['semantic_score']),
+                    'emotion_score': float(data['emotion_score']),
+                    'semantic_rank': data['semantic_rank'],
+                    'emotion_rank': data['emotion_rank'],
+                    'w_emo': float(w_emo),
+                    'w_sem': float(w_sem),
+                    'I_q': float(I_q),
+                    'S_sem': float(S_sem),
+                    'fusion_method': 'Weighted_RRF_Dynamic'  # 标记使用加权RRF动态融合
+                }
+            ))
+        
+        logger.info(
+            f"search_hybrid: 完成动态权重混合检索（语义候选={len(semantic_candidates)}, "
+            f"情绪候选={len(emotion_candidates)}, W_emo={w_emo:.4f}, W_sem={w_sem:.4f}），"
+            f"返回Top-{top_k}结果"
+        )
+        
+        return results
 
 
 # 更新导出列表
